@@ -6,6 +6,13 @@ namespace Boothaus.Services.Persistence;
 public class InMemoryBootRepository : IBootRepository
 {
     private List<Boot> boote = new();
+    private bool initialisiert;
+    public void InitialisiereMitDefaults(List<Boot> defaultBoote)
+    {
+        if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert.");
+        boote = defaultBoote;
+        initialisiert = true;
+    }
 
     public void Add(Boot boot)
     {

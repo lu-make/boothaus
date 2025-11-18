@@ -29,10 +29,8 @@ public class LagerApplicationService
 
     public Lagerkalender ErstelleLagerkalender(Lager lager, List<Lagerauftrag> aufträge)
     {
-        var kalender = new Lagerkalender();
-         
-        var zuweisungen = PlätzeZuweisen(lager, aufträge);
-         
+        var kalender = new Lagerkalender(); 
+        var zuweisungen = PlätzeZuweisen(lager, aufträge); 
         kalender.Zuweisungen.AddRange(zuweisungen);
         return kalender;
     }
@@ -120,17 +118,15 @@ public class LagerApplicationService
         return bootRepository.GetAll();
     }
 
-    public Boot ErzeugeBoot(string name, double länge, double breite, double gewicht)
+    public Boot ErzeugeBoot(string name, double länge, double breite)
     {
         var id = Guid.NewGuid();
-        var boot = new Boot()
-        {
-            Id = id,
-            Name = name,
-            Rumpflänge = länge,
-            Breite = breite,
-            Gewicht = gewicht
-        };
+        var boot = new Boot(
+            id: id,
+            name: name,
+            rumpflänge: länge,
+            breite: breite
+        );
 
         bootRepository.Add(boot);
         return boot;
@@ -148,27 +144,22 @@ public class LagerApplicationService
 
     public Lagerauftrag ErzeugeAuftrag(Boot boot, DateOnly von, DateOnly bis)
     {
+        var id = Guid.NewGuid();
         Lager lager = GetLager();
-        var auftrag = new Lagerauftrag(lager, boot, von, bis);
+        var auftrag = new Lagerauftrag(id, lager, boot, von, bis);
         auftragRepository.Add(auftrag);
         return auftrag;
     }
 
     public Lager GetLager()
     {
-        var lager = lagerRepository.GetLager();
-        if (lager is null)
-        {
-            throw new ValidationException("Es ist kein Lager definiert.");
-        }
+        var lager = lagerRepository.GetLager(); 
         return lager;
     }
 
     public void InitLager(double standardMaxBreite, double standardMaxLänge)
     {
-        var lager = new Lager();
-        lager.StandardMaxBreite = standardMaxBreite;
-        lager.StandardMaxLänge = standardMaxLänge;
+        var lager = new Lager(standardMaxBreite, standardMaxLänge);
         lagerRepository.Save(lager);
     }
 }

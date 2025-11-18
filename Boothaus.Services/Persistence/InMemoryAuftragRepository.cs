@@ -1,11 +1,19 @@
 ﻿using Boothaus.Domain;
 using Boothaus.Services.Contracts;
+using System;
 
 namespace Boothaus.Services.Persistence;
 
 public class InMemoryAuftragRepository : IAuftragRepository
 {
     private List<Lagerauftrag> aufträge = new();
+    private bool initialisiert;
+    public void InitialisiereMitDefaults(List<Lagerauftrag> defaultAufträge)
+    {
+        if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert."); 
+        aufträge = defaultAufträge;
+        initialisiert = true;
+    }
 
     public void Add(Lagerauftrag auftrag)
     {
