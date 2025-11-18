@@ -4,17 +4,18 @@ public class Lagerreihe
 {
     public int Nummer { get; set; }
     public Lager? Lager { get; set; } 
-    public List<Lagerplatz> Plätze { get; }
+
+    private List<Lagerplatz> plätze = [];
+
+    public IReadOnlyList<Lagerplatz> Plätze => plätze;
     public Lagerplatz this[int index]
     {
-        get => Plätze[index];
-        set => Plätze[index] = value!;
+        get => Plätze[index]; 
     }
 
     public Lagerreihe(int nummer)
     {
-        Nummer = nummer;
-        Plätze = [];
+        Nummer = nummer; 
     }
 
     public void PlatzHinzufügen(Lagerplatz platz)
@@ -25,12 +26,12 @@ public class Lagerreihe
         }
 
         platz.Reihe = this;
-        Plätze.Add(platz);
+        plätze.Add(platz);
     }
 
     public void PlatzEntfernen(Lagerplatz platz)
     {
-        bool entfernt = Plätze.Remove(platz);
+        bool entfernt = plätze.Remove(platz);
         
         if (!entfernt)
         {
@@ -40,9 +41,19 @@ public class Lagerreihe
         platz.Reihe = null;
     }
 
+    public int Index(Lagerplatz platz)
+    {
+        var index = plätze.IndexOf(platz);
+        if (index == -1)
+        {
+            throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");
+        }
+        return index;
+    }
+
     public IEnumerable<Lagerplatz> PlätzeVor(Lagerplatz platz)
     {
-        var index = Plätze.IndexOf(platz);
+        var index = plätze.IndexOf(platz);
         if (index == -1)
         {
             throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");
@@ -53,7 +64,7 @@ public class Lagerreihe
 
     public IEnumerable<Lagerplatz> PlätzeNach(Lagerplatz platz)
     {
-        var index = Plätze.IndexOf(platz);
+        var index = plätze.IndexOf(platz);
         if (index == -1)
         {
             throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");

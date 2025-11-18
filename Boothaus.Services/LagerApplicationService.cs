@@ -1,7 +1,5 @@
 ﻿using Boothaus.Services.Contracts;
-using Boothaus.Domain;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
+using Boothaus.Domain; 
 
 namespace Domain.Services;
 
@@ -27,8 +25,10 @@ public class LagerApplicationService
         this.lagerRepository = lagerRepository;
     }
 
-    public Lagerkalender ErstelleLagerkalender(Lager lager, List<Lagerauftrag> aufträge)
+    public Lagerkalender ErstelleLagerkalender()
     {
+        var lager = GetLager();
+        var aufträge = auftragRepository.GetAll().ToList();
         var kalender = new Lagerkalender(); 
         var zuweisungen = PlätzeZuweisen(lager, aufträge); 
         kalender.Zuweisungen.AddRange(zuweisungen);
@@ -50,8 +50,7 @@ public class LagerApplicationService
             .ThenByDescending(a => a.Bis)
             .ToList();
 
-        var reihen = lager.Reihen;
-  
+        var reihen = lager.Reihen; 
 
         foreach (var auftrag in sortierteAufträge)
         {
@@ -91,9 +90,10 @@ public class LagerApplicationService
                 {
                     // dieser auftrag kann vor den letzten auftrag in der reihe platziert werden
                     // (der kleinere index ist weiter vorne) 
-                    var letzerIndex = reihe.Plätze.IndexOf(letzteZuweisungAusReihe.Platz);
+                    var letzerIndex = reihe.Index(letzteZuweisungAusReihe.Platz);
                     var nächsterFreierPlatz = reihe[letzerIndex - 1];
                     zuweisung.Platz = nächsterFreierPlatz;
+                    break;
                 }
 
                 // keine zuweisung. versuche die nächste reihe

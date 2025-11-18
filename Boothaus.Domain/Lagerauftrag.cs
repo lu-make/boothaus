@@ -1,24 +1,46 @@
-﻿namespace Boothaus.Domain;
+﻿using Microsoft;
+
+namespace Boothaus.Domain;
 
 public class Lagerauftrag
 {
+    public Guid Id { get; init; }
     public Lager Lager { get; set; }
-    public Boot Boot { get; set; }
-    public DateOnly Von { get; set; }
-    public DateOnly Bis { get; set; }
+    public Boot Boot 
+    { 
+        get; 
+        set 
+        { 
+            Assumes.True(value.Rumpflänge <= Lager.StandardMaxLänge, "Das Boot passt nicht in das Lager (Länge überschritten).");
+            Assumes.True(value.Breite <= Lager.StandardMaxBreite, "Das Boot passt nicht in das Lager (Breite überschritten).");
+            field = value;
+        } 
+    }
 
-    public Lagerauftrag(Lager lager, Boot boot, DateOnly von, DateOnly bis)
+    public DateOnly Von 
+    { 
+        get; 
+        set
+        {
+            if (Bis != default) Assumes.True(value < Bis, "'Von'-Datum muss vor dem 'Bis'-Datum liegen.");
+            field = value;
+        }
+    }
+
+    public DateOnly Bis 
+    { 
+        get; 
+        set
+        {
+            if (Von != default) Assumes.True(value > Von, "'Bis'-Datum muss nach dem 'Von'-Datum liegen.");
+            field = value;
+        }
+
+    }
+
+    public Lagerauftrag(Guid id, Lager lager, Boot boot, DateOnly von, DateOnly bis)
     {
-        if (von > bis)
-        {
-            throw new ArgumentException("Das Datum 'Von' darf nicht nach dem Datum 'Bis' liegen.");
-        }
-
-        if (boot.Rumpflänge > lager.StandardMaxLänge || boot.Breite > lager.StandardMaxBreite)
-        {
-            throw new ArgumentException("Das Boot passt nicht in das Lager.");
-        }
-
+        Id = id;
         Lager = lager;
         Boot = boot;
         Von = von;
@@ -55,4 +77,6 @@ public class Lagerauftrag
         // diese aufträge können nicht in derselben reihe gelagert werden
         return 0;
     }
+
+    public override string ToString() => $"{Boot.Name} ({Von} - {Bis})";
 }

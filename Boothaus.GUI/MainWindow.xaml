@@ -1,12 +1,78 @@
-﻿<Window x:Class="Boothaus.MainWindow"
+﻿<dx:ThemedWindow  
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        x:Class="Boothaus.BoothausMainApplicationWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Boothaus"
+        xmlns:local="clr-namespace:Boothaus" xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Boothaus" Height="900" Width="1600" Icon="/Icons/boothaus.ico">
+    <DockPanel>
 
-    </Grid>
-</Window>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Datei" />
+            <MenuItem Header="Bearbeiten" />
+            <MenuItem Header="Ansicht" />
+            <MenuItem Header="Hilfe" />
+        </Menu>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Header="Aufträge"  Grid.Column="0" Grid.Row="1" Margin="5">
+                <Grid Name="Auftraglistenbereich"   >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Name="AuftragAddUpDel" Grid.Row="0" Orientation="Horizontal">
+                        <Button Content="Erfassen" Margin="5"></Button>
+                        <Button Content="Bearbeiten" Margin="5"></Button>
+                        <Button Content="Löschen" Margin="5"></Button>
+                    </StackPanel>
+                    <dxg:GridControl x:Name="Auftragliste"  Grid.Row="1" Margin="5" >
+                        <dxg:GridControl.View>
+                            <dxg:TableView
+                                AllowGrouping="False"
+                                ShowGroupPanel="False"
+                                AutoWidth="True"
+                                AllowMasterDetail="False"
+                                AllowEditing="True" 
+                            />
+                        </dxg:GridControl.View>
+                        <dxg:GridControl.Columns> 
+                            <dxg:GridColumn Header="Boot" Binding="{Binding Boot}" Width="Auto"/>
+                            <dxg:GridColumn Header="Von" Binding="{Binding Von, StringFormat=dd.MM.yyyy}" Width="Auto"/>
+                            <dxg:GridColumn Header="Bis" Binding="{Binding Bis, StringFormat=dd.MM.yyyy}" Width="Auto"/>
+                        </dxg:GridControl.Columns>
+                    </dxg:GridControl>
+                </Grid>
+            </GroupBox>
+
+ 
+            <GridSplitter Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" ShowsPreview="True" Background="{x:Null}" />
+
+            <GroupBox Header="Lagerübersicht"  Grid.Column="1" Grid.Row="1" Margin="5">
+                <Grid Name="Lagerbereich" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Name="Lageraktionen" Grid.Row="0" Orientation="Horizontal">
+                        <Button Content="Lagerkalender erzeugen" Margin="5"></Button>
+                    </StackPanel>
+                </Grid>
+
+            </GroupBox> 
+        </Grid>
+    </DockPanel>
+</dx:ThemedWindow>
