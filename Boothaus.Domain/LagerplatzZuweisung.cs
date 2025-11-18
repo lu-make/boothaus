@@ -1,4 +1,4 @@
-﻿namespace Domain.Model;
+﻿namespace Boothaus.Domain;
 
 public class LagerplatzZuweisung
 {

@@ -1,21 +1,20 @@
-﻿namespace Domain.Model;
+﻿namespace Boothaus.Domain;
 
 public class Lagerreihe
 {
     public int Nummer { get; set; }
-    public Lager Lager { get; set; } 
-    public List<Lagerplatz> Plätze { get; set; }
+    public Lager? Lager { get; set; } 
+    public List<Lagerplatz> Plätze { get; }
     public Lagerplatz this[int index]
     {
         get => Plätze[index];
         set => Plätze[index] = value!;
     }
 
-    public Lagerreihe(int nummer, Lager lager)
+    public Lagerreihe(int nummer)
     {
         Nummer = nummer;
-        Plätze = new List<Lagerplatz>();
-        Lager = lager;
+        Plätze = [];
     }
 
     public void PlatzHinzufügen(Lagerplatz platz)
@@ -25,8 +24,8 @@ public class Lagerreihe
             throw new ArgumentException("Der Lagerplatz gehört bereits zu einer Reihe.");
         }
 
-        Plätze.Add(platz);
         platz.Reihe = this;
+        Plätze.Add(platz);
     }
 
     public void PlatzEntfernen(Lagerplatz platz)
@@ -48,6 +47,7 @@ public class Lagerreihe
         {
             throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");
         }
+
         return Plätze.Take(index);
     }
 

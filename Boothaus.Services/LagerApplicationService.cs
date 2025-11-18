@@ -1,4 +1,7 @@
-﻿using Domain.Model;
+﻿using Boothaus.Services.Contracts;
+using Boothaus.Domain;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace Domain.Services;
 
@@ -8,8 +11,22 @@ namespace Domain.Services;
 /// Das bedeutet: Verwaltung von Lageraufträgen und Booten sowie
 /// Zuweisung von Lagerplätzen zu den Aufträgen.
 /// </summary>
-public class LagerService
+public class LagerApplicationService
 {
+    private IBootRepository bootRepository;
+    private IAuftragRepository auftragRepository;
+    private ILagerRepository lagerRepository;
+
+    public LagerApplicationService(
+        IBootRepository bootRepository, 
+        IAuftragRepository auftragRepository, 
+        ILagerRepository lagerRepository)
+    {
+        this.bootRepository = bootRepository;
+        this.auftragRepository = auftragRepository;
+        this.lagerRepository = lagerRepository;
+    }
+
     public Lagerkalender ErstelleLagerkalender(Lager lager, List<Lagerauftrag> aufträge)
     {
         var kalender = new Lagerkalender();
@@ -96,4 +113,62 @@ public class LagerService
         return zuweisungen;
     }
 
+
+
+    public IEnumerable<Boot> AlleBoote()
+    {
+        return bootRepository.GetAll();
+    }
+
+    public Boot ErzeugeBoot(string name, double länge, double breite, double gewicht)
+    {
+        var id = Guid.NewGuid();
+        var boot = new Boot()
+        {
+            Id = id,
+            Name = name,
+            Rumpflänge = länge,
+            Breite = breite,
+            Gewicht = gewicht
+        };
+
+        bootRepository.Add(boot);
+        return boot;
+    }
+
+    public void UpdateBoot(Boot boot)
+    {
+        bootRepository.Update(boot);
+    }
+
+    public IEnumerable<Lagerauftrag> AlleAufträge()
+    {
+        return auftragRepository.GetAll();
+    }
+
+    public Lagerauftrag ErzeugeAuftrag(Boot boot, DateOnly von, DateOnly bis)
+    {
+        Lager lager = GetLager();
+        var auftrag = new Lagerauftrag(lager, boot, von, bis);
+        auftragRepository.Add(auftrag);
+        return auftrag;
+    }
+
+    public Lager GetLager()
+    {
+        var lager = lagerRepository.GetLager();
+        if (lager is null)
+        {
+            throw new ValidationException("Es ist kein Lager definiert.");
+        }
+        return lager;
+    }
+
+    public void InitLager(double standardMaxBreite, double standardMaxLänge)
+    {
+        var lager = new Lager();
+        lager.StandardMaxBreite = standardMaxBreite;
+        lager.StandardMaxLänge = standardMaxLänge;
+        lagerRepository.Save(lager);
+    }
 }

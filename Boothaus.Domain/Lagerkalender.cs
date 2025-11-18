@@ -1,4 +1,4 @@
-﻿namespace Domain.Model;
+﻿namespace Boothaus.Domain;
 
 /// <summary>
 /// Das Ergebnis des ganzen Vorgangs.
