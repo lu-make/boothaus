@@ -5,14 +5,13 @@ namespace Boothaus.Domain;
 public class Lagerauftrag
 {
     public Guid Id { get; init; }
-    public Lager Lager { get; set; }
+    public Lager Lager { get; init; }
     public Boot Boot 
     { 
         get; 
         set 
-        { 
-            Assumes.True(value.Rumpflänge <= Lager.StandardMaxLänge, "Das Boot passt nicht in das Lager (Länge überschritten).");
-            Assumes.True(value.Breite <= Lager.StandardMaxBreite, "Das Boot passt nicht in das Lager (Breite überschritten).");
+        {
+            Assumes.True(IstGültigesBoot(value), "Das Boot passt nicht in das Lager.");
             field = value;
         } 
     }
@@ -22,7 +21,7 @@ public class Lagerauftrag
         get; 
         set
         {
-            if (Bis != default) Assumes.True(value < Bis, "'Von'-Datum muss vor dem 'Bis'-Datum liegen.");
+            Assumes.True(IstGültigesStartdatum(value), "'Von'-Datum muss vor dem 'Bis'-Datum liegen.");
             field = value;
         }
     }
@@ -31,13 +30,13 @@ public class Lagerauftrag
     { 
         get; 
         set
-        {
-            if (Von != default) Assumes.True(value > Von, "'Bis'-Datum muss nach dem 'Von'-Datum liegen.");
+        { 
+            Assumes.True(IstGültigesEnddatum(value), "'Bis'-Datum muss nach dem 'Von'-Datum liegen.");
             field = value;
         }
 
     }
-
+     
     public Lagerauftrag(Guid id, Lager lager, Boot boot, DateOnly von, DateOnly bis)
     {
         Id = id;
@@ -79,4 +78,24 @@ public class Lagerauftrag
     }
 
     public override string ToString() => $"{Boot.Name} ({Von} - {Bis})";
+
+    public bool IstGültigesStartdatum(DateOnly? datum)
+    {
+        return (Bis == default || datum < Bis);
+    } 
+
+    public bool IstGültigesEnddatum(DateOnly? datum)
+    {
+        return (Von == default || datum > Von);
+    }
+
+    public static bool IstGültigesDatumspaar(DateOnly von, DateOnly bis)
+    {
+        return von < bis;
+    }
+
+    public bool IstGültigesBoot(Boot boot)
+    {
+        return Lager.Passt(boot);
+    }
 }

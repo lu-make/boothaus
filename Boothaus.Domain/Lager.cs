@@ -26,4 +26,9 @@ public class Lager
         StandardMaxBreite = standardMaxBreite;
         StandardMaxLänge = standardMaxLänge;
     }
+
+    public bool Passt(Boot boot)
+    {
+        return boot.Breite <= StandardMaxBreite && boot.Rumpflänge <= StandardMaxLänge;
+    }
 }

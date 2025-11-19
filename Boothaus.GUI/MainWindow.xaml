@@ -33,10 +33,10 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Name="AuftragAddUpDel" Grid.Row="0" Orientation="Horizontal">
-                        <Button Content="Erfassen" Margin="5"></Button>
-                        <Button Content="Bearbeiten" Margin="5"></Button>
-                        <Button Content="Löschen" Margin="5"></Button>
+                    <StackPanel Name="AuftragActions" Grid.Row="0" Orientation="Horizontal">
+                        <Button x:Name="AuftragErfassenButton"  Content="Erfassen" Margin="5" Click="AuftragErfassenButton_Click"></Button>
+                        <Button x:Name="AuftragBearbeitenButton" Content="Bearbeiten" Margin="5" Click="AuftragBearbeitenButton_Click"></Button>
+                        <Button x:Name="AuftragLöschenButton" Content="Löschen" Margin="5" Click="AuftragLöschenButton_Click"></Button>
                     </StackPanel>
                     <dxg:GridControl x:Name="Auftragliste"  Grid.Row="1" Margin="5" >
                         <dxg:GridControl.View>
@@ -44,8 +44,8 @@
                                 AllowGrouping="False"
                                 ShowGroupPanel="False"
                                 AutoWidth="True"
-                                AllowMasterDetail="False"
-                                AllowEditing="True" 
+                                AllowMasterDetail="False" 
+                                AllowEditing="False" 
                             />
                         </dxg:GridControl.View>
                         <dxg:GridControl.Columns> 

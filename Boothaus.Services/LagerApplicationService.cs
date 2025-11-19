@@ -109,9 +109,7 @@ public class LagerApplicationService
         }
 
         return zuweisungen;
-    }
-
-
+    } 
 
     public IEnumerable<Boot> AlleBoote()
     {
@@ -137,20 +135,16 @@ public class LagerApplicationService
         bootRepository.Update(boot);
     }
 
+    public void ErfasseAuftrag(Lagerauftrag auftrag)
+    {
+        auftragRepository.Add(auftrag);
+    }
+
     public IEnumerable<Lagerauftrag> AlleAufträge()
     {
         return auftragRepository.GetAll();
     }
-
-    public Lagerauftrag ErzeugeAuftrag(Boot boot, DateOnly von, DateOnly bis)
-    {
-        var id = Guid.NewGuid();
-        Lager lager = GetLager();
-        var auftrag = new Lagerauftrag(id, lager, boot, von, bis);
-        auftragRepository.Add(auftrag);
-        return auftrag;
-    }
-
+     
     public Lager GetLager()
     {
         var lager = lagerRepository.GetLager(); 

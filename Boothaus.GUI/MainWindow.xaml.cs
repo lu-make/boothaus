@@ -1,4 +1,5 @@
 ﻿using Boothaus.Domain;
+using Boothaus.GUI;
 using Boothaus.Services.Contracts;
 using Boothaus.Services.Persistence;
 using DevExpress.Xpf.Core;
@@ -66,5 +67,26 @@ namespace Boothaus
             aufträge = new(service.AlleAufträge());
             Auftragliste.ItemsSource = aufträge;
         }
+
+        private void AuftragErfassenButton_Click(object sender, RoutedEventArgs e)
+        {
+            var maske = new AuftragMaske(lager: service.GetLager(), boote: service.AlleBoote());
+            var ergebnis = maske.ShowDialog();
+            if (ergebnis == true)
+            {
+                service.ErfasseAuftrag(maske.Auftrag!);
+            }
+        }
+
+        private void AuftragBearbeitenButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AuftragLöschenButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+         
     }
 }
