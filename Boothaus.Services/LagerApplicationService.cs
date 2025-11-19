@@ -58,9 +58,10 @@ public class LagerApplicationService
 
             foreach (var reihe in reihen)
             {
+ 
                 /*
                  * wenn die reihe noch keine zuweisungen hat, weise den auftrag dem hintersten platz zu
-                 */ 
+                 */
                 if (!zuweisungen.Any(z => z.Platz.Reihe == reihe))
                 {
                     var hintersterPlatz = reihe.Plätze.Last(); 
@@ -116,14 +117,15 @@ public class LagerApplicationService
         return bootRepository.GetAll();
     }
 
-    public Boot ErzeugeBoot(string name, double länge, double breite)
+    public Boot ErzeugeBoot(string name, double länge, double breite, string kontakt)
     {
         var id = Guid.NewGuid();
         var boot = new Boot(
             id: id,
             name: name,
             rumpflänge: länge,
-            breite: breite
+            breite: breite,
+            kontakt: kontakt
         );
 
         bootRepository.Add(boot);
@@ -135,9 +137,41 @@ public class LagerApplicationService
         bootRepository.Update(boot);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="auftrag"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public void ErfasseAuftrag(Lagerauftrag auftrag)
-    {
+    { 
+        if (BootAuftragExistiertBereits(auftrag.Boot, auftrag.Von, auftrag.Bis))
+        {
+            throw new InvalidOperationException("Das Boot hat bereits einen Lagerauftrag in dem angegebenen Zeitraum.");
+        }
+
         auftragRepository.Add(auftrag);
+    }
+
+    /// <summary>
+    /// Regel: Wenn ein Boot schon einen Lagerauftrag in dem Zeitraum hat, darf kein neuer angelegt werden.
+    /// </summary> 
+    /// <param name="boot">Das Boot des neuen Auftrags</param>
+    /// <param name="von">Das Startdatum des neuen Auftrags</param>
+    /// <param name="bis">Das Enddatum des neuen Auftrags </param>
+    /// <returns>Wahr, wenn ein Konflikt besteht (der Auftrag kann nicht angelegt werden), sonst Falsch.</returns>
+    public bool BootAuftragExistiertBereits(Boot boot, DateOnly von, DateOnly bis)
+    {
+        bool hatKonflikt = auftragRepository.GetAll()
+            .Any(a => a.Boot.Id == boot.Id &&
+                      von <= a.Bis &&
+                      bis >= a.Von);
+
+        return hatKonflikt;
+    }
+
+    public void AktualisiereAuftrag(Lagerauftrag auftrag)
+    {
+        auftragRepository.Update(auftrag);
     }
 
     public IEnumerable<Lagerauftrag> AlleAufträge()
@@ -155,5 +189,11 @@ public class LagerApplicationService
     {
         var lager = new Lager(standardMaxBreite, standardMaxLänge);
         lagerRepository.Save(lager);
+    }
+
+    public void LöscheAuftrag(Lagerauftrag? auftrag)
+    {
+        if (auftrag is null) return;
+        auftragRepository.Remove(auftrag);
     }
 }

@@ -25,18 +25,20 @@ public class Boot
             field = value;
         }
     }
+    public string Kontakt { get; set; }
 
     public Boot()
     {
         
     }
 
-    public Boot(Guid id, string name, double rumpflänge, double breite)
+    public Boot(Guid id, string name, double rumpflänge, double breite, string kontakt)
     {  
         Id = id;
         Name = name;
         Rumpflänge = rumpflänge;
         Breite = breite;
+        Kontakt = kontakt;
     }
 
     public override string ToString() => Name;

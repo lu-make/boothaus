@@ -1,92 +1,111 @@
 ﻿using Boothaus.Domain;
 using Boothaus.GUI;
+using Boothaus.GUI.ViewModels;
 using Boothaus.Services.Contracts;
 using Boothaus.Services.Persistence;
 using DevExpress.Xpf.Core;
 using Domain.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Boothaus
+namespace Boothaus;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class BoothausMainApplicationWindow : ThemedWindow
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class BoothausMainApplicationWindow : ThemedWindow
+    private LagerApplicationService service;
+    private ObservableCollection<Lagerauftrag> aufträge;
+
+    public BoothausMainApplicationWindow()
     {
-        private LagerApplicationService service;
-        private ObservableCollection<Lagerauftrag> aufträge;
+        InitializeComponent();
 
-        public BoothausMainApplicationWindow()
-        { 
-            InitializeComponent();
+        var auftragRepo = new InMemoryAuftragRepository();
+        var bootRepo = new InMemoryBootRepository();
+        var lagerRepo = new InMemoryLagerRepository();
 
-            var auftragRepo = new InMemoryAuftragRepository();
-            var bootRepo = new InMemoryBootRepository();
-            var lagerRepo = new InMemoryLagerRepository();
+        InitializeDefaultData(
+            auftragRepo: auftragRepo,
+            bootRepo: bootRepo,
+            lagerRepo: lagerRepo
+            );
 
-            InitializeDefaultData(
-                auftragRepo: auftragRepo,
-                bootRepo: bootRepo,
-                lagerRepo: lagerRepo
-                );
+        service = new LagerApplicationService(
+            auftragRepository: auftragRepo,
+            bootRepository: bootRepo,
+            lagerRepository: lagerRepo
+            );
 
-            service = new LagerApplicationService(
-                auftragRepository: auftragRepo,
-                bootRepository: bootRepo,
-                lagerRepository: lagerRepo
-                );
+        DarstellungFüllen();
 
-            ListenFüllen();
-             
-        }
+    }
 
-        private void InitializeDefaultData(
-            IAuftragRepository auftragRepo,
-            IBootRepository bootRepo,
-            ILagerRepository lagerRepo
-            )
+    private void InitializeDefaultData(
+        IAuftragRepository auftragRepo,
+        IBootRepository bootRepo,
+        ILagerRepository lagerRepo
+        )
+    {
+        bootRepo.InitialisiereMitDefaults(DefaultData.Boote());
+        lagerRepo.InitialisiereMitDefaults(DefaultData.Lager());
+        auftragRepo.InitialisiereMitDefaults(DefaultData.Aufträge(lager: lagerRepo.GetLager(), boote: bootRepo.GetAll()));
+    }
+
+    private void DarstellungFüllen()
+    {
+        var meineAufträge = service.AlleAufträge().ToList();
+        var lager = service.GetLager();
+        DataContext = new LagerViewModel(lager);
+
+        if (aufträge is null)
         {
-            bootRepo.InitialisiereMitDefaults(DefaultData.Boote());
-            lagerRepo.InitialisiereMitDefaults(DefaultData.Lager());
-            auftragRepo.InitialisiereMitDefaults(DefaultData.Aufträge(lager: lagerRepo.GetLager(), boote: bootRepo.GetAll()));
-        }
-
-        private void ListenFüllen()
-        { 
-            aufträge = new(service.AlleAufträge());
+            aufträge = new(meineAufträge);
             Auftragliste.ItemsSource = aufträge;
         }
-
-        private void AuftragErfassenButton_Click(object sender, RoutedEventArgs e)
+        else
         {
-            var maske = new AuftragMaske(lager: service.GetLager(), boote: service.AlleBoote());
-            var ergebnis = maske.ShowDialog();
-            if (ergebnis == true)
+            aufträge.Clear();
+            foreach (var auftrag in meineAufträge)
             {
-                service.ErfasseAuftrag(maske.Auftrag!);
+                aufträge.Add(auftrag);
             }
         }
-
-        private void AuftragBearbeitenButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void AuftragLöschenButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-         
     }
+
+    private void AuftragErfassenButton_Click(object sender, RoutedEventArgs e)
+    {
+        var maske = new AuftragMaske(lager: service.GetLager(), boote: service.AlleBoote(), service);
+        var ergebnis = maske.ShowDialog();
+        if (ergebnis == true)
+        {
+            service.ErfasseAuftrag(maske.Auftrag!);
+            DarstellungFüllen();
+        }
+    }
+
+    private void AuftragBearbeitenButton_Click(object sender, RoutedEventArgs e)
+    {
+        var maske = new AuftragMaske(lager: service.GetLager(), boote: service.AlleBoote(), service, auftrag: Auftragliste.SelectedItem as Lagerauftrag);
+        var ergebnis = maske.ShowDialog();
+        if (ergebnis == true)
+        {
+            service.AktualisiereAuftrag(maske.Auftrag!);
+            DarstellungFüllen();
+        }
+
+    }
+
+    private void AuftragLöschenButton_Click(object sender, RoutedEventArgs e)
+    {
+        MessageBoxResult result = System.Windows.MessageBox.Show("Möchten Sie den ausgewählten Auftrag wirklich löschen?", "Auftrag löschen", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            service.LöscheAuftrag(Auftragliste.SelectedItem as Lagerauftrag);
+            DarstellungFüllen();
+        }
+    }
+
 }

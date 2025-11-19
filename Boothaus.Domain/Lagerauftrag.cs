@@ -5,7 +5,7 @@ namespace Boothaus.Domain;
 public class Lagerauftrag
 {
     public Guid Id { get; init; }
-    public Lager Lager { get; init; }
+    public Lager Lager { get; init; } 
     public Boot Boot 
     { 
         get; 
@@ -98,4 +98,5 @@ public class Lagerauftrag
     {
         return Lager.Passt(boot);
     }
+     
 }

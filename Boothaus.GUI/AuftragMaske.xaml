@@ -11,38 +11,56 @@
         Title="Lagerauftrag" Height="250" Width="500">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/> 
-            <ColumnDefinition/> 
+            <ColumnDefinition/>  
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
+        <Grid.RowDefinitions> 
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/> 
             <RowDefinition Height="*"/> 
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+
         <StackPanel Name="Bootauswahl" Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2" Margin="5">
             <Label Content="Boot" />
-            <dxg:LookUpEdit x:Name="Bootliste" />
+            <dxg:LookUpEdit x:Name="Bootliste" 
+                            AutoPopulateColumns="False" 
+                            DisplayMember="Name" 
+                            ValueMember="Id"
+                            IsCaseSensitiveFilter="False"
+                            SubstituteDisplayFilter="Bootliste_SubstituteDisplayFilter"
+                            >
+                <dxg:LookUpEdit.PopupContentTemplate>
+                    <ControlTemplate TargetType="ContentControl">
+                        <dxg:GridControl x:Name="PART_GridControl">
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn Header="Kontakt" FieldName="Kontakt" />
+                                <dxg:GridColumn Header="Name" FieldName="Name" />
+                                    <dxg:GridColumn Header="Rumpflänge" FieldName="Rumpflänge" />
+                                <dxg:GridColumn Header="Breite" FieldName="Breite" />
+                            </dxg:GridControl.Columns>
+                        </dxg:GridControl>
+                    </ControlTemplate>
+                </dxg:LookUpEdit.PopupContentTemplate>
+            </dxg:LookUpEdit>
             <Label x:Name="BootauswahlValidationText" Content="" Visibility="Hidden"/> 
         </StackPanel>
 
         <StackPanel Name="Startdatumsauswahl" Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="5">
-            <Label Content="Von" />
-            <dxe:DateEdit x:Name="VonEdit" />
-            <Label x:Name="VonEditValidationText" Content="" Visibility="Hidden"/> 
+            <Label Content="Zeitraum" />
+            <dxe:DateRangeControl 
+                x:Name="Zeitraumauswahl"               
+                
+                PopupFooterButtons="OkCancel"
+                />
+            
+            <Label x:Name="ZeitraumValidationText" Content="" Visibility="Hidden"/> 
 
         </StackPanel>
-
-        <StackPanel Name="Enddatumsauswahl" Orientation="Vertical" Grid.Row="1" Grid.Column="2" Margin="5">
-            <Label Content="Bis" />
-            <dxe:DateEdit x:Name="BisEdit" />
-            <Label x:Name="BisEditValidationText"  Content="" Visibility="Hidden"/> 
-        </StackPanel> 
-
+ 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3" Grid.ColumnSpan="2" Margin="5">
-            <Button x:Name="OkButton" IsDefault="True" Margin="5" Click="OkButton_Click">Abbrechen</Button>
-            <Button x:Name="CancelButton"  IsCancel="True" Margin="5" Click="CancelButton_Click">Bestätigen</Button>
+            <Button x:Name="CancelButton"  IsCancel="True" Margin="5" Click="CancelButton_Click">Abbrechen</Button>
+            <Button x:Name="OkButton" IsDefault="True" Margin="5" Click="OkButton_Click">Bestätigen</Button>
         </StackPanel>
 
     </Grid>

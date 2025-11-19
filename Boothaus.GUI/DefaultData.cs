@@ -1,5 +1,5 @@
 ﻿using Boothaus.Domain;
-using Bogus;
+using Bogus; 
 
 internal static class DefaultData
 {
@@ -18,7 +18,7 @@ internal static class DefaultData
 
         foreach (var boot in boote)
         {
-            if (faker.Random.Bool(0.1f)) 
+            if (faker.Random.Bool(0.5f)) 
                 continue;
 
             var von = DateOnly.FromDateTime(faker.Date.Between(inVon, inBis));
@@ -47,7 +47,7 @@ internal static class DefaultData
     {
         double standardMaxBreite = 5.0;
         double standardMaxLänge = 12.0;
-        int anzahlReihen = 4;
+        int anzahlReihen = 8;
         int plätzeProReihe = 10;
 
         var lager = new Lager(standardMaxBreite: standardMaxBreite, standardMaxLänge: standardMaxLänge);
@@ -119,9 +119,9 @@ public sealed class BootFaker : Faker<Boot>
 
         Locale = locale;
 
-        RuleFor(x => x.Id, _ => Guid.NewGuid());
+        RuleFor(boot => boot.Id, _ => Guid.NewGuid());
 
-        RuleFor(x => x.Name, f =>
+        RuleFor(boot => boot.Name, f =>
         {
             var name = f.PickRandom(namen);
             var zusatz = f.PickRandom(namenszusatz);
@@ -130,26 +130,28 @@ public sealed class BootFaker : Faker<Boot>
             return name;
         });
 
-        RuleFor(x => x.Rumpflänge, f =>
+        RuleFor(boot => boot.Rumpflänge, f =>
         {
             var länge = f.Random.Double(5.0, maxLänge);
             return Math.Round(länge, 2);
+
         });
 
-        RuleFor(x => x.Breite, (f, b) =>
+        RuleFor(boot => boot.Breite, (f, b) =>
         {
             var min = b.Rumpflänge * 0.26;
             var max = b.Rumpflänge * 0.34;
             var w = f.Random.Double(min, max);
             return Math.Round(w, 2);
         });
+
+        
+        RuleFor(boot => boot.Kontakt, f => f.Name.LastName());
     }
 }
- 
+  
 public sealed class LagerplatzFaker
-{
-    private readonly Faker faker = new("de");
-
+{  
     public IEnumerable<Lagerplatz> Generate(int totalCount = 70)
     {
         // alle Plätze erzeugen
