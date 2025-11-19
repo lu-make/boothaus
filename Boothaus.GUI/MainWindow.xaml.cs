@@ -77,6 +77,7 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
     private void AuftragErfassenButton_Click(object sender, RoutedEventArgs e)
     {
         var maske = new AuftragMaske(lager: service.GetLager(), boote: service.AlleBoote(), service);
+        maske.Owner = this;
         var ergebnis = maske.ShowDialog();
         if (ergebnis == true)
         {
@@ -88,6 +89,7 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
     private void AuftragBearbeitenButton_Click(object sender, RoutedEventArgs e)
     {
         var maske = new AuftragMaske(lager: service.GetLager(), boote: service.AlleBoote(), service, auftrag: Auftragliste.SelectedItem as Lagerauftrag);
+        maske.Owner = this;
         var ergebnis = maske.ShowDialog();
         if (ergebnis == true)
         {
@@ -108,4 +110,9 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
         }
     }
 
+    private void LagerkalenderErzeugenButton_Click(object sender, RoutedEventArgs e)
+    {
+        service.ErstelleLagerkalender();
+        DarstellungFüllen();
+    }
 }

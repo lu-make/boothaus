@@ -1,5 +1,6 @@
 ﻿using Boothaus.Domain;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace Boothaus.GUI.ViewModels;
 
@@ -25,16 +26,16 @@ public class LagerplatzViewModel : INotifyPropertyChanged
         }
     }
 
-    public Color Hintergrundfarbe
+    public System.Windows.Media.Brush Hintergrundfarbe
     {
         get
         {
             if (NächsteZuweisung is not null)
             {
-                return Color.PeachPuff;
+                return new SolidColorBrush(Colors.PeachPuff);
             }
 
-            return Color.PaleGreen; 
+            return new SolidColorBrush(Colors.PaleGreen);
         }
     }
 

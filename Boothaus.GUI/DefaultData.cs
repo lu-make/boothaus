@@ -1,6 +1,8 @@
 ﻿using Boothaus.Domain;
 using Bogus; 
 
+namespace Boothaus.GUI;
+
 internal static class DefaultData
 {
     internal static List<Lagerauftrag> Aufträge(Lager lager, IEnumerable<Boot> boote)
@@ -40,14 +42,14 @@ internal static class DefaultData
     internal static List<Boot> Boote()
     {
         var faker = new BootFaker(saisonStartJahr: 2025, seed: 1234);
-        return faker.Generate(30);
+        return faker.Generate(70);
     }
 
     internal static Lager Lager()
     {
         double standardMaxBreite = 5.0;
         double standardMaxLänge = 12.0;
-        int anzahlReihen = 8;
+        int anzahlReihen = 7;
         int plätzeProReihe = 10;
 
         var lager = new Lager(standardMaxBreite: standardMaxBreite, standardMaxLänge: standardMaxLänge);
