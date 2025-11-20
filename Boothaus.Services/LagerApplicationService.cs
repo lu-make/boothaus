@@ -25,20 +25,21 @@ public class LagerApplicationService
         this.lagerRepository = lagerRepository;
     }
 
-    public Lagerkalender ErstelleLagerkalender()
+    /// <summary>
+    /// Verteilt automatisch Lagerplätze an alle Lageraufträge in der Saison
+    /// </summary>
+    /// <param name="saison">Die Saison die berücksichtigt werden soll</param>
+    /// <returns>Das aktualisierte Lager</returns>
+    public Lager ErstelleLagerkalender(Saison saison)
     {
         var lager = GetLager();
-        var aufträge = auftragRepository.GetAll().ToList();
-        var kalender = new Lagerkalender(); 
-        var zuweisungen = PlätzeZuweisen(lager, aufträge); 
-        kalender.Zuweisungen.AddRange(zuweisungen);
-        return kalender;
+        var aufträge = auftragRepository.GetBySaison(saison).ToList(); 
+        PlätzeZuweisen(lager, aufträge);
+        return lager;
     }
 
-    private List<LagerplatzZuweisung> PlätzeZuweisen(Lager lager, List<Lagerauftrag> aufträge)
+    private void PlätzeZuweisen(Lager lager, List<Lagerauftrag> aufträge)
     {
-        var zuweisungen = new List<LagerplatzZuweisung>();
-
         /* 
          * aufsteigend nach "matroschka"-Sortierung 
          * zuerst die Aufträge, die andere Aufträge zeitlich komplett einschließen
@@ -54,25 +55,23 @@ public class LagerApplicationService
 
         foreach (var auftrag in sortierteAufträge)
         {
-            var zuweisung = new LagerplatzZuweisung(auftrag, null!);
-
             foreach (var reihe in reihen)
-            {
- 
+            { 
                 /*
                  * wenn die reihe noch keine zuweisungen hat, weise den auftrag dem hintersten platz zu
-                 */
-                if (!zuweisungen.Any(z => z.Platz.Reihe == reihe))
+                 */ 
+                if (reihe.IstFreiImZeitraum(auftrag.Von, auftrag.Bis))
                 {
-                    var hintersterPlatz = reihe.Plätze.Last(); 
-                    zuweisung.Platz = hintersterPlatz;
+                    var hintersterPlatz = reihe.Plätze.First();
+                    auftrag.Platz = hintersterPlatz;
+                    hintersterPlatz.ZuweisungHinzufügen(auftrag);
                     break;
-                } 
+                }
 
                 /*
                  * ist die reihe schon voll?
                  */
-                if (zuweisungen.Count(z => z.Platz.Reihe == reihe) == reihe.Plätze.Count)
+                if (reihe.IstVoll(auftrag.Von, auftrag.Bis))
                 {
                     // ja, versuche die nächste reihe
                     continue;
@@ -80,20 +79,22 @@ public class LagerApplicationService
 
                 /*
                  * nimm den letzten auftrag, der dieser reihe zugewiesen wurde
+                 * ( an dieser stelle garantiert ) 
                  */
-                var letzteZuweisungAusReihe = zuweisungen
-                    .Where(z => z.Platz.Reihe == reihe)
-                    .Last();
-
-                var ordnung = auftrag.VergleicheReihenordnung(letzteZuweisungAusReihe.Auftrag);
+                var letzteZuweisungAusReihe = reihe
+                    .VordersterBelegterPlatz(auftrag.Von, auftrag.Bis)!
+                    .GetZuweisung(auftrag.Von)!;
+                    
+                var ordnung = auftrag.VergleicheReihenordnung(letzteZuweisungAusReihe);
 
                 if (ordnung == 1)
                 {
                     // dieser auftrag kann vor den letzten auftrag in der reihe platziert werden
-                    // (der kleinere index ist weiter vorne) 
-                    var letzerIndex = reihe.Index(letzteZuweisungAusReihe.Platz);
-                    var nächsterFreierPlatz = reihe[letzerIndex - 1];
-                    zuweisung.Platz = nächsterFreierPlatz;
+                    // (der größere index ist weiter vorne) 
+                    var letzerIndex = reihe.Index(letzteZuweisungAusReihe.Platz!);
+                    var nächsterFreierPlatz = reihe[letzerIndex + 1];
+                    nächsterFreierPlatz.ZuweisungHinzufügen(auftrag);
+                    auftrag.Platz = nächsterFreierPlatz;
                     break;
                 }
 
@@ -101,22 +102,31 @@ public class LagerApplicationService
                 continue;
             }
 
-            if (zuweisung.Platz is null)
+            if (auftrag.Platz is null)
             { 
                  throw new InvalidOperationException("Es konnte keine konsistente Lagerplatzzuweisung vorgenommen werden.");
             }
-
-            zuweisungen.Add(zuweisung);
-        }
-
-        return zuweisungen;
+             
+        } 
     } 
 
+    /// <summary>
+    /// Holt alle bestehenden Boote
+    /// </summary>
+    /// <returns>Eine Liste von Booten</returns>
     public IEnumerable<Boot> AlleBoote()
     {
         return bootRepository.GetAll();
     }
 
+    /// <summary>
+    /// Erzeugt ein Boot mit den angegebenen Parametern
+    /// </summary>
+    /// <param name="name">Der Name des Bootes</param>
+    /// <param name="länge">Die Rumpflänge des Bootes in Metern</param>
+    /// <param name="breite">Die Breite des Bootes in Metern</param>
+    /// <param name="kontakt">Der verantwortliche Kontakt</param>
+    /// <returns>Ein nees Boot</returns>
     public Boot ErzeugeBoot(string name, double länge, double breite, string kontakt)
     {
         var id = Guid.NewGuid();
@@ -138,10 +148,10 @@ public class LagerApplicationService
     }
 
     /// <summary>
-    /// 
+    /// Erfasst einen neuen Lagerauftrag.
     /// </summary>
-    /// <param name="auftrag"></param>
-    /// <exception cref="InvalidOperationException"></exception>
+    /// <param name="auftrag">Der neue Auftrag</param>
+    /// <exception cref="InvalidOperationException">Das Boot darf in dem Zeitraum keinen bestehenden Auftrag haben.</exception>
     public void ErfasseAuftrag(Lagerauftrag auftrag)
     { 
         if (BootAuftragExistiertBereits(auftrag.Boot, auftrag.Von, auftrag.Bis))
@@ -169,31 +179,118 @@ public class LagerApplicationService
         return hatKonflikt;
     }
 
+    /// <summary>
+    /// Überschreibt einen Auftrag.
+    /// </summary>
+    /// <param name="auftrag">Der existierende Auftrag</param>
     public void AktualisiereAuftrag(Lagerauftrag auftrag)
     {
         auftragRepository.Update(auftrag);
     }
 
+    /// <summary>
+    /// Gibt alle Lageraufträge als Liste zurück.
+    /// </summary>
+    /// <returns>Eine Liste aller Lageraufträge.</returns>
     public IEnumerable<Lagerauftrag> AlleAufträge()
     {
         return auftragRepository.GetAll();
     }
-     
+
+    /// <summary>
+    /// Gibt eine Liste aller Lageraufträge zurück, die sich in der gegebenen Saison befinden.
+    /// </summary>
+    /// <param name="saison">Die Saison, nach welcher gefiltert werden soll (z.B. 25/26).</param>
+    /// <returns>Eine Liste von Lageraufträgen in der Saison.</returns>
+    public IEnumerable<Lagerauftrag> AlleAufträgeInSaison(Saison saison)
+    {
+        return auftragRepository.GetBySaison(saison);
+    }
+
+    /// <summary>
+    /// Gibt eine Liste aller definierten Saisons zurück.
+    /// 
+    /// Beispiel: Existieren Aufträge mit Saison 25/26 und 26/27, wird eine Liste mit den beiden Saisons zurückgegeben.
+    /// </summary>
+    /// <returns>Eine Liste von Saisons.</returns>
+    public IEnumerable<Saison> AlleSaisons()
+    {
+        return auftragRepository.GetSaisons();
+    }
+
+    /// <summary>
+    /// Gibt das Lager zurück.
+    /// </summary>
+    /// <returns>Das Lager.</returns>
     public Lager GetLager()
     {
         var lager = lagerRepository.GetLager(); 
         return lager;
     }
 
+    /// <summary>
+    /// Initialisiert das Lager mit einer maximalen Länge und Breite pro Boot.
+    /// </summary>
+    /// <param name="standardMaxBreite">Die maximale Breite eines Bootes in diesem Lager</param>
+    /// <param name="standardMaxLänge">Die maximale Länge eines Bootes in diesem Lager</param>
     public void InitLager(double standardMaxBreite, double standardMaxLänge)
     {
         var lager = new Lager(standardMaxBreite, standardMaxLänge);
         lagerRepository.Save(lager);
     }
 
+    /// <summary>
+    /// Löscht einen bestehenden Auftrag.
+    /// </summary>
+    /// <param name="auftrag">Der zu löschende Auftrag</param>
     public void LöscheAuftrag(Lagerauftrag? auftrag)
     {
         if (auftrag is null) return;
         auftragRepository.Remove(auftrag);
+    }
+
+    /// <summary>
+    /// Prüft, ob ein gegebener Auftrag einem gegebenen Platz zugewiesen werden darf.
+    /// </summary>
+    /// <param name="auftrag">Der Lagerauftrag, der zugewiesen werden soll.</param>
+    /// <param name="platz">Der Lagerplatz, auf den zugewiesen werden soll.</param>
+    /// <returns>Wahr, wenn der Auftrag dem Platz zugewiesen werden darf, sonst falsch.</returns>
+    public bool KannZuweisen(Lagerauftrag? auftrag, Lagerplatz? platz)
+    {
+        if (auftrag is null || platz is null) return false;
+        if (!auftrag.IstGültigesBoot(auftrag.Boot)) return false;
+        if (!Lagerauftrag.IstGültigesDatumspaar(auftrag.Von, auftrag.Bis)) return false;
+        if (!platz.IstFreiImZeitraum(auftrag.Von, auftrag.Bis)) return false;
+        if (platz.Reihe is null) return false;
+        
+        // Es darf nur auf den hintersten freien platz der reihe zugewiesen werden
+        var platzDavor = platz.Reihe.PlätzeVor(platz).LastOrDefault();
+        var zuweisungDavor = platzDavor?.GetZuweisung(auftrag.Von);
+        if (zuweisungDavor is null) return false;
+        if (auftrag.VergleicheReihenordnung(zuweisungDavor) != 1) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Produziert eine Liste von Lagerplätzen, die für einen gegebenen Auftrag zur Verfügung stehen.
+    /// </summary>
+    /// <param name="auftrag">Der Lagerauftrag, der zugewiesen werden soll.</param>
+    /// <returns>Eine Liste von Lagerplätzen, denen der Auftrag zugewiesen werden darf.</returns>
+    public IEnumerable<Lagerplatz> FindeGültigePlätze(Lagerauftrag auftrag)
+    {
+        var lager = GetLager();
+        var gültigePlätze = new List<Lagerplatz>();
+        foreach (var reihe in lager.Reihen)
+        {
+            foreach (var platz in reihe.Plätze)
+            {
+                if (KannZuweisen(auftrag, platz))
+                {
+                    gültigePlätze.Add(platz);
+                }
+            }
+        }
+        return gültigePlätze;
     }
 }

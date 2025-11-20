@@ -10,13 +10,15 @@ internal static class DefaultData
         Faker faker = new("de");
         var saisonStartJahr = 2025;
          
-        var inVon = new DateTime(saisonStartJahr, 10, 15);
+        var inVon = new DateTime(saisonStartJahr, 09, 01);
         var inBis = new DateTime(saisonStartJahr, 12, 15);
         var outVon = new DateTime(saisonStartJahr + 1, 1, 10);
-        var outBis = new DateTime(saisonStartJahr + 1, 2, 15);
+        var outBis = new DateTime(saisonStartJahr + 1, 4, 15);
 
 
         var result = new List<Lagerauftrag>();
+
+
 
         foreach (var boot in boote)
         {

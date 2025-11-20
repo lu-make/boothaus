@@ -16,7 +16,7 @@ public class LagerViewModel
         {
             var reihenViewModel = new LagerreihenViewModel(reihe);
 
-            foreach (var p in reihenViewModel.Plätze)
+            foreach (var p in reihenViewModel.PlätzeVms)
             {
                 p.Aktualisieren();
             }

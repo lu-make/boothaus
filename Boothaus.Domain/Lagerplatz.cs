@@ -5,16 +5,47 @@ public class Lagerplatz
     public Guid Id { get; set; }
     public Lagerreihe? Reihe { get; internal set; } 
 
-    private readonly List<LagerplatzZuweisung> zuweisungen = new();
-    public IReadOnlyCollection<LagerplatzZuweisung> Zuweisungen => zuweisungen;
+    private readonly List<Lagerauftrag> zuweisungen = new();
+    public IReadOnlyCollection<Lagerauftrag> Zuweisungen => zuweisungen;
  
-    internal void FügeZuweisungHinzu(LagerplatzZuweisung zuweisung)
+    public void ZuweisungHinzufügen(Lagerauftrag auftrag)
     { 
-        zuweisungen.Add(zuweisung);
+        if (!IstFreiImZeitraum(auftrag.Von, auftrag.Bis))
+        {
+            throw new InvalidOperationException("Der Lagerplatz ist im angegebenen Zeitraum bereits belegt.");
+        }
+
+        auftrag.Platz = this;
+        zuweisungen.Add(auftrag);
+    }
+
+    public void ZuweisungEntfernen(Lagerauftrag auftrag)
+    {
+        if (!zuweisungen.Contains(auftrag))
+        {
+            throw new InvalidOperationException("Die Zuweisung existiert nicht für diesen Lagerplatz.");
+        }
+
+        auftrag.Platz = null;
+        zuweisungen.Remove(auftrag);
+    }
+
+    public void ZuweisungenLeeren()
+    {
+        foreach (var zuweisung in zuweisungen)
+        {
+            zuweisung.Platz = null;
+        }
+        zuweisungen.Clear();
     }
 
     public bool IstFreiImZeitraum(DateOnly von, DateOnly bis)
     { 
-        return !zuweisungen.Any(z => z.Auftrag.Von <= bis && z.Auftrag.Bis >= von);
+        return !zuweisungen.Any(z => z.Von <= bis && z.Bis >= von);
+    }
+
+    public Lagerauftrag? GetZuweisung(DateOnly datum)
+    {
+        return zuweisungen.FirstOrDefault(z => z.Von <= datum && z.Bis >= datum);
     }
 }

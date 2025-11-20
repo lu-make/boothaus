@@ -22,16 +22,16 @@ public partial class AuftragMaske : ThemedWindow
     private bool istNeuerAuftrag;
 
 
-    public AuftragMaske(Lager lager, IEnumerable<Boot> boote, LagerApplicationService service) : this(lager, boote, service, null)
+    public AuftragMaske(LagerApplicationService service) : this(service, null)
     {
         istNeuerAuftrag = true;
     }
 
-    public AuftragMaske(Lager lager, IEnumerable<Boot> boote, LagerApplicationService service, Lagerauftrag? auftrag)
+    public AuftragMaske(LagerApplicationService service, Lagerauftrag? auftrag)
     {
         InitializeComponent();
 
-        Bootliste.ItemsSource = boote;
+        Bootliste.ItemsSource = service.AlleBoote();
         this.service = service;
 
         if (auftrag is not null)
@@ -42,7 +42,7 @@ public partial class AuftragMaske : ThemedWindow
             BisDatumEditor.Date = auftrag.Bis;
         }
 
-        this.lager = lager;
+        this.lager = service.GetLager();
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)

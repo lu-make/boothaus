@@ -17,12 +17,18 @@
 		<SplashScreen Include="boothaus_splash.png" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<LangVersion>preview</LangVersion>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Bogus" Version="35.6.5" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="DevExpress.Wpf.ThemesLW" Version="25.1.6" />
 		<PackageReference Include="DevExpress.Wpf.Themes.All" Version="25.1.6" />
 		<PackageReference Include="devexpress.wpf.grid.core" Version="25.1.6" />
 		<PackageReference Include="devexpress.wpf.layoutcontrol" Version="25.1.6" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

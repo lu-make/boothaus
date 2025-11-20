@@ -51,6 +51,13 @@ public class Lagerreihe
         return index;
     }
 
+    /// <summary>
+    /// Alle Lagerplätze, die in der Reihe vor dem angegebenen Lagerplatz kommen.
+    /// "Vor" bedeutet weiter weg vom Hallentor.
+    /// </summary>
+    /// <param name="platz">Der Lagerplatz</param>
+    /// <returns>Eine Sammlung von Lagerplätzen</returns>
+    /// <exception cref="ArgumentException">Wenn der übergebene Platz nicht Teil der Reihe ist</exception>
     public IEnumerable<Lagerplatz> PlätzeVor(Lagerplatz platz)
     {
         var index = plätze.IndexOf(platz);
@@ -62,6 +69,13 @@ public class Lagerreihe
         return Plätze.Take(index);
     }
 
+    /// <summary>
+    /// Alle Lagerplätze, die in der Reihe nach dem angegebenen Lagerplatz kommen.
+    /// "Nach" bedeutet näher am Hallentor.
+    /// </summary>
+    /// <param name="platz">Der Lagerplatz</param>
+    /// <returns>Eine Sammlung von Lagerplätzen</returns>
+    /// <exception cref="ArgumentException">Wenn der übergebene Platz nicht Teil der Reihe ist</exception>
     public IEnumerable<Lagerplatz> PlätzeNach(Lagerplatz platz)
     {
         var index = plätze.IndexOf(platz);
@@ -70,6 +84,21 @@ public class Lagerreihe
             throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");
         }
         return Plätze.Skip(index + 1);
+    }
+
+    public bool IstFreiImZeitraum(DateOnly von, DateOnly bis)
+    {
+        return plätze.All(p => p.IstFreiImZeitraum(von, bis));
+    }
+
+    public bool IstVoll(DateOnly von, DateOnly bis)
+    {
+        return plätze.All(p => !p.IstFreiImZeitraum(von, bis));
+    }
+
+    public Lagerplatz? VordersterBelegterPlatz(DateOnly von, DateOnly bis)
+    {
+        return Plätze.LastOrDefault(p => !p.IstFreiImZeitraum(von, bis));
     }
 
 }

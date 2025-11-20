@@ -4,8 +4,25 @@ namespace Boothaus.Domain;
 
 public class Lager
 {  
-    public double StandardMaxBreite { get; set; }
-    public double StandardMaxLänge { get; set; }
+    public double StandardMaxBreite
+    {
+        get;
+        set
+        {
+            Assumes.True(value > 0);
+            field = value;
+        }
+    }
+
+    public double StandardMaxLänge 
+    { 
+        get; 
+        set
+        {
+            Assumes.True(value > 0);
+            field = value;
+        }
+    }
     
     public List<Lagerreihe> Reihen { get; }
 

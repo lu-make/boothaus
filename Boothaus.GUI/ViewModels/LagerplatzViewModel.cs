@@ -6,11 +6,18 @@ namespace Boothaus.GUI.ViewModels;
 
 public class LagerplatzViewModel : INotifyPropertyChanged
 {
-    public Lagerplatz Modell { get; }
+    private Lagerauftrag? nächsteZuweisung;
+
     public LagerplatzViewModel(Lagerplatz platz)
     {
         Modell = platz;
     }
+
+    public Lagerplatz Modell { get; }
+
+    public Saison AusgewählteSaison { get; set; }
+
+    public bool IstAusgewählt { get; private set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -18,19 +25,22 @@ public class LagerplatzViewModel : INotifyPropertyChanged
     {
         get
         {
-            if (NächsteZuweisung is not null)
+            if (HatNächsteZuweisungInSaison)
             {
-                return $"{NächsteZuweisung.Auftrag.Boot}\n{NächsteZuweisung.Auftrag.Von:dd.MM.yyyy} - {NächsteZuweisung.Auftrag.Bis:dd.MM.yyyy}";
+                return $"{nächsteZuweisung!.Boot}\n{nächsteZuweisung.Von:dd.MM.yyyy} - {nächsteZuweisung.Bis:dd.MM.yyyy}";
             } 
+
             return "Frei";
         }
     }
+
+    public bool HatNächsteZuweisungInSaison => nächsteZuweisung is not null && nächsteZuweisung.Saison.Equals(AusgewählteSaison);
 
     public System.Windows.Media.Brush Hintergrundfarbe
     {
         get
         {
-            if (NächsteZuweisung is not null)
+            if (HatNächsteZuweisungInSaison)
             {
                 return new SolidColorBrush(Colors.PeachPuff);
             }
@@ -39,17 +49,29 @@ public class LagerplatzViewModel : INotifyPropertyChanged
         }
     }
 
-    public LagerplatzZuweisung? NächsteZuweisung;
+    public System.Windows.Media.Brush Border => IstAusgewählt
+        ? new SolidColorBrush(Colors.Blue)
+        : new SolidColorBrush(Colors.Transparent);
 
     public void Aktualisieren()
     { 
         var heute = DateOnly.FromDateTime(DateTime.Now);
 
-        NächsteZuweisung = Modell.Zuweisungen
-            .Where(z => z.Auftrag.Bis >= heute)
-            .OrderBy(z => z.Auftrag.Von)
+        nächsteZuweisung = Modell.Zuweisungen
+            .Where(z => z.Bis >= heute)
+            .OrderBy(z => z.Von)
             .FirstOrDefault();
          
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Anzeigetext)));
+    }
+
+    public bool KannAuftragZuweisen(Lagerauftrag auftrag)
+    {
+        return Modell.IstFreiImZeitraum(auftrag.Von, auftrag.Bis);
+    }
+
+    public void AuftragZuweisen(Lagerauftrag auftrag)
+    {
+        Modell.ZuweisungHinzufügen(auftrag);
     }
 }

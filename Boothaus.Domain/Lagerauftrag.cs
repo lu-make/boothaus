@@ -6,6 +6,9 @@ public class Lagerauftrag
 {
     public Guid Id { get; init; }
     public Lager Lager { get; init; } 
+    public Saison Saison { get; init; }
+
+    public Lagerplatz? Platz { get; set; }
     public Boot Boot 
     { 
         get; 
@@ -44,6 +47,7 @@ public class Lagerauftrag
         Boot = boot;
         Von = von;
         Bis = bis;
+        Saison = new Saison { Anfangsjahr = von.Year };
     }
 
     /// <summary>
@@ -98,5 +102,7 @@ public class Lagerauftrag
     {
         return Lager.Passt(boot);
     }
-     
+
+  
+
 }

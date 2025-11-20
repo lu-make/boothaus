@@ -51,4 +51,18 @@ public class InMemoryAuftragRepository : IAuftragRepository
             throw new InvalidOperationException("Der Auftrag existiert nicht im Repository.");
         }
     }
+
+    public IEnumerable<Saison> GetSaisons()
+    {
+        return aufträge
+            .Select(a => a.Saison)
+            .Distinct()
+            .OrderBy(s => s.Anfangsjahr);
+    }
+
+    public IEnumerable<Lagerauftrag> GetBySaison(Saison saison)
+    {
+        return aufträge
+            .Where(a => a.Saison.Anfangsjahr == saison.Anfangsjahr);
+    }
 }
