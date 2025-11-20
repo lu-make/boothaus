@@ -15,7 +15,15 @@ public class LagerplatzViewModel : INotifyPropertyChanged
 
     public Lagerplatz Modell { get; }
 
-    public Saison AusgewählteSaison { get; set; }
+    public Saison AusgewählteSaison
+    {
+        get; 
+        set
+        {
+            field = value;
+            Aktualisieren();
+        }
+    }
 
     public bool IstAusgewählt { get; private set; }
 
@@ -61,9 +69,14 @@ public class LagerplatzViewModel : INotifyPropertyChanged
             .Where(z => z.Bis >= heute)
             .OrderBy(z => z.Von)
             .FirstOrDefault();
-         
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Anzeigetext)));
+
+        OnPropertyChanged(nameof(AusgewählteSaison));
+        OnPropertyChanged(nameof(HatNächsteZuweisungInSaison));
+        OnPropertyChanged(nameof(Anzeigetext));
+        OnPropertyChanged(nameof(Hintergrundfarbe));
+
     }
+
 
     public bool KannAuftragZuweisen(Lagerauftrag auftrag)
     {
@@ -73,5 +86,9 @@ public class LagerplatzViewModel : INotifyPropertyChanged
     public void AuftragZuweisen(Lagerauftrag auftrag)
     {
         Modell.ZuweisungHinzufügen(auftrag);
+    }
+    private void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

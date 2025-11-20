@@ -51,4 +51,10 @@ public partial class App : System.Windows.Application
         };
         mainWindow.Show();
     }
+
+    void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    {
+        System.Windows.MessageBox.Show($"Es ist ein unerwarteter Fehler aufgetreten:\n{e.Exception.Message}\nBitte öffnen Sie ein Issue unter github.com/lu-make/boothaus/issues", "AAAA", MessageBoxButton.OK, MessageBoxImage.Error);
+        e.Handled = true;
+    }
 }

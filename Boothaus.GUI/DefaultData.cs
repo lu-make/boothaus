@@ -15,11 +15,8 @@ internal static class DefaultData
         var outVon = new DateTime(saisonStartJahr + 1, 1, 10);
         var outBis = new DateTime(saisonStartJahr + 1, 4, 15);
 
-
         var result = new List<Lagerauftrag>();
-
-
-
+         
         foreach (var boot in boote)
         {
             if (faker.Random.Bool(0.5f)) 
@@ -27,8 +24,7 @@ internal static class DefaultData
 
             var von = DateOnly.FromDateTime(faker.Date.Between(inVon, inBis));
             var bis = DateOnly.FromDateTime(faker.Date.Between(outVon, outBis));
-            var auftrag = new Lagerauftrag(
-                id: Guid.NewGuid(),
+            var auftrag = new Lagerauftrag( 
                 lager: lager,
                 boot: boot,
                 von: von,
@@ -62,10 +58,7 @@ internal static class DefaultData
 
             for (int platzIndex = 0; platzIndex < plätzeProReihe; platzIndex++)
             {
-                var platz = new Lagerplatz
-                {
-                    Id = Guid.NewGuid(),
-                };
+                var platz = new Lagerplatz();
 
                 reihe.PlatzHinzufügen(platz);
             }
@@ -121,9 +114,7 @@ public sealed class BootFaker : Faker<Boot>
 
         double maxLänge = 12.0;
 
-        Locale = locale;
-
-        RuleFor(boot => boot.Id, _ => Guid.NewGuid());
+        Locale = locale; 
 
         RuleFor(boot => boot.Name, f =>
         {

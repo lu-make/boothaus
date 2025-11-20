@@ -28,8 +28,8 @@
                     DisplayMember="Bezeichnung" 
                     Width="100" 
                     Margin="5" 
-                    /> 
-                <Button Content="Lagerkalender erzeugen" Margin="5" Command="{Binding LagerkalenderErzeugenCommand}"></Button>
+                    />
+                <Button Content="Lagerkalender erzeugen" Margin="5" Command="{Binding LagerkalenderErstellenCommand}"></Button>
             </StackPanel>
         </Grid>
         
@@ -90,10 +90,10 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <ItemsControl ItemsSource="{Binding LagerreihenViewmodels}" Grid.Column="0" VerticalAlignment="Stretch">
+                    <ItemsControl ItemsSource="{Binding LagerViewModel.ReihenViewmodels}" Grid.Column="0" VerticalAlignment="Stretch">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid Rows="{Binding AnzahlLagerreihen}" />
+                                <UniformGrid Rows="{Binding LagerViewModel.AnzahlLagerreihen}" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -104,7 +104,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{Binding Modell.Nummer}" VerticalAlignment="Center"/>
-                                    <ItemsControl Grid.Column="1" ItemsSource="{Binding PlätzeVms}">
+                                    <ItemsControl Grid.Column="1" ItemsSource="{Binding PlatzViewmodels}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <UniformGrid Rows="1"/>

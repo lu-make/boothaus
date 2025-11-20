@@ -25,6 +25,9 @@
         <StackPanel Name="Bootauswahl" Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2" Margin="5">
             <Label Content="Boot" />
             <dxg:LookUpEdit x:Name="Bootliste" 
+                            ItemsSource="{Binding AlleBoote}"
+                            SelectedItem="{Binding Boot}"
+                            BorderBrush="{Binding BootauswahlRahmenfarbe}"
                             AutoPopulateColumns="False" 
                             DisplayMember="Name" 
                             ValueMember="Id"
@@ -44,25 +47,37 @@
                     </ControlTemplate>
                 </dxg:LookUpEdit.PopupContentTemplate>
             </dxg:LookUpEdit>
-            <Label x:Name="BootauswahlValidationText" Content="" Visibility="Hidden"/> 
+            <Label x:Name="BootauswahlValidationText" Content="{Binding BootValidationMessage}"/> 
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Grid.Row="1">
             <Label Content="Startdatum" />
-            <dxe:DateEdit x:Name="VonDatumEditor" Margin="5" Grid.Column="0" MaskType="DateOnly" />
+            <dxe:DateEdit x:Name="VonDatumEditor" 
+                          Margin="5" 
+                          Grid.Column="0" 
+                          MaskType="DateOnly" 
+                          EditValue="{Binding Von}"  
+                          BorderBrush="{Binding DatumauswahlRahmenfarbe}"
+                          />
         </StackPanel>
 
 
         <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1">
             <Label Content="Enddatum" />
-            <dxe:DateEdit x:Name="BisDatumEditor" Margin="5" Grid.Column="0" MaskType="DateOnly" />
-        </StackPanel> 
+            <dxe:DateEdit x:Name="BisDatumEditor" 
+                          Margin="5" 
+                          Grid.Column="0" 
+                          MaskType="DateOnly" 
+                          EditValue="{Binding Bis}"  
+                          BorderBrush="{Binding DatumauswahlRahmenfarbe}"
+                />
+        </StackPanel>
 
-        <Label x:Name="ZeitraumValidationText" Content="" Visibility="Hidden" Grid.Row="2" Grid.ColumnSpan="2"/>  
+        <Label x:Name="ZeitraumValidationText" Content="{Binding DatumspaarValidationMessage}"  Grid.Row="2" Grid.ColumnSpan="2"/>  
  
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3" Grid.ColumnSpan="2" Margin="5">
-            <Button x:Name="OkButton" IsDefault="True" Margin="5" Click="OkButton_Click" Width="85">OK</Button>
-            <Button x:Name="CancelButton"  IsCancel="True" Margin="5" Click="CancelButton_Click" Width="85">Abbrechen</Button>
+            <Button x:Name="OkButton" IsDefault="True" Margin="5" Command="{Binding OkCommand}" Width="85">OK</Button>
+            <Button x:Name="CancelButton"  IsCancel="True" Margin="5" Command="{Binding CancelCommand}" Width="85">Abbrechen</Button>
         </StackPanel>
 
     </Grid>

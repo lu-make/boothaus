@@ -1,13 +1,18 @@
 ﻿namespace Boothaus.Domain;
 
-public class Lagerplatz
-{
-    public Guid Id { get; set; }
+public class Lagerplatz : ModelBase
+{ 
     public Lagerreihe? Reihe { get; internal set; } 
 
     private readonly List<Lagerauftrag> zuweisungen = new();
     public IReadOnlyCollection<Lagerauftrag> Zuweisungen => zuweisungen;
- 
+
+
+    public Lagerplatz() : base(Guid.NewGuid())
+    {
+
+    } 
+
     public void ZuweisungHinzufügen(Lagerauftrag auftrag)
     { 
         if (!IstFreiImZeitraum(auftrag.Von, auftrag.Bis))
@@ -48,4 +53,5 @@ public class Lagerplatz
     {
         return zuweisungen.FirstOrDefault(z => z.Von <= datum && z.Bis >= datum);
     }
+
 }

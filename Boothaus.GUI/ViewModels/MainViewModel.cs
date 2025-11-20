@@ -22,8 +22,11 @@ public class MainViewModel : INotifyPropertyChanged
         get;
         set
         {
-            OnPropertyChanged(nameof(AusgewählterAuftrag));
             field = value;
+            OnPropertyChanged(nameof(AusgewählterAuftrag));
+            (AuftragBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (AuftragLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (AuftragLagerplatzZuweisenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }
     }
     public Lagerplatz? AusgewählterPlatz
@@ -31,28 +34,32 @@ public class MainViewModel : INotifyPropertyChanged
         get;
         set
         {
-            OnPropertyChanged(nameof(AusgewählterPlatz));
             field = value;
+            OnPropertyChanged(nameof(AusgewählterPlatz));
+            (AuftragLagerplatzZuweisenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (AuftragLagerplatzLösenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }
     }
 
-    public Saison? AusgewählteSaison 
+    public Saison AusgewählteSaison 
     {
         get; 
         set 
         {
-            OnPropertyChanged(nameof(AusgewählteSaison));
             field = value;
+            OnPropertyChanged(nameof(AusgewählteSaison));
+            ApplyAuftragSaisonFilter();
+            LagerViewModel.Update(AusgewählteSaison);
         } 
     }
 
-    public Lager Lager
+    public LagerViewModel LagerViewModel
     {
         get;
         set
         {
-            OnPropertyChanged(nameof(Lager));
             field = value;
+            OnPropertyChanged(nameof(LagerViewModel));
         }
     }
 
@@ -64,7 +71,7 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand AuftragLagerplatzZuweisenCommand { get; private set; }
     public ICommand AuftragLagerplatzLösenCommand { get; private set; }
 
-    public ICommand AufträgeNachSaisonFilternCommand { get; private set; }
+  //  public ICommand AufträgeNachSaisonFilternCommand { get; private set; }
 
     public ICommand LagereigenschaftenÖffnenCommand { get; private set; }
     
@@ -81,21 +88,15 @@ public class MainViewModel : INotifyPropertyChanged
     // events
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    // sub viewmodels
-    public ObservableCollection<LagerreihenViewModel> LagerreihenViewmodels { get; set; }
-
-    public int AnzahlLagerreihen => LagerreihenViewmodels.Count;
-
+    // sub viewmodels 
     public MainViewModel(IDialogService dialogService, LagerApplicationService appService)
     {
         this.dialogService = dialogService;
         this.appService = appService;
         Aufträge = new ObservableCollection<Lagerauftrag>(appService.AlleAufträge());
         Saisons = new ObservableCollection<Saison>(appService.AlleSaisons());
-        Lager = appService.GetLager();
-        LagerreihenViewmodels = new ObservableCollection<LagerreihenViewModel>(
-            Lager.Reihen.Select(reihe => new LagerreihenViewModel(reihe))
-        );
+        LagerViewModel = new LagerViewModel(appService.GetLager(), AusgewählteSaison); 
+        AusgewählteSaison = Saisons.First();
         InitCommands();
     }
 
@@ -110,6 +111,7 @@ public class MainViewModel : INotifyPropertyChanged
                 appService.ErfasseAuftrag(auftrag);
                 Aufträge.Add(auftrag);
             }
+            Saisons.Update(appService.AlleSaisons());
         }, canExecute: () => true);
 
         AuftragBearbeitenCommand = new RelayCommand(execute: () =>
@@ -120,6 +122,7 @@ public class MainViewModel : INotifyPropertyChanged
                 var auftrag = auftragmaskeResult.Entity!; 
                 UpdateAuftrag(auftrag);
             }
+            Saisons.Update(appService.AlleSaisons());
         }, canExecute: () => AusgewählterAuftrag is not null);
 
         AuftragLöschenCommand = new RelayCommand(execute: () =>
@@ -145,16 +148,13 @@ public class MainViewModel : INotifyPropertyChanged
             AusgewählterAuftrag!.Platz = null;
             UpdateAuftrag(AusgewählterAuftrag);
         }, canExecute: () => AusgewählterPlatz is not null);
-
-        AufträgeNachSaisonFilternCommand = new RelayCommand(execute: () =>
+         
+        LagerkalenderErstellenCommand = new RelayCommand(execute: () =>
         {
-            var gefilterteAufträge = appService.AlleAufträgeInSaison(AusgewählteSaison!.Value);
-            Aufträge.Clear();
-            foreach (var auftrag in gefilterteAufträge)
-            {
-                Aufträge.Add(auftrag);
-            }
-        }, canExecute: () => AusgewählteSaison.HasValue);
+            appService.ErstelleLagerkalender(AusgewählteSaison);
+            LagerViewModel.Modell = appService.GetLager();
+            LagerViewModel.Update(AusgewählteSaison);
+        }, canExecute: () => true);
     }
 
     private void UpdateAuftrag(Lagerauftrag auftrag) 
@@ -162,6 +162,11 @@ public class MainViewModel : INotifyPropertyChanged
         appService.AktualisiereAuftrag(auftrag);
         var index = Aufträge.IndexOf(auftrag);
         Aufträge[index] = auftrag;
+    }
+
+    private void ApplyAuftragSaisonFilter()
+    {
+        Aufträge.Update(appService.AlleAufträgeInSaison(AusgewählteSaison));
     }
      
 

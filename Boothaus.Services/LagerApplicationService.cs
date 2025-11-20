@@ -1,5 +1,6 @@
 ﻿using Boothaus.Services.Contracts;
-using Boothaus.Domain; 
+using Boothaus.Domain;
+using System.Runtime.CompilerServices;
 
 namespace Domain.Services;
 
@@ -14,6 +15,7 @@ public class LagerApplicationService
     private IBootRepository bootRepository;
     private IAuftragRepository auftragRepository;
     private ILagerRepository lagerRepository;
+    private HashSet<Saison> saisons;
 
     public LagerApplicationService(
         IBootRepository bootRepository, 
@@ -23,19 +25,19 @@ public class LagerApplicationService
         this.bootRepository = bootRepository;
         this.auftragRepository = auftragRepository;
         this.lagerRepository = lagerRepository;
+        saisons = [ new Saison(2025) ];
     }
 
     /// <summary>
     /// Verteilt automatisch Lagerplätze an alle Lageraufträge in der Saison
     /// </summary>
     /// <param name="saison">Die Saison die berücksichtigt werden soll</param>
-    /// <returns>Das aktualisierte Lager</returns>
-    public Lager ErstelleLagerkalender(Saison saison)
+    public void ErstelleLagerkalender(Saison saison)
     {
         var lager = GetLager();
         var aufträge = auftragRepository.GetBySaison(saison).ToList(); 
         PlätzeZuweisen(lager, aufträge);
-        return lager;
+        lagerRepository.Save(lager);
     }
 
     private void PlätzeZuweisen(Lager lager, List<Lagerauftrag> aufträge)
@@ -158,7 +160,7 @@ public class LagerApplicationService
         {
             throw new InvalidOperationException("Das Boot hat bereits einen Lagerauftrag in dem angegebenen Zeitraum.");
         }
-
+        saisons.Add(auftrag.Saison);
         auftragRepository.Add(auftrag);
     }
 
@@ -215,7 +217,7 @@ public class LagerApplicationService
     /// <returns>Eine Liste von Saisons.</returns>
     public IEnumerable<Saison> AlleSaisons()
     {
-        return auftragRepository.GetSaisons();
+        return saisons;
     }
 
     /// <summary>

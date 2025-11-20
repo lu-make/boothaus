@@ -41,7 +41,7 @@ public class InMemoryAuftragRepository : IAuftragRepository
 
     public void Update(Lagerauftrag auftrag)
     {
-        var index = aufträge.FindIndex(a => a.Id == auftrag.Id);
+        var index = aufträge.IndexOf(auftrag);
         if (index != -1)
         {
             aufträge[index] = auftrag;

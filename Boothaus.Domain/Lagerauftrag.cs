@@ -2,12 +2,10 @@
 
 namespace Boothaus.Domain;
 
-public class Lagerauftrag
-{
-    public Guid Id { get; init; }
+public class Lagerauftrag : ModelBase
+{ 
     public Lager Lager { get; init; } 
     public Saison Saison { get; init; }
-
     public Lagerplatz? Platz { get; set; }
     public Boot Boot 
     { 
@@ -39,10 +37,10 @@ public class Lagerauftrag
         }
 
     }
-     
-    public Lagerauftrag(Guid id, Lager lager, Boot boot, DateOnly von, DateOnly bis)
+
+    public Lagerauftrag(Lager lager, Boot boot, DateOnly von, DateOnly bis)
+        : base(Guid.NewGuid())
     {
-        Id = id;
         Lager = lager;
         Boot = boot;
         Von = von;
@@ -103,6 +101,5 @@ public class Lagerauftrag
         return Lager.Passt(boot);
     }
 
-  
 
 }

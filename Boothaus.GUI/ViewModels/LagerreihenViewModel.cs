@@ -5,11 +5,11 @@ using System.Windows.Input;
 
 namespace Boothaus.GUI.ViewModels;
 
+ 
 public class LagerreihenViewModel
 {
     public Lagerreihe Modell { get; }
-    public ObservableCollection<LagerplatzViewModel> PlätzeVms { get; } = new();
-
+    public ObservableCollection<LagerplatzViewModel> PlatzViewmodels { get; } = new(); 
 
     public ICommand LagerplatzHinzufügenCommand;
     public ICommand LagerplatzEntfernenCommand;
@@ -19,7 +19,7 @@ public class LagerreihenViewModel
         Modell = reihe;
         foreach (var platz in reihe.Plätze)
         {
-            PlätzeVms.Add(new LagerplatzViewModel(platz));
+            PlatzViewmodels.Add(new LagerplatzViewModel(platz));
         }
         InitCommands();
     }
@@ -30,18 +30,18 @@ public class LagerreihenViewModel
         {
             var neuerPlatz = new Lagerplatz();
             Modell.PlatzHinzufügen(neuerPlatz);
-            PlätzeVms.Add(new LagerplatzViewModel(neuerPlatz));
+            PlatzViewmodels.Add(new LagerplatzViewModel(neuerPlatz));
         },
-        canExecute: () => PlätzeVms.Count <= 10);
+        canExecute: () => PlatzViewmodels.Count <= 10);
 
         LagerplatzEntfernenCommand = new RelayCommand(execute: () =>
         {
-            var letzterPlatz = PlätzeVms.Last();
+            var letzterPlatz = PlatzViewmodels.Last();
             letzterPlatz.Modell.ZuweisungenLeeren();
             Modell.PlatzEntfernen(letzterPlatz.Modell);
-            PlätzeVms.Remove(letzterPlatz);
+            PlatzViewmodels.Remove(letzterPlatz);
         }, 
-        canExecute: () => PlätzeVms.Count > 1);
+        canExecute: () => PlatzViewmodels.Count > 1);
 
     }
 }
