@@ -86,6 +86,7 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand BootLöschenCommand { get; private set; }
 
     public ICommand AboutAnzeigenCommand { get; private set; }
+    public ICommand ResetZuweisungenCommand { get; private set; }
 
     // events
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -173,6 +174,12 @@ public class MainViewModel : INotifyPropertyChanged
             Saisons.Update(appService.AlleSaisons());
             AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
 
+        }, canExecute: () => true);
+
+        ResetZuweisungenCommand = new RelayCommand(execute: () =>
+        {
+            appService.Reset();
+            LagerViewModel.Update(AusgewählteSaison);
         }, canExecute: () => true);
     }
 

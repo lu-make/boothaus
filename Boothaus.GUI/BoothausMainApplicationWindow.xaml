@@ -31,7 +31,7 @@
                     />
                 <Button Content="Lagerkalender erzeugen" Margin="5" Command="{Binding LagerkalenderErstellenCommand}"></Button>
                 <Button Content="Alles in nächste Saison übernehmen" Margin="5" Command="{Binding InNächsteSaisonDuplizierenCommand}"></Button>
-                <Button Content="Zurücksetzen" Margin="5" Command="{Binding ResetCommand}"></Button>
+                <Button Content="Lagerkalender zurücksetzen" Margin="5" Command="{Binding ResetZuweisungenCommand}"></Button>
             </StackPanel>
         </Grid>
         

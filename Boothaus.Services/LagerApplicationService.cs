@@ -342,4 +342,20 @@ public class LagerApplicationService
         } 
         saisons.Add(nächsteSaison);
     }
+
+    public void Reset()
+    {
+        foreach (var auftrag in auftragRepository.GetAll())
+        {
+            auftrag.Platz = null;
+        }
+
+        foreach (var reihe in lagerRepository.GetLager().Reihen)
+        {
+            foreach (var platz in reihe.Plätze)
+            {
+                platz.ZuweisungenLeeren();
+            }
+        }
+    }
 }

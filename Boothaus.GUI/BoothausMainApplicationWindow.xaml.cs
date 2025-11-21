@@ -29,10 +29,6 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
 
         if (mainViewModel.KannZuweisen(auftragVm.Modell, platzVm.Modell))
         {
-            auftragVm.Modell.Platz = platzVm.Modell;
-            platzVm.AuftragZuweisen(auftragVm.Modell);
-            platzVm.Aktualisieren();
-
             if (vorherigerPlatz is not null)
             {
                 vorherigerPlatz.ZuweisungEntfernen(auftragVm.Modell);
@@ -40,6 +36,11 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
                     .FirstOrDefault(p => p.Modell.Id == vorherigerPlatz.Id);
                 vorherigerPlatzVm?.Aktualisieren();
             }
+
+            auftragVm.Modell.Platz = platzVm.Modell;
+            platzVm.AuftragZuweisen(auftragVm.Modell);
+            platzVm.Aktualisieren();
+
         }
 
     }
@@ -53,7 +54,8 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
 
         foreach (var platz in allePlätze)
         {
-            platz.IstDragDropAktiv = false;
+            platz.IstDragDropAktiv = false; 
+            platz.IstGültigesDropZiel = false;
         }
     }
 
