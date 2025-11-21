@@ -1,5 +1,6 @@
 ﻿using Boothaus.Domain;
 using Boothaus.GUI.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 using DevExpress.Xpf.Core;
 using System.Windows;
 using System.Windows.Input;
@@ -23,12 +24,10 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
         var rect = sender as FrameworkElement;
         if (rect?.DataContext is not LagerplatzViewModel platzVm) return;
         if (DataContext is not MainViewModel mainViewModel) return;
-
         if (!e.Data.GetDataPresent(typeof(RecordDragDropData))) return;
         
         var data = e.Data.GetData(typeof(RecordDragDropData)) as RecordDragDropData;
         var myRecord = data?.Records[0];
-
         Auftrag? auftrag;
 
         if (myRecord is AuftragListViewModel auftragVm)
@@ -131,5 +130,11 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
             platz.IstGültigesDropZiel = true;
         }
 
+    }
+
+    private void Auftragliste_SelectionChanged(object sender, DevExpress.Xpf.Grid.GridSelectionChangedEventArgs e)
+    {
+        (mainViewModel.AuftragBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+        (mainViewModel.AufträgeLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
     }
 }

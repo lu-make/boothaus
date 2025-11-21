@@ -1,4 +1,5 @@
 ﻿using Boothaus.GUI.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 using DevExpress.Xpf.Core;
 
 namespace Boothaus.GUI;
@@ -12,5 +13,12 @@ public partial class Bootverwaltung : ThemedWindow
     {
         InitializeComponent();
         DataContext = viewmodel;
+    }
+
+    private void Bootliste_SelectionChanged(object sender, DevExpress.Xpf.Grid.GridSelectionChangedEventArgs e)
+    {
+        var viewModel = DataContext as BootverwaltungViewmodel;
+        (viewModel.BooteLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+        (viewModel.BootBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
     }
 }

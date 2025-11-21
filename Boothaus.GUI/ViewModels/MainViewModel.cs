@@ -26,9 +26,11 @@ public class MainViewModel : INotifyPropertyChanged
             field = value;
             OnPropertyChanged(nameof(AusgewählterAuftragListeneintrag));
             (AuftragBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
-            (AuftragLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged(); 
+            (AufträgeLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged(); 
         }
     } 
+
+    public ObservableCollection<AuftragListViewModel> AusgewählteAuftragListeneinträge { get; set; }
 
     public Saison AusgewählteSaison 
     {
@@ -55,7 +57,7 @@ public class MainViewModel : INotifyPropertyChanged
     // commands 
     public ICommand AuftragErfassenCommand { get; private set; }
     public ICommand AuftragBearbeitenCommand { get; private set; }
-    public ICommand AuftragLöschenCommand { get; private set; }
+    public ICommand AufträgeLöschenCommand { get; private set; }
      
     public ICommand InNächsteSaisonDuplizierenCommand { get; private set; }
 
@@ -73,6 +75,9 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand ResetZuweisungenCommand { get; private set; }
 
     public ICommand BooteVerwaltenCommand { get; private set; }
+    public ICommand ImportCommand { get; private set; }
+    public ICommand ExportCommand { get; private set; }
+    public ICommand BeendenCommand { get; private set; }
 
     // events
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -83,11 +88,14 @@ public class MainViewModel : INotifyPropertyChanged
         this.dialogService = dialogService;
         this.appService = appService;
 
+
         LagerViewModel = new LagerViewModel(appService.GetLager()); 
 
         AuftragListe = new ObservableCollection<AuftragListViewModel>(appService
             .AlleAufträge().Select(auftrag => new AuftragListViewModel(auftrag)));
-        
+
+        AusgewählteAuftragListeneinträge = new ObservableCollection<AuftragListViewModel>();
+
         Saisons = new ObservableCollection<Saison>(appService.AlleSaisons());
         AusgewählteSaison = Saisons.First();
 
@@ -118,17 +126,21 @@ public class MainViewModel : INotifyPropertyChanged
                 UpdateAuftrag(auftrag);
             }
             Saisons.Update(appService.AlleSaisons());
-        }, canExecute: () => AusgewählterAuftragListeneintrag is not null);
+        }, canExecute: () => AusgewählteAuftragListeneinträge.Count == 1);
 
-        AuftragLöschenCommand = new RelayCommand(execute: () =>
+        AufträgeLöschenCommand = new RelayCommand(execute: () =>
         {
-            var ausgewählterAuftrag = AusgewählterAuftragListeneintrag?.Modell;
-            var result = dialogService.JaNeinWarnungDialogAnzeigen(titel: "Lagerauftrag löschen", frage: "Möchten Sie den ausgewählten Lagerauftrag wirklich löschen?");
+            var result = dialogService.JaNeinWarnungDialogAnzeigen(titel: "Lagerauftrag löschen", frage: "Möchten Sie die ausgewählten Lageraufträge wirklich löschen?");
             if (!result) return;
-            appService.LöscheAuftrag(ausgewählterAuftrag);
-            AuftragListe.Remove(AusgewählterAuftragListeneintrag!);
 
-        }, canExecute: () => AusgewählterAuftragListeneintrag is not null);
+            foreach (var auftrag in AusgewählteAuftragListeneinträge.ToList())
+            {
+                appService.LöscheAuftrag(auftrag.Modell);
+                AuftragListe.Remove(auftrag);
+            }
+
+
+        }, canExecute: () => AusgewählteAuftragListeneinträge.Any());
          
         LagerkalenderErstellenCommand = new RelayCommand(execute: () =>
         { 
@@ -164,6 +176,11 @@ public class MainViewModel : INotifyPropertyChanged
         {
             dialogService.BooteVerwalten();
             AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
+        });
+
+        BeendenCommand = new RelayCommand(execute: () =>
+        {
+            Environment.Exit(0);
         });
     }
 

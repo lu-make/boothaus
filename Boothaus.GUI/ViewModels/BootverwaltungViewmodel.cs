@@ -22,20 +22,22 @@ public class BootverwaltungViewmodel : INotifyPropertyChanged
             field = value;
             OnPropertyChanged(nameof(AusgewählterBootlisteneintrag));
             (BootBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
-            (BootLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (BooteLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }
     }
+
+    public ObservableCollection<Boot> AusgewählteBootlisteneinträge { get; set; }
 
 
     public ICommand BootErfassenCommand { get; private set; }
     public ICommand BootBearbeitenCommand { get; private set; }
-    public ICommand BootLöschenCommand { get; private set; }
+    public ICommand BooteLöschenCommand { get; private set; }
 
     public BootverwaltungViewmodel(LagerApplicationService appService, IDialogService dialogService)
     {
         this.appService = appService;
         this.dialogService = dialogService;
-
+        AusgewählteBootlisteneinträge = new();
         Bootliste = new(appService.AlleBoote());
 
         InitCommands();
@@ -66,16 +68,16 @@ public class BootverwaltungViewmodel : INotifyPropertyChanged
                 Bootliste[index] = boot;
             }
 
-        }, canExecute: () => AusgewählterBootlisteneintrag is not null);
+        }, canExecute: () => AusgewählteBootlisteneinträge.Count == 1);
 
-        BootLöschenCommand = new RelayCommand(execute: () =>
+        BooteLöschenCommand = new RelayCommand(execute: () =>
         {
             var result = dialogService.JaNeinWarnungDialogAnzeigen("Boot löschen", "Möchten Sie das ausgewählte Boot wirklich löschen? ACHTUNG! Alle Aufträge die mit diesem Boot zusammenhängen, werden ebenfalls gelöscht!");
             if (!result) return;
             appService.LöscheBoot(AusgewählterBootlisteneintrag!);
             Bootliste.Remove(AusgewählterBootlisteneintrag!);
 
-        }, canExecute: () => AusgewählterBootlisteneintrag is not null);
+        }, canExecute: () => AusgewählteBootlisteneinträge.Count > 0);
 
     }
 

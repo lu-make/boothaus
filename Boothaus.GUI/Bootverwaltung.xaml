@@ -38,8 +38,12 @@
 
         <dxg:GridControl 
             Grid.Row="1" 
+            x:Name="Bootliste"
             ItemsSource="{Binding Bootliste}"
             SelectedItem="{Binding AusgewählterBootlisteneintrag, Mode=TwoWay}"
+            SelectedItems="{Binding AusgewählteBootlisteneinträge, Mode=TwoWay}"
+            SelectionMode="MultipleRow"
+            SelectionChanged="Bootliste_SelectionChanged"
             Margin="5">
             <dxg:GridControl.View>
                 <dxg:TableView
