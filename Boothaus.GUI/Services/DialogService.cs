@@ -13,7 +13,7 @@ public class DialogService : IDialogService
         this.appService = appService;
     }
 
-    public EingabemaskeResult<Auftrag> AuftragErzeugen()
+    public EingabemaskeResult<Auftrag> AuftragErfassen()
     {
         var auftragMaskeVm = new AuftragMaskeViewmodel(appService);
         var dialog = new AuftragMaske(auftragMaskeVm);
@@ -59,14 +59,57 @@ public class DialogService : IDialogService
         }
     }
 
-    public bool BootErzeugen()
+    public void BooteVerwalten()
     {
-        throw new NotImplementedException();
+        var viewmodel = new BootverwaltungViewmodel(appService, this);
+        var dialog = new Bootverwaltung(viewmodel);
+        dialog.ShowDialog();
     }
 
-    public bool BootBearbeiten(Boot boot)
-    { 
-        throw new NotImplementedException();
+    public EingabemaskeResult<Boot> BootErfassen()
+    {
+        var viewmodel = new BootMaskeViewmodel(appService);
+        var dialog = new BootMaske(viewmodel);
+        var result = dialog.ShowDialog();
+        if (result == true)
+        {
+            return new EingabemaskeResult<Boot>
+            {
+                Success = true,
+                Entity = viewmodel.Boot
+            };
+        }
+        else
+        {
+            return new EingabemaskeResult<Boot>
+            {
+                Success = false,
+                Entity = null
+            };
+        }
+    }
+
+    public EingabemaskeResult<Boot> BootBearbeiten(Boot boot)
+    {
+        var viewmodel = new BootMaskeViewmodel(appService, boot);
+        var dialog = new BootMaske(viewmodel);
+        var result = dialog.ShowDialog();
+        if (result == true)
+        {
+            return new EingabemaskeResult<Boot>
+            {
+                Success = true,
+                Entity = viewmodel.Boot
+            };
+        }
+        else
+        {
+            return new EingabemaskeResult<Boot>
+            {
+                Success = false,
+                Entity = null
+            };
+        }
     }
 
     public void AboutAnzeigen()

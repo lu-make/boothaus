@@ -22,31 +22,43 @@
         </Grid.RowDefinitions>
 
 
-        <StackPanel Name="Bootauswahl" Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2" Margin="5">
+        <StackPanel Name="Bootauswahl" Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2">
             <Label Content="Boot" />
-            <dxg:LookUpEdit x:Name="Bootliste" 
-                            ItemsSource="{Binding AlleBoote}"
-                            SelectedItem="{Binding Boot}"
-                            BorderBrush="{Binding BootauswahlRahmenfarbe}"
-                            AutoPopulateColumns="False" 
-                            DisplayMember="Name" 
-                            ValueMember="Id"
-                            IsCaseSensitiveFilter="False"
-                            SubstituteDisplayFilter="Bootliste_SubstituteDisplayFilter"
-                            >
-                <dxg:LookUpEdit.PopupContentTemplate>
-                    <ControlTemplate TargetType="ContentControl">
-                        <dxg:GridControl x:Name="PART_GridControl">
-                            <dxg:GridControl.Columns>
-                                <dxg:GridColumn Header="Kontakt" FieldName="Kontakt" />
-                                <dxg:GridColumn Header="Name" FieldName="Name" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <dxg:LookUpEdit x:Name="Bootliste" 
+                                ItemsSource="{Binding AlleBoote}"
+                                SelectedItem="{Binding Boot}"
+                                BorderBrush="{Binding BootauswahlRahmenfarbe}"
+                                AutoPopulateColumns="False" 
+                                DisplayMember="Name" 
+                                ValueMember="Id"
+                                IsCaseSensitiveFilter="False"
+                                SubstituteDisplayFilter="Bootliste_SubstituteDisplayFilter"
+                                Grid.Column="0"
+                                Margin="5"
+                >
+                    <dxg:LookUpEdit.PopupContentTemplate>
+                        <ControlTemplate TargetType="ContentControl">
+                            <dxg:GridControl x:Name="PART_GridControl">
+                                <dxg:GridControl.Columns>
+                                    <dxg:GridColumn Header="Kontakt" FieldName="Kontakt" />
+                                    <dxg:GridColumn Header="Name" FieldName="Name" />
                                     <dxg:GridColumn Header="Rumpflänge" FieldName="Rumpflänge" />
-                                <dxg:GridColumn Header="Breite" FieldName="Breite" />
-                            </dxg:GridControl.Columns>
-                        </dxg:GridControl>
-                    </ControlTemplate>
-                </dxg:LookUpEdit.PopupContentTemplate>
-            </dxg:LookUpEdit>
+                                    <dxg:GridColumn Header="Breite" FieldName="Breite" />
+                                </dxg:GridControl.Columns>
+                            </dxg:GridControl>
+                        </ControlTemplate>
+                    </dxg:LookUpEdit.PopupContentTemplate>
+                </dxg:LookUpEdit>
+
+                <Button Grid.Column="1" Content="Neu" Margin="5"/>
+            </Grid>
+            
             <Label x:Name="BootauswahlValidationText" Content="{Binding BootValidationMessage}"/> 
         </StackPanel>
 

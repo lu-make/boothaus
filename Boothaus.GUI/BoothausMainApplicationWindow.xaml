@@ -14,24 +14,28 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Menu Grid.Row="0">
-                <MenuItem Header="Datei" />
-                <MenuItem Header="Bearbeiten" />
-                <MenuItem Header="Ansicht" />
-                <MenuItem Header="Hilfe" />
+                <MenuItem Header="Datei" >
+                    <MenuItem Header="Beenden" Command="{Binding BeendenCommand}"/>
+                </MenuItem>
+
+                <MenuItem Header="Hilfe">
+                    <MenuItem Header="Über Boothaus..." Command="{Binding ShowAboutDialogCommand}"/>
+                </MenuItem>
             </Menu>
             <StackPanel Orientation="Horizontal" Grid.Row="1"  Margin="5">
                 <Label Content="Saison:" VerticalAlignment="Center" Margin="5"/>
                 <dxe:ComboBoxEdit 
-                    x:Name="SaisonAuswahl" 
-                    ItemsSource="{Binding Saisons}" 
-                    SelectedItem="{Binding AusgewählteSaison, Mode=TwoWay}"
-                    DisplayMember="Bezeichnung" 
-                    Width="100" 
-                    Margin="5" 
-                    />
+                            x:Name="SaisonAuswahl" 
+                            ItemsSource="{Binding Saisons}" 
+                            SelectedItem="{Binding AusgewählteSaison, Mode=TwoWay}"
+                            DisplayMember="Bezeichnung" 
+                            Width="100" 
+                            Margin="5" 
+                            />
                 <Button Content="Lagerkalender erzeugen" Margin="5" Command="{Binding LagerkalenderErstellenCommand}"></Button>
                 <Button Content="Alles in nächste Saison übernehmen" Margin="5" Command="{Binding InNächsteSaisonDuplizierenCommand}"></Button>
                 <Button Content="Lagerkalender zurücksetzen" Margin="5" Command="{Binding ResetZuweisungenCommand}"></Button>
+                <Button Content="Boote verwalten..." Margin="5" Command="{Binding BooteVerwaltenCommand}"></Button>
             </StackPanel>
         </Grid>
         

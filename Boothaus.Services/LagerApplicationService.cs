@@ -1,6 +1,7 @@
 ﻿using Boothaus.Services.Contracts;
 using Boothaus.Domain;
 using System.Runtime.CompilerServices;
+using System.ComponentModel.Design;
 
 namespace Domain.Services;
 
@@ -129,26 +130,12 @@ public class LagerApplicationService
     }
 
     /// <summary>
-    /// Erzeugt ein Boot mit den angegebenen Parametern
+    /// Erfasst ein neues Boot
     /// </summary>
-    /// <param name="name">Der Name des Bootes</param>
-    /// <param name="länge">Die Rumpflänge des Bootes in Metern</param>
-    /// <param name="breite">Die Breite des Bootes in Metern</param>
-    /// <param name="kontakt">Der verantwortliche Kontakt</param>
-    /// <returns>Ein nees Boot</returns>
-    public Boot ErzeugeBoot(string name, double länge, double breite, string kontakt)
+    /// <param name="boot">Das neue Boot</param>
+    public void ErfasseBoot(Boot boot)
     {
-        var id = Guid.NewGuid();
-        var boot = new Boot(
-            id: id,
-            name: name,
-            rumpflänge: länge,
-            breite: breite,
-            kontakt: kontakt
-        );
-
         bootRepository.Add(boot);
-        return boot;
     }
 
     public void UpdateBoot(Boot boot)
@@ -317,33 +304,46 @@ public class LagerApplicationService
     public void DupliziereSaisonInNächsteSaison(Saison ausgewählteSaison)
     {
         var nächsteSaison = new Saison(ausgewählteSaison.Anfangsjahr + 1);
+        ResetInSaison(nächsteSaison);
         var aufträge = auftragRepository.GetBySaison(ausgewählteSaison).ToList();
         foreach (var auftrag in aufträge)
         {
             var platz = auftrag.Platz;
 
-            var existiert = auftragRepository.GetBySaison(nächsteSaison)
-                .Any(a => a.Boot.Id == auftrag.Boot.Id &&
-                          a.Platz?.Id == platz?.Id &&
+            var bestehenderAuftragInNächsterSaison = auftragRepository.GetBySaison(nächsteSaison)
+                .FirstOrDefault(a => a.Boot.Id == auftrag.Boot.Id &&
                           a.Von == auftrag.Von.AddYears(1) &&
                           a.Bis == auftrag.Bis.AddYears(1));
 
-            if (existiert) continue;
+            if (bestehenderAuftragInNächsterSaison is not null) 
+            {
+                bestehenderAuftragInNächsterSaison.Boot = auftrag.Boot;
+                bestehenderAuftragInNächsterSaison.Platz = platz;
+                bestehenderAuftragInNächsterSaison.Platz?.ZuweisungHinzufügen(bestehenderAuftragInNächsterSaison);
 
-            var neuerAuftrag = new Auftrag(
-                lager: auftrag.Lager,
-                boot: auftrag.Boot,
-                von: auftrag.Von.AddYears(1),
-                bis: auftrag.Bis.AddYears(1)
-            );
+                auftragRepository.Update(bestehenderAuftragInNächsterSaison);
+            } 
+            else 
+            {
+                var neuerAuftrag = new Auftrag(
+                    lager: auftrag.Lager,
+                    boot: auftrag.Boot,
+                    von: auftrag.Von.AddYears(1),
+                    bis: auftrag.Bis.AddYears(1)
+                );
 
-            neuerAuftrag.Platz = platz;
-            platz?.ZuweisungHinzufügen(neuerAuftrag);
-            auftragRepository.Add(neuerAuftrag);
+                neuerAuftrag.Platz = platz;
+                platz?.ZuweisungHinzufügen(neuerAuftrag);
+                auftragRepository.Add(neuerAuftrag);
+            }
+
         } 
         saisons.Add(nächsteSaison);
     }
 
+    /// <summary>
+    /// Setzt den gesamten Lagerkalender zurück (entfernt alle Zuweisungen)
+    /// </summary>
     public void Reset()
     {
         foreach (var auftrag in auftragRepository.GetAll())
@@ -360,9 +360,13 @@ public class LagerApplicationService
         }
     }
 
-    public void ResetInSaison(Saison s)
+    /// <summary>
+    /// Setzt den Lagerkalender für eine Saison zurück (d.h. entfernt alle Zuweisungen)
+    /// </summary>
+    /// <param name="saison">Die Saison in der die Lagerplätze zurückgesetzt werden sollen</param>
+    public void ResetInSaison(Saison saison)
     { 
-        foreach (var auftrag in auftragRepository.GetBySaison(s))
+        foreach (var auftrag in auftragRepository.GetBySaison(saison))
         {
             auftrag.Platz = null;
         }
@@ -370,9 +374,29 @@ public class LagerApplicationService
         {
             foreach (var platz in reihe.Plätze)
             {
-                platz.ZuweisungenLeerenInSaison(s);
+                platz.ZuweisungenLeerenInSaison(saison);
             }
         }
 
-    } 
+    }
+
+    /// <summary>
+    /// Löscht ein Boot und alle damit zusammenhängenden Aufträge.
+    /// </summary>
+    /// <param name="boot">Das Boot welches gelöscht werden soll</param>
+    public void LöscheBoot(Boot boot)
+    {
+        var aufträge = auftragRepository.GetAll()
+            .Where(a => a.Boot.Id == boot.Id)
+            .ToList();
+
+        foreach (var auftrag in aufträge)
+        {
+            auftrag.Platz?.ZuweisungEntfernen(auftrag);
+            auftragRepository.Remove(auftrag);
+        }
+
+        bootRepository.Remove(boot);
+
+    }
 }

@@ -26,21 +26,9 @@ public class MainViewModel : INotifyPropertyChanged
             field = value;
             OnPropertyChanged(nameof(AusgewählterAuftragListeneintrag));
             (AuftragBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
-            (AuftragLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
-            (AuftragLagerplatzZuweisenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (AuftragLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged(); 
         }
-    }
-    public Lagerplatz? AusgewählterPlatz
-    {
-        get;
-        set
-        {
-            field = value;
-            OnPropertyChanged(nameof(AusgewählterPlatz));
-            (AuftragLagerplatzZuweisenCommand as RelayCommand)?.NotifyCanExecuteChanged();
-            (AuftragLagerplatzLösenCommand as RelayCommand)?.NotifyCanExecuteChanged();
-        }
-    }
+    } 
 
     public Saison AusgewählteSaison 
     {
@@ -68,11 +56,7 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand AuftragErfassenCommand { get; private set; }
     public ICommand AuftragBearbeitenCommand { get; private set; }
     public ICommand AuftragLöschenCommand { get; private set; }
-
-    public ICommand AuftragLagerplatzZuweisenCommand { get; private set; }
-    public ICommand AuftragLagerplatzLösenCommand { get; private set; }
-
-
+     
     public ICommand InNächsteSaisonDuplizierenCommand { get; private set; }
 
     public ICommand LagereigenschaftenÖffnenCommand { get; private set; }
@@ -87,6 +71,8 @@ public class MainViewModel : INotifyPropertyChanged
 
     public ICommand AboutAnzeigenCommand { get; private set; }
     public ICommand ResetZuweisungenCommand { get; private set; }
+
+    public ICommand BooteVerwaltenCommand { get; private set; }
 
     // events
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -112,7 +98,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         AuftragErfassenCommand = new RelayCommand(execute: () =>
         {
-            var auftragmaskeResult = dialogService.AuftragErzeugen();
+            var auftragmaskeResult = dialogService.AuftragErfassen();
             if (auftragmaskeResult.Success)
             {
                 var auftrag = auftragmaskeResult.Entity!;
@@ -120,7 +106,7 @@ public class MainViewModel : INotifyPropertyChanged
                 AuftragListe.Add(new AuftragListViewModel(auftrag));
             }
             Saisons.Update(appService.AlleSaisons());
-        }, canExecute: () => true);
+        });
 
         AuftragBearbeitenCommand = new RelayCommand(execute: () =>
         {
@@ -143,23 +129,6 @@ public class MainViewModel : INotifyPropertyChanged
             AuftragListe.Remove(AusgewählterAuftragListeneintrag!);
 
         }, canExecute: () => AusgewählterAuftragListeneintrag is not null);
-
-        AuftragLagerplatzZuweisenCommand = new RelayCommand(execute: () =>
-        {
-            var ausgewählterAuftrag = AusgewählterAuftragListeneintrag?.Modell;
-            ausgewählterAuftrag!.Platz = AusgewählterPlatz!;
-            AusgewählterPlatz!.ZuweisungHinzufügen(ausgewählterAuftrag); 
-            UpdateAuftrag(ausgewählterAuftrag);
-
-        }, canExecute: () => appService.KannZuweisen(AusgewählterAuftragListeneintrag?.Modell, AusgewählterPlatz));
-
-        AuftragLagerplatzLösenCommand = new RelayCommand(execute: () =>
-        {
-            var ausgewählterAuftrag = AusgewählterAuftragListeneintrag?.Modell;
-            AusgewählterPlatz!.ZuweisungEntfernen(ausgewählterAuftrag!);
-            ausgewählterAuftrag!.Platz = null;
-            UpdateAuftrag(ausgewählterAuftrag);
-        }, canExecute: () => AusgewählterPlatz is not null);
          
         LagerkalenderErstellenCommand = new RelayCommand(execute: () =>
         {
@@ -167,21 +136,26 @@ public class MainViewModel : INotifyPropertyChanged
             appService.ErstelleLagerkalender(AusgewählteSaison);
             LagerViewModel.Modell = appService.GetLager();
             LagerViewModel.Update(AusgewählteSaison);
-        }, canExecute: () => true);
+        });
 
         InNächsteSaisonDuplizierenCommand = new RelayCommand(execute: () =>
         {
             appService.DupliziereSaisonInNächsteSaison(AusgewählteSaison);
             Saisons.Update(appService.AlleSaisons());
             AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
-
-        }, canExecute: () => true);
+            
+        });
 
         ResetZuweisungenCommand = new RelayCommand(execute: () =>
         {
-            appService.Reset();
+            var ausgewählterAuftrag = AusgewählterAuftragListeneintrag?.Modell;
+            var result = dialogService.JaNeinWarnungDialogAnzeigen(titel: "Lager zurücksetzen", frage: "Möchten Sie alle Lagerzuweisungen in der Saison zurücksetzen?");
+            if (!result) return;
+            appService.ResetInSaison(AusgewählteSaison);
             LagerViewModel.Update(AusgewählteSaison);
-        }, canExecute: () => true);
+        });
+
+        BooteVerwaltenCommand = new RelayCommand(execute: dialogService.BooteVerwalten);
     }
 
     private void UpdateAuftrag(Auftrag auftrag) 
