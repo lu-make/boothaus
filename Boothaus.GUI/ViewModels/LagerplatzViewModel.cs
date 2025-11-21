@@ -6,7 +6,12 @@ namespace Boothaus.GUI.ViewModels;
 
 public class LagerplatzViewModel : INotifyPropertyChanged
 {
-    private Auftrag? nächsteZuweisung;
+    public Auftrag? NächsteZuweisung 
+    { 
+        get; 
+        private set; 
+    
+    }
 
     public LagerplatzViewModel(Lagerplatz platz)
     {
@@ -69,14 +74,14 @@ public class LagerplatzViewModel : INotifyPropertyChanged
         {
             if (HatNächsteZuweisungInSaison)
             {
-                return $"{nächsteZuweisung!.Boot}\n{nächsteZuweisung.Von:dd.MM.yyyy} - {nächsteZuweisung.Bis:dd.MM.yyyy}";
+                return $"{NächsteZuweisung!.Boot}\n{NächsteZuweisung.Von:dd.MM.yyyy} - {NächsteZuweisung.Bis:dd.MM.yyyy}";
             }
 
             return "Frei";
         }
     }
 
-    public bool HatNächsteZuweisungInSaison => nächsteZuweisung is not null && nächsteZuweisung.Saison.Equals(AusgewählteSaison);
+    public bool HatNächsteZuweisungInSaison => NächsteZuweisung is not null && NächsteZuweisung.Saison.Equals(AusgewählteSaison);
 
     public System.Windows.Media.Brush Hintergrundfarbe
     {
@@ -131,7 +136,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
     { 
         var heute = DateOnly.FromDateTime(DateTime.Now);
 
-        nächsteZuweisung = Modell.Zuweisungen
+        NächsteZuweisung = Modell.Zuweisungen
             .Where(z => z.Saison.Equals(AusgewählteSaison))
             .OrderBy(z => z.Von)
             .FirstOrDefault();

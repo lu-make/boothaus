@@ -129,8 +129,9 @@
                                                             CornerRadius="5"
                                                             BorderBrush="{Binding Border}"
                                                             BorderThickness="{Binding BorderThickness}"
-                                                            Background="{Binding Hintergrundfarbe}"
+                                                            Background="{Binding Hintergrundfarbe}" 
                                                             AllowDrop="True" 
+                                                            MouseMove="LagerplatzRect_MouseMove"
                                                             Drop="LagerplatzRect_Drop"
                                                             >
                                                 <TextBlock Text="{Binding Anzeigetext}" 

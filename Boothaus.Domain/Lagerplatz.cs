@@ -44,14 +44,27 @@ public class Lagerplatz : ModelBase
         zuweisungen.Clear();
     }
 
+
+    public void ZuweisungenLeerenInSaison(Saison saison)
+    {
+        foreach (var zuweisung in zuweisungen.Where(z => z.Saison.Equals(saison)).ToList())
+        {
+            zuweisung.Platz = null;
+            zuweisungen.Remove(zuweisung);
+        }
+    }
+
     public bool IstFreiImZeitraum(DateOnly von, DateOnly bis)
     { 
         return !zuweisungen.Any(z => z.Von <= bis && z.Bis >= von);
     }
 
-    public Auftrag? GetZuweisung(DateOnly datum)
+    public Auftrag? GetNächsteZuweisung(Saison saison)
     {
-        return zuweisungen.FirstOrDefault(z => z.Von <= datum && z.Bis >= datum);
+        return zuweisungen
+            .Where(z => z.Saison.Equals(saison))
+            .OrderBy(z => z.Von)
+            .FirstOrDefault();
     }
 
 }

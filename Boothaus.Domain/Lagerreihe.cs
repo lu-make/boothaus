@@ -76,7 +76,7 @@ public class Lagerreihe
     /// <param name="platz">Der Lagerplatz</param>
     /// <returns>Eine Sammlung von Lagerplätzen</returns>
     /// <exception cref="ArgumentException">Wenn der übergebene Platz nicht Teil der Reihe ist</exception>
-    public IEnumerable<Lagerplatz> PlätzeNach(Lagerplatz platz)
+    public IEnumerable<Lagerplatz> PlätzeHinter(Lagerplatz platz)
     {
         var index = plätze.IndexOf(platz);
         if (index == -1)
@@ -98,7 +98,7 @@ public class Lagerreihe
 
     public Lagerplatz? VordersterBelegterPlatz(DateOnly von, DateOnly bis)
     {
-        return Plätze.LastOrDefault(p => !p.IstFreiImZeitraum(von, bis));
+         return Plätze.LastOrDefault(p => !p.IstFreiImZeitraum(von, bis));
     }
-
+     
 }

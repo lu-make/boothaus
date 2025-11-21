@@ -163,6 +163,7 @@ public class MainViewModel : INotifyPropertyChanged
          
         LagerkalenderErstellenCommand = new RelayCommand(execute: () =>
         {
+            //appService.ResetInSaison(AusgewählteSaison);
             appService.ErstelleLagerkalender(AusgewählteSaison);
             LagerViewModel.Modell = appService.GetLager();
             LagerViewModel.Update(AusgewählteSaison);

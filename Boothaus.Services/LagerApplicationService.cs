@@ -35,6 +35,7 @@ public class LagerApplicationService
     public void ErstelleLagerkalender(Saison saison)
     {
         var lager = GetLager();
+        ResetInSaison(saison);
         var aufträge = auftragRepository.GetBySaison(saison).ToList(); 
         PlätzeZuweisen(lager, aufträge);
         lagerRepository.Save(lager);
@@ -91,7 +92,7 @@ public class LagerApplicationService
                  */
                 var letzteZuweisungAusReihe = reihe
                     .VordersterBelegterPlatz(auftrag.Von, auftrag.Bis)!
-                    .GetZuweisung(auftrag.Von)!;
+                    .GetNächsteZuweisung(auftrag.Saison)!;
                     
                 var ordnung = auftrag.VergleicheReihenordnung(letzteZuweisungAusReihe);
 
@@ -278,7 +279,7 @@ public class LagerApplicationService
         // Es darf nur auf den hintersten freien platz der reihe zugewiesen werden
         var vordersterBelegterPlatz = platz.Reihe.VordersterBelegterPlatz(auftrag.Von, auftrag.Bis);
         if (vordersterBelegterPlatz is null) return false;
-        var zuweisungDavor = vordersterBelegterPlatz?.GetZuweisung(auftrag.Von);
+        var zuweisungDavor = vordersterBelegterPlatz?.GetNächsteZuweisung(auftrag.Saison);
         if (zuweisungDavor is null) return false;
         var ordnung = auftrag.VergleicheReihenordnung(zuweisungDavor);
         if (ordnung != 1) return false;
@@ -358,4 +359,20 @@ public class LagerApplicationService
             }
         }
     }
+
+    public void ResetInSaison(Saison s)
+    { 
+        foreach (var auftrag in auftragRepository.GetBySaison(s))
+        {
+            auftrag.Platz = null;
+        }
+        foreach (var reihe in lagerRepository.GetLager().Reihen)
+        {
+            foreach (var platz in reihe.Plätze)
+            {
+                platz.ZuweisungenLeerenInSaison(s);
+            }
+        }
+
+    } 
 }
