@@ -270,13 +270,19 @@ public class LagerApplicationService
         if (!Auftrag.IstGültigesDatumspaar(auftrag.Von, auftrag.Bis)) return false;
         if (!platz.IstFreiImZeitraum(auftrag.Von, auftrag.Bis)) return false;
         if (platz.Reihe is null) return false;
-        
-        // Es darf nur auf den hintersten freien platz der reihe zugewiesen werden
-        var platzDavor = platz.Reihe.PlätzeVor(platz).LastOrDefault();
-        var zuweisungDavor = platzDavor?.GetZuweisung(auftrag.Von);
-        if (zuweisungDavor is null) return false;
-        if (auftrag.VergleicheReihenordnung(zuweisungDavor) != 1) return false;
 
+        // ist diese reihe komplett frei? dann darf der hinterste platz belegt werden
+        if (platz.Reihe.IstFreiImZeitraum(auftrag.Von, auftrag.Bis))
+            return platz.Reihe.Index(platz) == 0;
+
+        // Es darf nur auf den hintersten freien platz der reihe zugewiesen werden
+        var vordersterBelegterPlatz = platz.Reihe.VordersterBelegterPlatz(auftrag.Von, auftrag.Bis);
+        if (vordersterBelegterPlatz is null) return false;
+        var zuweisungDavor = vordersterBelegterPlatz?.GetZuweisung(auftrag.Von);
+        if (zuweisungDavor is null) return false;
+        var ordnung = auftrag.VergleicheReihenordnung(zuweisungDavor);
+        if (ordnung != 1) return false;
+        if (platz.Reihe.Index(platz) != platz.Reihe.Index(vordersterBelegterPlatz) + 1) return false;
         return true;
     }
 

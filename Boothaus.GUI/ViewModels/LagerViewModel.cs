@@ -18,6 +18,8 @@ public class LagerViewModel : INotifyPropertyChanged
         }
     }
 
+    public IEnumerable<LagerplatzViewModel> AllePlätze => ReihenViewmodels.SelectMany(r => r.PlatzViewmodels);
+
 
     public ObservableCollection<LagerreihenViewModel> ReihenViewmodels { get; } = new();
 

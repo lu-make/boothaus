@@ -31,6 +31,7 @@
                     />
                 <Button Content="Lagerkalender erzeugen" Margin="5" Command="{Binding LagerkalenderErstellenCommand}"></Button>
                 <Button Content="Alles in nächste Saison übernehmen" Margin="5" Command="{Binding InNächsteSaisonDuplizierenCommand}"></Button>
+                <Button Content="Zurücksetzen" Margin="5" Command="{Binding ResetCommand}"></Button>
             </StackPanel>
         </Grid>
         
@@ -67,10 +68,13 @@
                         <dxg:GridControl.View>
                             <dxg:TableView
                                 AllowGrouping="False"
+                                AllowDragDrop="True"
                                 ShowGroupPanel="False"
                                 AutoWidth="True"
                                 AllowMasterDetail="False" 
-                                AllowEditing="False" 
+                                AllowEditing="False"  
+                                CompleteRecordDragDrop="CompleteRecordDragDrop"
+                                StartRecordDrag="StartRecordDrag"
                             />
                         </dxg:GridControl.View>
                         <dxg:GridControl.Columns> 
@@ -78,6 +82,7 @@
                             <dxg:GridColumn Header="Von" Binding="{Binding Modell.Von, StringFormat=dd.MM.yyyy}" Width="Auto"/>
                             <dxg:GridColumn Header="Bis" Binding="{Binding Modell.Bis, StringFormat=dd.MM.yyyy}" Width="Auto"/>
                         </dxg:GridControl.Columns>
+                        
                     </dxg:GridControl>
                 </Grid>
             </GroupBox>
@@ -104,7 +109,12 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Displaynummer}" VerticalAlignment="Center"/>
+                                <TextBlock 
+                                    Grid.Column="0" 
+                                    Text="{Binding Displaynummer}" 
+                                    VerticalAlignment="Center"
+                                    
+                                    />
                                     <ItemsControl Grid.Column="1" ItemsSource="{Binding PlatzViewmodels}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -113,13 +123,15 @@
                                     </ItemsControl.ItemsPanel> 
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Margin="5"  
+                                            <Border x:Name="LagerplatzRect" Margin="5"  
                                                             Width="90"
                                                             Height="80"
                                                             CornerRadius="5"
                                                             BorderBrush="{Binding Border}"
-                                                            BorderThickness="1"
+                                                            BorderThickness="{Binding BorderThickness}"
                                                             Background="{Binding Hintergrundfarbe}"
+                                                            AllowDrop="True" 
+                                                            Drop="LagerplatzRect_Drop"
                                                             >
                                                 <TextBlock Text="{Binding Anzeigetext}" 
                                                                     HorizontalAlignment="Center"

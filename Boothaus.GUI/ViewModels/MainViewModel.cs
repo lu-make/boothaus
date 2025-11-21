@@ -188,6 +188,18 @@ public class MainViewModel : INotifyPropertyChanged
         AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
     }
      
+    public IEnumerable<LagerplatzViewModel> FindeGültigePlätze(Auftrag auftrag)
+    {
+        var gültigePlätze = appService.FindeGültigePlätze(auftrag).ToList();
+        return LagerViewModel.ReihenViewmodels
+            .SelectMany(r => r.PlatzViewmodels)
+            .Where(pvm => gültigePlätze.Contains(pvm.Modell)); 
+    }
+
+    public bool KannZuweisen(Auftrag auftrag, Lagerplatz platz)
+    {
+        return appService.KannZuweisen(auftrag, platz);
+    }
 
     protected virtual void OnPropertyChanged(string propertyName)
     {
