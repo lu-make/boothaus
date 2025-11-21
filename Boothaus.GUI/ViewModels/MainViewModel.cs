@@ -83,7 +83,7 @@ public class MainViewModel : INotifyPropertyChanged
         this.dialogService = dialogService;
         this.appService = appService;
 
-        LagerViewModel = new LagerViewModel(appService.GetLager(), AusgewählteSaison); 
+        LagerViewModel = new LagerViewModel(appService.GetLager()); 
 
         AuftragListe = new ObservableCollection<AuftragListViewModel>(appService
             .AlleAufträge().Select(auftrag => new AuftragListViewModel(auftrag)));
@@ -131,11 +131,15 @@ public class MainViewModel : INotifyPropertyChanged
         }, canExecute: () => AusgewählterAuftragListeneintrag is not null);
          
         LagerkalenderErstellenCommand = new RelayCommand(execute: () =>
-        {
-            //appService.ResetInSaison(AusgewählteSaison);
-            appService.ErstelleLagerkalender(AusgewählteSaison);
+        { 
+            var ergebnis = appService.ErstelleLagerkalender(AusgewählteSaison);
             LagerViewModel.Modell = appService.GetLager();
             LagerViewModel.Update(AusgewählteSaison);
+
+            if (!ergebnis)
+            {
+                dialogService.OkWarnungDialogAnzeigen("Lagerkalender erstellen", "Es konnte kein vollständiger Lagerkalender erstellt werden. Bitte überprüfen Sie die Lagerplatzzuweisungen.");
+            }
         });
 
         InNächsteSaisonDuplizierenCommand = new RelayCommand(execute: () =>

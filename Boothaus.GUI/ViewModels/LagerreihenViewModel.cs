@@ -1,19 +1,28 @@
 ﻿using Boothaus.Domain;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Boothaus.GUI.ViewModels;
 
  
-public class LagerreihenViewModel
+public class LagerreihenViewModel : INotifyPropertyChanged
 {
-    public Lagerreihe Modell { get; }
+    public Lagerreihe Modell { 
+        get; 
+        set 
+        {
+            field = value;
+            OnPropertyChanged(nameof(Modell));
+        } 
+    }
     public int Displaynummer => Modell.Nummer + 1;
     public ObservableCollection<LagerplatzViewModel> PlatzViewmodels { get; } = new(); 
 
-    public ICommand LagerplatzHinzufügenCommand;
-    public ICommand LagerplatzEntfernenCommand;
+    public ICommand PlatzInReiheHinzufügenCommand { get; private set; }
+    public ICommand PlatzAusReiheEntfernenCommand { get; private set; }
+
 
     public LagerreihenViewModel(Lagerreihe reihe)
     {
@@ -27,22 +36,33 @@ public class LagerreihenViewModel
 
     private void InitCommands()
     {
-        LagerplatzHinzufügenCommand = new RelayCommand(execute: () =>
+        PlatzInReiheHinzufügenCommand = new RelayCommand(execute: () =>
         {
             var neuerPlatz = new Lagerplatz();
             Modell.PlatzHinzufügen(neuerPlatz);
             PlatzViewmodels.Add(new LagerplatzViewModel(neuerPlatz));
+            (PlatzInReiheHinzufügenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (PlatzAusReiheEntfernenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         },
-        canExecute: () => PlatzViewmodels.Count <= 10);
+        canExecute: () => PlatzViewmodels.Count < 10);
 
-        LagerplatzEntfernenCommand = new RelayCommand(execute: () =>
+        PlatzAusReiheEntfernenCommand = new RelayCommand(execute: () =>
         {
             var letzterPlatz = PlatzViewmodels.Last();
             letzterPlatz.Modell.ZuweisungenLeeren();
             Modell.PlatzEntfernen(letzterPlatz.Modell);
             PlatzViewmodels.Remove(letzterPlatz);
+            (PlatzInReiheHinzufügenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (PlatzAusReiheEntfernenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }, 
         canExecute: () => PlatzViewmodels.Count > 1);
 
+    }
+
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

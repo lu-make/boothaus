@@ -122,4 +122,9 @@ public class DialogService : IDialogService
         var result = System.Windows.MessageBox.Show(frage, titel, System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
         return result == System.Windows.MessageBoxResult.Yes;
     }
+
+    public void OkWarnungDialogAnzeigen(string titel, string nachricht)
+    {
+        System.Windows.MessageBox.Show(nachricht, titel, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+    }
 }

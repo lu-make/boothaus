@@ -33,16 +33,18 @@ public class LagerApplicationService
     /// Verteilt automatisch Lagerplätze an alle Lageraufträge in der Saison
     /// </summary>
     /// <param name="saison">Die Saison die berücksichtigt werden soll</param>
-    public void ErstelleLagerkalender(Saison saison)
+    /// <returns>Wahr, wenn alle Aufträge konsistent vergeben werden konnten, sonst Falsch</returns>
+    public bool ErstelleLagerkalender(Saison saison)
     {
         var lager = GetLager();
         ResetInSaison(saison);
         var aufträge = auftragRepository.GetBySaison(saison).ToList(); 
-        PlätzeZuweisen(lager, aufträge);
+        var ergebnis = PlätzeZuweisen(lager, aufträge);
         lagerRepository.Save(lager);
+        return ergebnis;
     }
 
-    private void PlätzeZuweisen(Lager lager, List<Auftrag> aufträge)
+    private bool PlätzeZuweisen(Lager lager, List<Auftrag> aufträge)
     {
         /* 
          * aufsteigend nach "matroschka"-Sortierung 
@@ -55,7 +57,9 @@ public class LagerApplicationService
             .ThenByDescending(a => a.Bis)
             .ToList();
 
-        var reihen = lager.Reihen; 
+        var reihen = lager.Reihen;
+
+        var konsistent = true;
 
         foreach (var auftrag in sortierteAufträge)
         {
@@ -113,11 +117,12 @@ public class LagerApplicationService
             }
 
             if (auftrag.Platz is null)
-            { 
-                 throw new InvalidOperationException("Es konnte keine konsistente Lagerplatzzuweisung vorgenommen werden.");
+            {
+                konsistent = false;
             }
              
-        } 
+        }
+        return konsistent;
     } 
 
     /// <summary>

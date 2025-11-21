@@ -10,7 +10,26 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Icons\accept.png" />
+	  <None Remove="Icons\add.png" />
+	  <None Remove="Icons\anchor.png" />
+	  <None Remove="Icons\calendar.png" />
+	  <None Remove="Icons\cancel.png" />
+	  <None Remove="Icons\delete.png" />
+	  <None Remove="Icons\error.png" />
+	  <None Remove="Icons\wrench.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Icons\accept.png" />
+		<Resource Include="Icons\add.png" />
+		<Resource Include="Icons\anchor.png" />
 		<Resource Include="Icons\boothaus.ico" />
+		<Resource Include="Icons\calendar.png" />
+		<Resource Include="Icons\cancel.png" />
+		<Resource Include="Icons\delete.png" />
+		<Resource Include="Icons\error.png" />
+		<Resource Include="Icons\wrench.png" />
 	</ItemGroup>
 	
 	<ItemGroup>
