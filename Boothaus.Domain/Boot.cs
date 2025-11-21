@@ -31,12 +31,12 @@ public class Boot : ModelBase
         
     }
 
-    public Boot(Guid id, string name, double rumpflänge, double breite, string kontakt) : base(id)
+    public Boot(string name, string kontakt, double rumpflänge, double breite) : base(Guid.NewGuid())
     {   
         Name = name;
+        Kontakt = kontakt;
         Rumpflänge = rumpflänge;
         Breite = breite;
-        Kontakt = kontakt;
     }
 
     public override string ToString() => Name;

@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Boothaus.GUI"
         mc:Ignorable="d"
-        Title="Lagerauftrag" Height="250" Width="500" WindowStartupLocation="CenterOwner">
+        Title="Lagerauftrag" Height="250" Width="500" WindowStartupLocation="CenterOwner"  ResizeMode="NoResize">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>   
@@ -23,7 +23,7 @@
 
 
         <StackPanel Name="Bootauswahl" Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2">
-            <Label Content="Boot" />
+            <Label Content="Boot" Margin="5,0" />
 
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -58,12 +58,12 @@
 
                 <Button Grid.Column="1" Content="Neu" Margin="5"/>
             </Grid>
-            
-            <Label x:Name="BootauswahlValidationText" Content="{Binding BootValidationMessage}"/> 
+
+            <Label x:Name="BootauswahlValidationText" Content="{Binding BootValidationMessage}"  Margin="5,0" /> 
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Grid.Row="1">
-            <Label Content="Startdatum" />
+            <Label Content="Startdatum"  Margin="5,0"  />
             <dxe:DateEdit x:Name="VonDatumEditor" 
                           Margin="5" 
                           Grid.Column="0" 
@@ -75,7 +75,7 @@
 
 
         <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1">
-            <Label Content="Enddatum" />
+            <Label Content="Enddatum"  Margin="5,0" />
             <dxe:DateEdit x:Name="BisDatumEditor" 
                           Margin="5" 
                           Grid.Column="0" 

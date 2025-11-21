@@ -8,66 +8,36 @@ using System.Windows.Input;
 
 namespace Boothaus.GUI.ViewModels;
 
-public class BootMaskeViewmodel : INotifyPropertyChanged
-{
-    private LagerApplicationService appService;
-
-    private bool istNeuesBoot = false;
-
-    public Boot? Boot { get; }
-
-    public ICommand OkCommand { get; private set; }
-    public ICommand CancelCommand { get; private set; }
-
-    public BootMaskeViewmodel(LagerApplicationService appService) : this (appService, null)
-    {
-        istNeuesBoot = true;
-    }
-
-    public BootMaskeViewmodel(LagerApplicationService appService, Boot? boot) 
-    {
-
-        this.appService = appService;
-        Boot = boot;
-        InitCommands();
-    }
-
-    private void InitCommands()
-    {
-
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-}
-
 public class BootverwaltungViewmodel : INotifyPropertyChanged
 {
     private LagerApplicationService appService;
     private IDialogService dialogService;
 
     public ObservableCollection<Boot> Bootliste { get; private set; }
-    public Boot? AusgewählterBootlisteneintrag { 
+    public Boot? AusgewählterBootlisteneintrag 
+    { 
         get; 
-        private set
+        set
         {
             field = value;
             OnPropertyChanged(nameof(AusgewählterBootlisteneintrag));
+            (BootBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (BootLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }
     }
 
-    private void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 
-    public ICommand BootErfassenCommand;
-    public ICommand BootBearbeitenCommand;
-    public ICommand BootLöschenCommand;
+    public ICommand BootErfassenCommand { get; private set; }
+    public ICommand BootBearbeitenCommand { get; private set; }
+    public ICommand BootLöschenCommand { get; private set; }
 
     public BootverwaltungViewmodel(LagerApplicationService appService, IDialogService dialogService)
     {
         this.appService = appService;
         this.dialogService = dialogService;
+
+        Bootliste = new(appService.AlleBoote());
+
         InitCommands();
     }
 
@@ -110,15 +80,9 @@ public class BootverwaltungViewmodel : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-}
-
-public class BootlisteViewModel : INotifyPropertyChanged
-{
-    public Boot Modell { get; }
-    public BootlisteViewModel(Boot boot)
+    private void OnPropertyChanged(string propertyName)
     {
-        Modell = boot;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 }
+

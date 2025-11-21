@@ -143,7 +143,8 @@ public class MainViewModel : INotifyPropertyChanged
             appService.DupliziereSaisonInNächsteSaison(AusgewählteSaison);
             Saisons.Update(appService.AlleSaisons());
             AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
-            
+            AusgewählteSaison = Saisons.First(s => s.Anfangsjahr == AusgewählteSaison.Anfangsjahr + 1);
+
         });
 
         ResetZuweisungenCommand = new RelayCommand(execute: () =>
@@ -155,7 +156,11 @@ public class MainViewModel : INotifyPropertyChanged
             LagerViewModel.Update(AusgewählteSaison);
         });
 
-        BooteVerwaltenCommand = new RelayCommand(execute: dialogService.BooteVerwalten);
+        BooteVerwaltenCommand = new RelayCommand(execute: () =>
+        {
+            dialogService.BooteVerwalten();
+            AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
+        });
     }
 
     private void UpdateAuftrag(Auftrag auftrag) 

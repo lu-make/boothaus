@@ -16,7 +16,8 @@ public partial class AuftragMaske : ThemedWindow
     public AuftragMaske(AuftragMaskeViewmodel viewmodel)
     {
         InitializeComponent();
-        DataContext = viewmodel; 
+        DataContext = viewmodel;
+        Title = viewmodel.IstNeuerAuftrag ? "Auftrag erfassen" : "Auftrag bearbeiten";
         viewmodel.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName == nameof(viewmodel.Ergebnis) && viewmodel.Ergebnis.HasValue)

@@ -30,17 +30,17 @@
                 <dxg:TableView
                                AllowGrouping="False" 
                                ShowGroupPanel="False"
-                               AutoWidth="True"
                                AllowMasterDetail="False" 
+                               AutoWidth="True"
                                AllowEditing="False"   
                            />
             </dxg:GridControl.View>
             <dxg:GridControl.Columns>
-                    <dxg:GridColumn Header="Kontakt" Binding="{Binding Modell.Kontakt}" Width="Auto"/>
-                    <dxg:GridColumn Header="Name" Binding="{Binding Modell.Name}" Width="Auto"/>
-                    <dxg:GridColumn Header="Rumpflänge" Binding="{Binding Modell.Rumpflänge}" Width="Auto"/>
-                    <dxg:GridColumn Header="Breite" Binding="{Binding Modell.Breite}" Width="Auto"/> 
-                </dxg:GridControl.Columns> 
+                <dxg:GridColumn Header="Kontakt" Binding="{Binding Kontakt}"/>
+                <dxg:GridColumn Header="Name" Binding="{Binding Name}"/>
+                <dxg:GridColumn Header="Rumpflänge" Binding="{Binding Rumpflänge}"/>
+                <dxg:GridColumn Header="Breite" Binding="{Binding Breite}"/> 
+            </dxg:GridControl.Columns> 
         </dxg:GridControl>
     </Grid>
     

@@ -100,7 +100,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
     }
 
     public Auftrag? Auftrag { get; set; }
-    private bool istNeuerAuftrag;
+    public bool IstNeuerAuftrag { get; private set; }
 
     public ObservableCollection<Boot> AlleBoote { get; set; }
 
@@ -112,7 +112,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
     public AuftragMaskeViewmodel(LagerApplicationService service)
         : this(service, null)
     {
-        istNeuerAuftrag = true;
+        IstNeuerAuftrag = true;
     }
 
     public AuftragMaskeViewmodel(LagerApplicationService service, Auftrag? auftrag)
@@ -137,7 +137,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
             SachenValidieren();
             if (BootValid && DatumspaarValid)
             {  
-                if (istNeuerAuftrag)
+                if (IstNeuerAuftrag)
                 {
                     Auftrag = new Auftrag(lager, Boot!, Von!.Value, Bis!.Value);
                 } 
@@ -149,14 +149,12 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
                 }
                 Ergebnis = true;
             }
-        }, 
-        canExecute: () => true);
+        });
 
         CancelCommand = new RelayCommand(execute: () =>
         {
             Ergebnis = false;
-        }, 
-        canExecute: () => true);
+        });
     }
 
     private void SachenValidieren()
@@ -204,7 +202,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
         if (!BootValid || !DatumspaarValid) return;
 
 
-        if (istNeuerAuftrag && service.BootAuftragExistiertBereits(Boot!, Von!.Value, Bis!.Value))
+        if (IstNeuerAuftrag && service.BootAuftragExistiertBereits(Boot!, Von!.Value, Bis!.Value))
         {
             BootValid = false;
             DatumspaarValid = false;

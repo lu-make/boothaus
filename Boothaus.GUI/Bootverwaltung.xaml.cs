@@ -8,11 +8,9 @@ namespace Boothaus.GUI;
 /// </summary>
 public partial class Bootverwaltung : ThemedWindow
 {
-    private BootverwaltungViewmodel viewmodel;
-
     public Bootverwaltung(BootverwaltungViewmodel viewmodel)
     {
         InitializeComponent();
-        this.viewmodel = viewmodel;
+        DataContext = viewmodel;
     }
 }
