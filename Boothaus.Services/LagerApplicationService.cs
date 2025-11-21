@@ -2,6 +2,7 @@
 using Boothaus.Domain;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.Design;
+using Boothaus.Services.Persistence;
 
 namespace Domain.Services;
 
@@ -17,16 +18,19 @@ public class LagerApplicationService
     private IAuftragRepository auftragRepository;
     private ILagerRepository lagerRepository;
     private HashSet<Saison> saisons;
+    private ImportExportService importExport;
 
     public LagerApplicationService(
-        IBootRepository bootRepository, 
-        IAuftragRepository auftragRepository, 
-        ILagerRepository lagerRepository)
+        IBootRepository bootRepository,
+        IAuftragRepository auftragRepository,
+        ILagerRepository lagerRepository,
+        ImportExportService importExport)
     {
         this.bootRepository = bootRepository;
         this.auftragRepository = auftragRepository;
         this.lagerRepository = lagerRepository;
-        saisons = [ new Saison(2025) ];
+        saisons = [new Saison(2025)];
+        this.importExport = importExport;
     }
 
     /// <summary>
@@ -234,7 +238,7 @@ public class LagerApplicationService
     /// </summary>
     /// <param name="standardMaxBreite">Die maximale Breite eines Bootes in diesem Lager</param>
     /// <param name="standardMaxLänge">Die maximale Länge eines Bootes in diesem Lager</param>
-    public void InitLager(double standardMaxBreite, double standardMaxLänge)
+    public void InitLager(decimal standardMaxBreite, decimal standardMaxLänge)
     {
         var lager = new Lager(standardMaxBreite, standardMaxLänge);
         lagerRepository.Save(lager);
@@ -402,6 +406,23 @@ public class LagerApplicationService
         }
 
         bootRepository.Remove(boot);
+    }
 
+    /// <summary>
+    /// Exportiert den gesamten Datensatz in eine JSON-Datei an den angegebenen Zielpfad.
+    /// </summary>
+    /// <param name="zielpfad">Der Pfad der Datei</param>
+    public void DatenExportieren(string zielpfad)
+    {
+        importExport.DatenExportieren(zielpfad);
+    }
+
+    /// <summary>
+    /// Importiert einen Datensatz aus einer JSON-Datei vom angegebenen Quellpfad.
+    /// </summary>
+    /// <param name="quellpfad">Der Pfad der Datei</param>
+    public void DatenImportieren(string quellpfad)
+    {
+        importExport.DatenImportieren(quellpfad);
     }
 }

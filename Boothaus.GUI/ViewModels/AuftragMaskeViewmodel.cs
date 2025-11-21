@@ -141,7 +141,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
             var result = dialogService.BootErfassen();
             if (result.Success)
             {
-                var boot = result.Entity!;
+                var boot = result.Value!;
                 appService.ErfasseBoot(boot);
                 AlleBoote.Add(boot);
                 Boot = boot;

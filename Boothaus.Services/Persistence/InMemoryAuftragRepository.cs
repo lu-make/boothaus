@@ -15,6 +15,11 @@ public class InMemoryAuftragRepository : IAuftragRepository
         initialisiert = true;
     }
 
+    public Auftrag? Get(Guid id)
+    {
+        return aufträge.FirstOrDefault(a => a.Id == id);
+    }
+
     public void Add(Auftrag auftrag)
     {
         if (aufträge.Contains(auftrag))
@@ -64,5 +69,18 @@ public class InMemoryAuftragRepository : IAuftragRepository
     {
         return aufträge
             .Where(a => a.Saison.Anfangsjahr == saison.Anfangsjahr);
+    }
+
+    public void Upsert(Auftrag auftrag)
+    {
+        var index = aufträge.IndexOf(auftrag);
+        if (index != -1)
+        {
+            aufträge[index] = auftrag;
+        }
+        else
+        {
+            aufträge.Add(auftrag);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Boothaus.Domain;
 using Boothaus.GUI.ViewModels;
 using Domain.Services;
+using Microsoft.Win32;
 
 namespace Boothaus.GUI.Services;
 
@@ -23,7 +24,7 @@ public class DialogService : IDialogService
             return new EingabemaskeResult<Auftrag>
             {
                 Success = true,
-                Entity = auftragMaskeVm.Auftrag
+                Value = auftragMaskeVm.Auftrag
             };
         }
         else
@@ -31,7 +32,7 @@ public class DialogService : IDialogService
             return new EingabemaskeResult<Auftrag>
             {
                 Success = false,
-                Entity = null
+                Value = null
             };
         }
     }
@@ -46,7 +47,7 @@ public class DialogService : IDialogService
             return new EingabemaskeResult<Auftrag>
             {
                 Success = true,
-                Entity = viewmodel.Auftrag
+                Value = viewmodel.Auftrag
             };
         }
         else
@@ -54,7 +55,7 @@ public class DialogService : IDialogService
             return new EingabemaskeResult<Auftrag>
             {
                 Success = false,
-                Entity = null
+                Value = null
             };
         }
     }
@@ -76,7 +77,7 @@ public class DialogService : IDialogService
             return new EingabemaskeResult<Boot>
             {
                 Success = true,
-                Entity = viewmodel.Boot
+                Value = viewmodel.Boot
             };
         }
         else
@@ -84,7 +85,7 @@ public class DialogService : IDialogService
             return new EingabemaskeResult<Boot>
             {
                 Success = false,
-                Entity = null
+                Value = null
             };
         }
     }
@@ -99,7 +100,7 @@ public class DialogService : IDialogService
             return new EingabemaskeResult<Boot>
             {
                 Success = true,
-                Entity = viewmodel.Boot
+                Value = viewmodel.Boot
             };
         }
         else
@@ -107,7 +108,7 @@ public class DialogService : IDialogService
             return new EingabemaskeResult<Boot>
             {
                 Success = false,
-                Entity = null
+                Value = null
             };
         }
     }
@@ -126,5 +127,64 @@ public class DialogService : IDialogService
     public void OkWarnungDialogAnzeigen(string titel, string nachricht)
     {
         System.Windows.MessageBox.Show(nachricht, titel, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+    }
+
+    public EingabemaskeResult<string> ImportAusDateiDialog()
+    {
+        var openFileDialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = "Boothaus-Datensatz (*.boothaus.json)|*.boothaus.json",
+            Title = "Daten aus Datei importieren"
+        }; 
+
+        var result = openFileDialog.ShowDialog();
+        if (result == true) 
+        {
+            return new EingabemaskeResult<string>
+            {
+                Success = true,
+                Value = openFileDialog.FileName
+            };
+        } 
+        else
+        {
+            return new EingabemaskeResult<string>
+            {
+                Success = false,
+                Value = null
+            };
+        } 
+    }
+
+    public EingabemaskeResult<string> ExportInDateiDialog()
+    {
+        var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter = "Boothaus-Datensatz (*.boothaus.json)|*.boothaus.json",
+            Title = "Daten in Datei exportieren"
+        };
+
+        var result = saveFileDialog.ShowDialog();
+        if (result == true)
+        {
+            return new EingabemaskeResult<string>
+            {
+                Success = true,
+                Value = saveFileDialog.FileName
+            };
+        }
+        else
+        {
+            return new EingabemaskeResult<string>
+            {
+                Success = false,
+                Value = null
+            };
+        }
+    }
+
+    public void FehlermeldungAnzeigen(string nachricht)
+    {
+        System.Windows.MessageBox.Show(nachricht, "Fehler", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
     }
 }

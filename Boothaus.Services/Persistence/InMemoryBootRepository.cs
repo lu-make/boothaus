@@ -14,6 +14,11 @@ public class InMemoryBootRepository : IBootRepository
         initialisiert = true;
     }
 
+    public Boot? Get(Guid id)
+    {
+        return boote.FirstOrDefault(b => b.Id == id);
+    }
+
     public void Add(Boot boot)
     {
         if (boote.Contains(boot))
@@ -48,6 +53,18 @@ public class InMemoryBootRepository : IBootRepository
         else
         {
             throw new InvalidOperationException("Das Boot existiert nicht im Repository.");
+        }
+    }
+
+    public void Upsert(Boot boot)
+    {
+        if (!boote.Contains(boot))
+        {
+            Add(boot);
+        }
+        else
+        {
+            Update(boot);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Boothaus.Domain;
 public class Boot : ModelBase
 {
     public string Name { get; set; } = "";
-    public double Rumpflänge 
+    public decimal Rumpflänge 
     { 
         get;
         set
@@ -15,7 +15,7 @@ public class Boot : ModelBase
         } 
     }
 
-    public double Breite 
+    public decimal Breite 
     { 
         get; 
         set
@@ -31,13 +31,16 @@ public class Boot : ModelBase
         
     }
 
-    public Boot(string name, string kontakt, double rumpflänge, double breite) : base(Guid.NewGuid())
-    {   
+    public Boot(Guid id, string name, string kontakt, decimal rumpflänge, decimal breite) : base(id)
+    {
         Name = name;
         Kontakt = kontakt;
         Rumpflänge = rumpflänge;
         Breite = breite;
     }
+
+    public Boot(string name, string kontakt, decimal rumpflänge, decimal breite) 
+        : this(Guid.NewGuid(), name, kontakt, rumpflänge, breite) { }
 
     public override string ToString() => Name;
      

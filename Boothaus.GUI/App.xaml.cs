@@ -28,6 +28,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<IAuftragRepository, InMemoryAuftragRepository>();
         services.AddSingleton<IBootRepository, InMemoryBootRepository>();
         services.AddSingleton<ILagerRepository, InMemoryLagerRepository>();
+        services.AddSingleton<ImportExportService>();
         services.AddSingleton<LagerApplicationService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddTransient<MainViewModel>();

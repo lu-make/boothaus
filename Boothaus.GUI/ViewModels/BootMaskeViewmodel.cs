@@ -1,5 +1,6 @@
 ﻿using Boothaus.Domain;
 using CommunityToolkit.Mvvm.Input;
+using DevExpress.Xpf.Editors.Helpers;
 using Domain.Services;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -88,7 +89,7 @@ public class BootMaskeViewmodel : INotifyPropertyChanged
     public System.Windows.Media.Brush NameEditRahmenfarbe => NameValid ? System.Windows.Media.Brushes.LightGray : System.Windows.Media.Brushes.Red;
 
 
-    public double Rumpflänge
+    public decimal Rumpflänge
     {
         get;
         set
@@ -98,7 +99,7 @@ public class BootMaskeViewmodel : INotifyPropertyChanged
         }
     }
 
-    public double Breite
+    public decimal Breite
     {
         get;
         set
@@ -226,6 +227,12 @@ public class BootMaskeViewmodel : INotifyPropertyChanged
         {
             DimensionenValid = false;
             DimensionValidationMessage = "Rumpflänge und Breite müssen größer als 0 sein.";
+            return;
+        }
+        if (!appService.GetLager().Passt(länge: Rumpflänge, breite: Breite))
+        {
+            DimensionenValid = false;
+            DimensionValidationMessage = "Das Boot passt nicht in das Lager.";
             return;
         }
         DimensionenValid = true;

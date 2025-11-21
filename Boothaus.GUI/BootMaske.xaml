@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Boothaus.GUI"
-        mc:Ignorable="d"
-        Title="Boot" Height="300" MinHeight="300" Width="500" MinWidth="500" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        xmlns:local="clr-namespace:Boothaus.GUI" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+                   mc:Ignorable="d"
+        Title="Boot" Height="400" MinHeight="400" Width="500" MinWidth="500" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -40,16 +40,21 @@
 
         <StackPanel Name="Rumpflänge" Orientation="Vertical" Grid.Row="2" Grid.Column="0">
             <Label Content="Rumpflänge (m)"  Margin="5,0" />
-            <TextBox Text="{Binding Rumpflänge}" 
+            <dxe:SpinEdit 
+                     EditValue="{Binding Rumpflänge}" 
+                     MinValue="0"
+                     Increment="0.1" 
                      BorderBrush="{Binding DimensionenEditRahmenfarbe}"
                      Margin="5"/>
         </StackPanel>
 
         <StackPanel Name="Breite" Orientation="Vertical" Grid.Row="2" Grid.Column="1">
             <Label Content="Breite (m)"  Margin="5,0" />
-            <TextBox Text="{Binding Breite}"  
-                     BorderBrush="{Binding DimensionenEditRahmenfarbe}"
-                     Margin="5"/>
+            <dxe:SpinEdit EditValue="{Binding Breite}"  
+                          MinValue="0"
+                          Increment="0.1" 
+                        BorderBrush="{Binding DimensionenEditRahmenfarbe}"
+                        Margin="5"/>
         </StackPanel>
 
         <Label x:Name="DimensionValidationText" Content="{Binding DimensionValidationMessage}"  Margin="5,0"  Grid.Row="3" Grid.ColumnSpan="2"/>

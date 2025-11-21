@@ -61,19 +61,12 @@ public class MainViewModel : INotifyPropertyChanged
      
     public ICommand InNächsteSaisonDuplizierenCommand { get; private set; }
 
-    public ICommand LagereigenschaftenÖffnenCommand { get; private set; }
+    public ICommand LagereigenschaftenCommand { get; private set; }
     
     public ICommand LagerkalenderErstellenCommand { get; private set; }
     
-    public ICommand LagerreiheHinzufügenCommand { get; private set; }
-    public ICommand LagerreiheEntfernenCommand { get; private set; }
-    public ICommand BootAnlegenCommand { get; private set; }
-    public ICommand BootBearbeitenCommand { get; private set; }
-    public ICommand BootLöschenCommand { get; private set; }
-
     public ICommand AboutAnzeigenCommand { get; private set; }
     public ICommand ResetZuweisungenCommand { get; private set; }
-
     public ICommand BooteVerwaltenCommand { get; private set; }
     public ICommand ImportCommand { get; private set; }
     public ICommand ExportCommand { get; private set; }
@@ -86,8 +79,7 @@ public class MainViewModel : INotifyPropertyChanged
     public MainViewModel(IDialogService dialogService, LagerApplicationService appService)
     {
         this.dialogService = dialogService;
-        this.appService = appService;
-
+        this.appService = appService; 
 
         LagerViewModel = new LagerViewModel(appService.GetLager()); 
 
@@ -106,76 +98,158 @@ public class MainViewModel : INotifyPropertyChanged
     {
         AuftragErfassenCommand = new RelayCommand(execute: () =>
         {
-            var auftragmaskeResult = dialogService.AuftragErfassen();
-            if (auftragmaskeResult.Success)
+            try
             {
-                var auftrag = auftragmaskeResult.Entity!;
-                appService.ErfasseAuftrag(auftrag);
-                AuftragListe.Add(new AuftragListViewModel(auftrag));
+                var auftragmaskeResult = dialogService.AuftragErfassen();
+                if (auftragmaskeResult.Success)
+                {
+                    var auftrag = auftragmaskeResult.Value!;
+                    appService.ErfasseAuftrag(auftrag);
+                    AuftragListe.Add(new AuftragListViewModel(auftrag));
+                }
+                Saisons.Update(appService.AlleSaisons());
             }
-            Saisons.Update(appService.AlleSaisons());
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Erfassen des Auftrags: {e.Message}"); 
+            }
         });
 
         AuftragBearbeitenCommand = new RelayCommand(execute: () =>
         {
-            var ausgewählterAuftrag = AusgewählterAuftragListeneintrag?.Modell; 
-            var auftragmaskeResult = dialogService.AuftragBearbeiten(ausgewählterAuftrag!);
-            if (auftragmaskeResult.Success)
+            try
             {
-                var auftrag = auftragmaskeResult.Entity!; 
-                UpdateAuftrag(auftrag);
+                var ausgewählterAuftrag = AusgewählterAuftragListeneintrag?.Modell;
+                var auftragmaskeResult = dialogService.AuftragBearbeiten(ausgewählterAuftrag!);
+                if (auftragmaskeResult.Success)
+                {
+                    var auftrag = auftragmaskeResult.Value!;
+                    UpdateAuftrag(auftrag);
+                }
+                Saisons.Update(appService.AlleSaisons());
             }
-            Saisons.Update(appService.AlleSaisons());
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Bearbeiten des Auftrags: {e.Message}");
+            }
         }, canExecute: () => AusgewählteAuftragListeneinträge.Count == 1);
 
         AufträgeLöschenCommand = new RelayCommand(execute: () =>
         {
-            var result = dialogService.JaNeinWarnungDialogAnzeigen(titel: "Lagerauftrag löschen", frage: "Möchten Sie die ausgewählten Lageraufträge wirklich löschen?");
-            if (!result) return;
-
-            foreach (var auftrag in AusgewählteAuftragListeneinträge.ToList())
+            try
             {
-                appService.LöscheAuftrag(auftrag.Modell);
-                AuftragListe.Remove(auftrag);
+                var result = dialogService.JaNeinWarnungDialogAnzeigen(titel: "Lagerauftrag löschen", frage: "Möchten Sie die ausgewählten Lageraufträge wirklich löschen?");
+                if (!result) return;
+
+                foreach (var auftrag in AusgewählteAuftragListeneinträge.ToList())
+                {
+                    appService.LöscheAuftrag(auftrag.Modell);
+                    AuftragListe.Remove(auftrag);
+                }
+
+            }
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Löschen des Auftrags: {e.Message}");
             }
 
-
-        }, canExecute: () => AusgewählteAuftragListeneinträge.Any());
+        }, canExecute: () => AusgewählteAuftragListeneinträge.Count >= 1);
          
         LagerkalenderErstellenCommand = new RelayCommand(execute: () =>
-        { 
-            var ergebnis = appService.ErstelleLagerkalender(AusgewählteSaison);
-            LagerViewModel.Modell = appService.GetLager();
-            LagerViewModel.Update(AusgewählteSaison);
-
-            if (!ergebnis)
+        {
+            try
             {
-                dialogService.OkWarnungDialogAnzeigen("Lagerkalender erstellen", "Es konnte kein vollständiger Lagerkalender erstellt werden. Bitte überprüfen Sie die Lagerplatzzuweisungen.");
+                var ergebnis = appService.ErstelleLagerkalender(AusgewählteSaison);
+                LagerViewModel.Modell = appService.GetLager();
+                LagerViewModel.Update(AusgewählteSaison);
+
+                if (!ergebnis)
+                {
+                    dialogService.OkWarnungDialogAnzeigen("Lagerkalender erstellen", "Es konnte kein vollständiger Lagerkalender erstellt werden. Bitte überprüfen Sie die Lagerplatzzuweisungen.");
+                }
+            }
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Erstellen des Lagerkalenders: {e.Message}");
             }
         });
 
         InNächsteSaisonDuplizierenCommand = new RelayCommand(execute: () =>
         {
-            appService.DupliziereSaisonInNächsteSaison(AusgewählteSaison);
-            Saisons.Update(appService.AlleSaisons());
-            AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
-            AusgewählteSaison = Saisons.First(s => s.Anfangsjahr == AusgewählteSaison.Anfangsjahr + 1);
+            try
+            {
+                appService.DupliziereSaisonInNächsteSaison(AusgewählteSaison);
+                Saisons.Update(appService.AlleSaisons());
+                AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
+                AusgewählteSaison = Saisons.First(s => s.Anfangsjahr == AusgewählteSaison.Anfangsjahr + 1);
+            }
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Übertragen in die nächste Saison: {e.Message}");
+            }
 
         });
 
         ResetZuweisungenCommand = new RelayCommand(execute: () =>
         {
-            var ausgewählterAuftrag = AusgewählterAuftragListeneintrag?.Modell;
-            var result = dialogService.JaNeinWarnungDialogAnzeigen(titel: "Lager zurücksetzen", frage: "Möchten Sie alle Lagerzuweisungen in der Saison zurücksetzen?");
-            if (!result) return;
-            appService.ResetInSaison(AusgewählteSaison);
-            LagerViewModel.Update(AusgewählteSaison);
+            try
+            {
+                var ausgewählterAuftrag = AusgewählterAuftragListeneintrag?.Modell;
+                var result = dialogService.JaNeinWarnungDialogAnzeigen(titel: "Lager zurücksetzen", frage: "Möchten Sie alle Lagerzuweisungen in der Saison zurücksetzen?");
+                if (!result) return;
+                appService.ResetInSaison(AusgewählteSaison);
+                LagerViewModel.Update(AusgewählteSaison);
+            }
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Zurücksetzen: {e.Message}");
+            }
         });
 
         BooteVerwaltenCommand = new RelayCommand(execute: () =>
         {
-            dialogService.BooteVerwalten();
-            AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
+            try
+            {
+                dialogService.BooteVerwalten();
+                AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
+
+            }
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Öffnen der Bootverwaltung: {e.Message}");
+            }
+        });
+
+        ImportCommand = new RelayCommand(execute: () =>
+        {
+            try
+            {
+                var pfadResult = dialogService.ImportAusDateiDialog();
+                if (!pfadResult.Success) return;
+                appService.DatenImportieren(pfadResult.Value!);
+                AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
+                Saisons.Update(appService.AlleSaisons());
+                LagerViewModel.Modell = appService.GetLager();
+                LagerViewModel.Update(AusgewählteSaison);
+            }
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Importieren: {e.Message}");
+            }
+        });
+
+        ExportCommand = new RelayCommand(execute: () =>
+        {
+            try
+            {
+                var pfadResult = dialogService.ExportInDateiDialog();
+                if (!pfadResult.Success) return;
+                appService.DatenExportieren(pfadResult.Value!);
+            }
+            catch (Exception e)
+            {
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Exportieren: {e.Message}");
+            }
         });
 
         BeendenCommand = new RelayCommand(execute: () =>

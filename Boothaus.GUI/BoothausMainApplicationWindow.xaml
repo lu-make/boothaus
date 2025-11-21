@@ -91,7 +91,7 @@
                                 <Label Content="Bearbeiten" Margin="5,0"/>
                             </StackPanel>
                         </Button>
-                        <Button x:Name="AuftragLöschenButton" Margin="5" Command="{Binding AuftragLöschenCommand}">
+                        <Button x:Name="AuftragLöschenButton" Margin="5" Command="{Binding AufträgeLöschenCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/Icons/page_white_delete.png"/>
                                 <Label Content="Löschen" Margin="5,0"/>

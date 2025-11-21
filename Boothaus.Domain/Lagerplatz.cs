@@ -7,6 +7,10 @@ public class Lagerplatz : ModelBase
     private readonly List<Auftrag> zuweisungen = new();
     public IReadOnlyCollection<Auftrag> Zuweisungen => zuweisungen;
 
+    public Lagerplatz(Guid id) : base(id)
+    {
+
+    }
 
     public Lagerplatz() : base(Guid.NewGuid())
     {

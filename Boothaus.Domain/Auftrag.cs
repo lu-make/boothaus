@@ -38,8 +38,8 @@ public class Auftrag : ModelBase
 
     }
 
-    public Auftrag(Lager lager, Boot boot, DateOnly von, DateOnly bis)
-        : base(Guid.NewGuid())
+    public Auftrag(Guid id, Lager lager, Boot boot, DateOnly von, DateOnly bis)
+    : base(id)
     {
         Lager = lager;
         Boot = boot;
@@ -47,6 +47,9 @@ public class Auftrag : ModelBase
         Bis = bis;
         Saison = new Saison { Anfangsjahr = von.Year };
     }
+
+    public Auftrag(Lager lager, Boot boot, DateOnly von, DateOnly bis)
+        : this(Guid.NewGuid(), lager, boot, von, bis) { }
 
     /// <summary>
     /// Matrjoschka-Reihung der Lageraufträge.

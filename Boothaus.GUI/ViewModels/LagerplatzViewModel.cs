@@ -35,6 +35,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
         {
             field = value;
             OnPropertyChanged(nameof(IstGültigesDropZiel));
+            OnPropertyChanged(nameof(Hintergrundfarbe));
             OnPropertyChanged(nameof(Border));
             OnPropertyChanged(nameof(BorderThickness));
         }
@@ -46,7 +47,8 @@ public class LagerplatzViewModel : INotifyPropertyChanged
         set
         {
             field = value;
-            OnPropertyChanged(nameof(IstGültigesDropZiel));
+            OnPropertyChanged(nameof(IstDragDropAktiv));
+            OnPropertyChanged(nameof(Hintergrundfarbe));
             OnPropertyChanged(nameof(Border));
             OnPropertyChanged(nameof(BorderThickness));
         }
@@ -76,6 +78,11 @@ public class LagerplatzViewModel : INotifyPropertyChanged
             if (HatNächsteZuweisungInSaison)
             {
                 return new SolidColorBrush(Colors.PeachPuff);
+            }
+
+            if (IstDragDropAktiv && !IstGültigesDropZiel)
+            {
+                return new SolidColorBrush(Colors.LightGray);
             }
 
             return new SolidColorBrush(Colors.PaleGreen);

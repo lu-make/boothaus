@@ -50,7 +50,7 @@ public class BootverwaltungViewmodel : INotifyPropertyChanged
             var result = dialogService.BootErfassen();
             if (result.Success)
             {
-                var boot = result.Entity!;
+                var boot = result.Value!;
                 appService.ErfasseBoot(boot);
                 Bootliste.Add(boot);
             }
@@ -61,7 +61,7 @@ public class BootverwaltungViewmodel : INotifyPropertyChanged
             var result = dialogService.BootBearbeiten(AusgewählterBootlisteneintrag!);
             if (result.Success)
             {
-                var boot = result.Entity!;
+                var boot = result.Value!;
                 appService.UpdateBoot(boot);
 
                 var index = Bootliste.IndexOf(AusgewählterBootlisteneintrag!);
@@ -72,10 +72,14 @@ public class BootverwaltungViewmodel : INotifyPropertyChanged
 
         BooteLöschenCommand = new RelayCommand(execute: () =>
         {
-            var result = dialogService.JaNeinWarnungDialogAnzeigen("Boot löschen", "Möchten Sie das ausgewählte Boot wirklich löschen? ACHTUNG! Alle Aufträge die mit diesem Boot zusammenhängen, werden ebenfalls gelöscht!");
+            var result = dialogService.JaNeinWarnungDialogAnzeigen("Boote löschen", "Möchten Sie die ausgewählten Boote wirklich löschen? ACHTUNG! Alle Aufträge die mit diesen Booten zusammenhängen, werden ebenfalls gelöscht!");
             if (!result) return;
-            appService.LöscheBoot(AusgewählterBootlisteneintrag!);
-            Bootliste.Remove(AusgewählterBootlisteneintrag!);
+
+            foreach (var boot in AusgewählteBootlisteneinträge.ToList())
+            {
+                appService.LöscheBoot(boot);
+                Bootliste.Remove(boot);
+            }
 
         }, canExecute: () => AusgewählteBootlisteneinträge.Count > 0);
 

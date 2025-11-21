@@ -45,8 +45,8 @@ internal static class DefaultData
 
     internal static Lager Lager()
     {
-        double standardMaxBreite = 5.0;
-        double standardMaxLänge = 12.0;
+        decimal standardMaxBreite = 5.0M;
+        decimal standardMaxLänge = 12.0M;
         int anzahlReihen = 7;
         int plätzeProReihe = 10;
 
@@ -112,7 +112,7 @@ public sealed class BootFaker : Faker<Boot>
     {
         if (seed is not null) Randomizer.Seed = new Random(seed.Value); 
 
-        double maxLänge = 12.0;
+        decimal maxLänge = 12.0M;
 
         Locale = locale; 
 
@@ -127,16 +127,16 @@ public sealed class BootFaker : Faker<Boot>
 
         RuleFor(boot => boot.Rumpflänge, f =>
         {
-            var länge = f.Random.Double(5.0, maxLänge);
+            var länge = f.Random.Decimal(5.0M, maxLänge);
             return Math.Round(länge, 2);
 
         });
 
         RuleFor(boot => boot.Breite, (f, b) =>
         {
-            var min = b.Rumpflänge * 0.26;
-            var max = b.Rumpflänge * 0.34;
-            var w = f.Random.Double(min, max);
+            var min = b.Rumpflänge * 0.26M;
+            var max = b.Rumpflänge * 0.34M;
+            var w = f.Random.Decimal(min, max);
             return Math.Round(w, 2);
         });
 
