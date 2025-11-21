@@ -56,8 +56,18 @@
 
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="4" Grid.ColumnSpan="2" Margin="5">
-            <Button x:Name="OkButton" IsDefault="True" Margin="5" Command="{Binding OkCommand}" Width="85">OK</Button>
-            <Button x:Name="CancelButton"  IsCancel="True" Margin="5" Command="{Binding CancelCommand}" Width="85">Abbrechen</Button>
+            <Button x:Name="OkButton" IsDefault="True" Margin="5" Command="{Binding OkCommand}" Width="85">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Icons/accept.png"/>
+                    <Label Content="OK" Margin="5,0"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="CancelButton"  IsCancel="True" Margin="5" Command="{Binding CancelCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Icons/cancel.png"/>
+                    <Label Content="Abbrechen" Margin="5,0"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
 

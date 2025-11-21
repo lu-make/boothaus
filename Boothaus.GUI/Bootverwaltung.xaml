@@ -16,9 +16,24 @@
         </Grid.RowDefinitions>
 
         <StackPanel Name="AuftragActions" Grid.Row="0" Orientation="Horizontal" Margin="5">
-            <Button x:Name="AuftragErfassenButton"  Content="Erfassen" Margin="5" Command="{Binding BootErfassenCommand}"></Button>
-            <Button x:Name="AuftragBearbeitenButton" Content="Bearbeiten" Margin="5" Command="{Binding BootBearbeitenCommand}"></Button>
-            <Button x:Name="AuftragLöschenButton" Content="Löschen" Margin="5" Command="{Binding BootLöschenCommand}"></Button>
+            <Button x:Name="AuftragErfassenButton" Margin="5" Command="{Binding BootErfassenCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Icons/page_white_add.png"/>
+                    <Label Content="Erfassen" Margin="5,0"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="AuftragBearbeitenButton" Margin="5" Command="{Binding BootBearbeitenCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Icons/page_white_edit.png"/>
+                    <Label Content="Bearbeiten" Margin="5,0"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="AuftragLöschenButton" Margin="5" Command="{Binding BootLöschenCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Icons/page_white_delete.png"/>
+                    <Label Content="Löschen" Margin="5,0"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <dxg:GridControl 

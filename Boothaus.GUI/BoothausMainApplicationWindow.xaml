@@ -32,10 +32,30 @@
                             Width="100" 
                             Margin="5" 
                             />
-                <Button Content="Lagerkalender erzeugen" Margin="5" Command="{Binding LagerkalenderErstellenCommand}"></Button>
-                <Button Content="Alles in nächste Saison übernehmen" Margin="5" Command="{Binding InNächsteSaisonDuplizierenCommand}"></Button>
-                <Button Content="Lagerkalender zurücksetzen" Margin="5" Command="{Binding ResetZuweisungenCommand}"></Button>
-                <Button Content="Boote verwalten..." Margin="5" Command="{Binding BooteVerwaltenCommand}"></Button>
+                <Button Margin="5" Command="{Binding LagerkalenderErstellenCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Icons/lightbulb.png" />
+                        <Label Content="Lagerkalender erzeugen" Margin="5,0"/>
+                    </StackPanel>
+                </Button>
+                <Button  Margin="5" Command="{Binding InNächsteSaisonDuplizierenCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Icons/book_go.png"/>
+                        <Label Content="Alles in nächste Saison übernehmen" Margin="5,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Margin="5" Command="{Binding ResetZuweisungenCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Icons/bin_closed.png"/>
+                        <Label Content="Lagerkalender zurücksetzen" Margin="5,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Margin="5" Command="{Binding BooteVerwaltenCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Icons/anchor.png"/>
+                        <Label Content="Boote verwalten" Margin="5,0"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Grid>
         
@@ -57,9 +77,24 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Name="AuftragActions" Grid.Row="0" Orientation="Horizontal">
-                        <Button x:Name="AuftragErfassenButton"  Content="Erfassen" Margin="5" Command="{Binding AuftragErfassenCommand}"></Button>
-                        <Button x:Name="AuftragBearbeitenButton" Content="Bearbeiten" Margin="5" Command="{Binding AuftragBearbeitenCommand}"></Button>
-                        <Button x:Name="AuftragLöschenButton" Content="Löschen" Margin="5" Command="{Binding AuftragLöschenCommand}"></Button>
+                        <Button x:Name="AuftragErfassenButton" Margin="5" Command="{Binding AuftragErfassenCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Icons/page_white_add.png"/>
+                                <Label Content="Erfassen" Margin="5,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="AuftragBearbeitenButton" Margin="5" Command="{Binding AuftragBearbeitenCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Icons/page_white_edit.png"/>
+                                <Label Content="Bearbeiten" Margin="5,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="AuftragLöschenButton" Margin="5" Command="{Binding AuftragLöschenCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Icons/page_white_delete.png"/>
+                                <Label Content="Löschen" Margin="5,0"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
 
                     <dxg:GridControl 

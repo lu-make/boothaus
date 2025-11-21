@@ -40,16 +40,5 @@ public class Boot : ModelBase
     }
 
     public override string ToString() => Name;
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is not Boot anderes)
-            return false;
-        return Id == anderes.Id;
-    }
-
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
+     
 }

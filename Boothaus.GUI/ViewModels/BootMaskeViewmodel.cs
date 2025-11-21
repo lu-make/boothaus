@@ -20,7 +20,7 @@ public class BootMaskeViewmodel : INotifyPropertyChanged
     }
     public bool IstNeuesBoot { get; private set; } = false;
 
-    public Boot? Boot { get; }
+    public Boot? Boot { get; private set; }
 
     public string Kontakt 
     { 
@@ -167,16 +167,16 @@ public class BootMaskeViewmodel : INotifyPropertyChanged
                 if (IstNeuesBoot)
                 {
                     var neuesBoot = new Boot(Name, Kontakt, Rumpflänge, Breite);
-                    appService.ErfasseBoot(neuesBoot);
+                    Boot = neuesBoot;
                 }
                 else
                 {
                     Boot!.Name = Name;
                     Boot.Kontakt = Kontakt;
                     Boot.Rumpflänge = Rumpflänge;
-                    Boot.Breite = Breite;
-                    appService.UpdateBoot(Boot);
+                    Boot.Breite = Breite; 
                 }
+                
                 Ergebnis = true;
             }
 

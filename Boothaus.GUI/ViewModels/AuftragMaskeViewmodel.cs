@@ -1,4 +1,5 @@
-﻿using Boothaus.Domain; 
+﻿using Boothaus.Domain;
+using Boothaus.GUI.Services;
 using CommunityToolkit.Mvvm.Input;
 using Domain.Services;
 using System.Collections.ObjectModel;
@@ -12,7 +13,8 @@ namespace Boothaus.GUI.ViewModels;
 public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
 {
     private Lager lager;
-    private LagerApplicationService service;
+    private LagerApplicationService appService;
+    private IDialogService dialogService;
 
     public bool? Ergebnis
     {
@@ -106,20 +108,22 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    public ICommand NeuesBootCommand { get; private set; }
     public ICommand OkCommand { get; private set; }
     public ICommand CancelCommand { get; private set; }
 
-    public AuftragMaskeViewmodel(LagerApplicationService service)
-        : this(service, null)
+    public AuftragMaskeViewmodel(LagerApplicationService appService, IDialogService dialogService)
+        : this(appService, dialogService, null)
     {
         IstNeuerAuftrag = true;
     }
 
-    public AuftragMaskeViewmodel(LagerApplicationService service, Auftrag? auftrag)
+    public AuftragMaskeViewmodel(LagerApplicationService appService, IDialogService dialogService, Auftrag? auftrag)
     {
-        this.service = service;
-        lager = service.GetLager();
-        AlleBoote = new ObservableCollection<Boot>(service.AlleBoote());
+        this.appService = appService;
+        this.dialogService = dialogService;
+        lager = appService.GetLager();
+        AlleBoote = new ObservableCollection<Boot>(appService.AlleBoote());
         if (auftrag is not null)
         {
             Auftrag = auftrag;
@@ -132,6 +136,18 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
 
     private void InitCommands()
     {
+        NeuesBootCommand = new RelayCommand(execute: () =>
+        {
+            var result = dialogService.BootErfassen();
+            if (result.Success)
+            {
+                var boot = result.Entity!;
+                appService.ErfasseBoot(boot);
+                AlleBoote.Add(boot);
+                Boot = boot;
+            } 
+        });
+
         OkCommand = new RelayCommand(execute: () => 
         {
             SachenValidieren();
@@ -202,7 +218,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
         if (!BootValid || !DatumspaarValid) return;
 
 
-        if (IstNeuerAuftrag && service.BootAuftragExistiertBereits(Boot!, Von!.Value, Bis!.Value))
+        if (IstNeuerAuftrag && appService.BootAuftragExistiertBereits(Boot!, Von!.Value, Bis!.Value))
         {
             BootValid = false;
             DatumspaarValid = false;

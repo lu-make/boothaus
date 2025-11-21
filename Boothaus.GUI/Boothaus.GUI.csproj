@@ -13,22 +13,41 @@
 	  <None Remove="Icons\accept.png" />
 	  <None Remove="Icons\add.png" />
 	  <None Remove="Icons\anchor.png" />
+	  <None Remove="Icons\asterisk_yellow.png" />
+	  <None Remove="Icons\bin_closed.png" />
+	  <None Remove="Icons\book_go.png" />
 	  <None Remove="Icons\calendar.png" />
 	  <None Remove="Icons\cancel.png" />
+	  <None Remove="Icons\cross.png" />
 	  <None Remove="Icons\delete.png" />
 	  <None Remove="Icons\error.png" />
+	  <None Remove="Icons\lightbulb.png" />
+	  <None Remove="Icons\page_white_add.png" />
+	  <None Remove="Icons\page_white_delete.png" />
+	  <None Remove="Icons\page_white_edit.png" />
 	  <None Remove="Icons\wrench.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Icons\bin_closed.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Resource Include="Icons\accept.png" />
 		<Resource Include="Icons\add.png" />
 		<Resource Include="Icons\anchor.png" />
+		<Resource Include="Icons\asterisk_yellow.png" />
+		<Resource Include="Icons\book_go.png" />
 		<Resource Include="Icons\boothaus.ico" />
 		<Resource Include="Icons\calendar.png" />
 		<Resource Include="Icons\cancel.png" />
+		<Resource Include="Icons\cross.png" />
 		<Resource Include="Icons\delete.png" />
 		<Resource Include="Icons\error.png" />
+		<Resource Include="Icons\lightbulb.png" />
+		<Resource Include="Icons\page_white_add.png" />
+		<Resource Include="Icons\page_white_delete.png" />
+		<Resource Include="Icons\page_white_edit.png" />
 		<Resource Include="Icons\wrench.png" />
 	</ItemGroup>
 	

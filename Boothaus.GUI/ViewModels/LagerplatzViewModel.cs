@@ -1,5 +1,5 @@
 ﻿using Boothaus.Domain;
-using System.ComponentModel;
+using System.ComponentModel; 
 using System.Windows.Media; 
 
 namespace Boothaus.GUI.ViewModels;
@@ -9,8 +9,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
     public Auftrag? NächsteZuweisung 
     { 
         get; 
-        private set; 
-    
+        private set;  
     }
 
     public LagerplatzViewModel(Lagerplatz platz)
@@ -28,20 +27,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
             field = value;
             Aktualisieren();
         }
-    }
-
-    public bool IstAusgewählt 
-    { 
-        get; 
-        private set
-        {
-            field = value;
-            OnPropertyChanged(nameof(IstAusgewählt));
-            OnPropertyChanged(nameof(Border));
-            OnPropertyChanged(nameof(BorderThickness));
-        }
-    }
-
+    } 
     public bool IstGültigesDropZiel
     {
         get;
@@ -86,7 +72,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
     public System.Windows.Media.Brush Hintergrundfarbe
     {
         get
-        {
+        {  
             if (HatNächsteZuweisungInSaison)
             {
                 return new SolidColorBrush(Colors.PeachPuff);
@@ -105,15 +91,10 @@ public class LagerplatzViewModel : INotifyPropertyChanged
              
             if (IstDragDropAktiv && IstGültigesDropZiel)
             {
-                brush.Color = Colors.Green;
+                brush.Color = Colors.Blue;
                 return brush;    
             }
-
-            if (IstAusgewählt)
-            {
-                brush.Color = Colors.Blue;
-                return brush;
-            }
+             
             
             brush.Color = Colors.Gray;
             return brush;
@@ -124,9 +105,9 @@ public class LagerplatzViewModel : INotifyPropertyChanged
     {
         get
         {
-            if (IstAusgewählt || (IstDragDropAktiv && IstGültigesDropZiel))
+            if (IstDragDropAktiv && IstGültigesDropZiel)
             {
-                return 4;
+                return 5;
             }
             return 1;
         }

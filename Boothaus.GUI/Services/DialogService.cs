@@ -15,7 +15,7 @@ public class DialogService : IDialogService
 
     public EingabemaskeResult<Auftrag> AuftragErfassen()
     {
-        var auftragMaskeVm = new AuftragMaskeViewmodel(appService);
+        var auftragMaskeVm = new AuftragMaskeViewmodel(appService, this);
         var dialog = new AuftragMaske(auftragMaskeVm);
         var result = dialog.ShowDialog();
         if (result == true)
@@ -38,7 +38,7 @@ public class DialogService : IDialogService
 
     public EingabemaskeResult<Auftrag> AuftragBearbeiten(Auftrag auftrag)
     {
-        var viewmodel = new AuftragMaskeViewmodel(appService, auftrag);
+        var viewmodel = new AuftragMaskeViewmodel(appService, this, auftrag);
         var dialog = new AuftragMaske(viewmodel);
         var result = dialog.ShowDialog();
         if (result == true)
