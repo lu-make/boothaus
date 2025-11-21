@@ -40,7 +40,7 @@ public class LagerApplicationService
         lagerRepository.Save(lager);
     }
 
-    private void PlätzeZuweisen(Lager lager, List<Lagerauftrag> aufträge)
+    private void PlätzeZuweisen(Lager lager, List<Auftrag> aufträge)
     {
         /* 
          * aufsteigend nach "matroschka"-Sortierung 
@@ -57,6 +57,12 @@ public class LagerApplicationService
 
         foreach (var auftrag in sortierteAufträge)
         {
+            if (auftrag.Platz is not null)
+            {
+                // dieser auftrag hat schon eine zuweisung
+                continue;
+            }
+
             foreach (var reihe in reihen)
             { 
                 /*
@@ -154,7 +160,7 @@ public class LagerApplicationService
     /// </summary>
     /// <param name="auftrag">Der neue Auftrag</param>
     /// <exception cref="InvalidOperationException">Das Boot darf in dem Zeitraum keinen bestehenden Auftrag haben.</exception>
-    public void ErfasseAuftrag(Lagerauftrag auftrag)
+    public void ErfasseAuftrag(Auftrag auftrag)
     { 
         if (BootAuftragExistiertBereits(auftrag.Boot, auftrag.Von, auftrag.Bis))
         {
@@ -185,7 +191,7 @@ public class LagerApplicationService
     /// Überschreibt einen Auftrag.
     /// </summary>
     /// <param name="auftrag">Der existierende Auftrag</param>
-    public void AktualisiereAuftrag(Lagerauftrag auftrag)
+    public void AktualisiereAuftrag(Auftrag auftrag)
     {
         auftragRepository.Update(auftrag);
     }
@@ -194,7 +200,7 @@ public class LagerApplicationService
     /// Gibt alle Lageraufträge als Liste zurück.
     /// </summary>
     /// <returns>Eine Liste aller Lageraufträge.</returns>
-    public IEnumerable<Lagerauftrag> AlleAufträge()
+    public IEnumerable<Auftrag> AlleAufträge()
     {
         return auftragRepository.GetAll();
     }
@@ -204,7 +210,7 @@ public class LagerApplicationService
     /// </summary>
     /// <param name="saison">Die Saison, nach welcher gefiltert werden soll (z.B. 25/26).</param>
     /// <returns>Eine Liste von Lageraufträgen in der Saison.</returns>
-    public IEnumerable<Lagerauftrag> AlleAufträgeInSaison(Saison saison)
+    public IEnumerable<Auftrag> AlleAufträgeInSaison(Saison saison)
     {
         return auftragRepository.GetBySaison(saison);
     }
@@ -245,7 +251,7 @@ public class LagerApplicationService
     /// Löscht einen bestehenden Auftrag.
     /// </summary>
     /// <param name="auftrag">Der zu löschende Auftrag</param>
-    public void LöscheAuftrag(Lagerauftrag? auftrag)
+    public void LöscheAuftrag(Auftrag? auftrag)
     {
         if (auftrag is null) return;
         auftragRepository.Remove(auftrag);
@@ -257,11 +263,11 @@ public class LagerApplicationService
     /// <param name="auftrag">Der Lagerauftrag, der zugewiesen werden soll.</param>
     /// <param name="platz">Der Lagerplatz, auf den zugewiesen werden soll.</param>
     /// <returns>Wahr, wenn der Auftrag dem Platz zugewiesen werden darf, sonst falsch.</returns>
-    public bool KannZuweisen(Lagerauftrag? auftrag, Lagerplatz? platz)
+    public bool KannZuweisen(Auftrag? auftrag, Lagerplatz? platz)
     {
         if (auftrag is null || platz is null) return false;
         if (!auftrag.IstGültigesBoot(auftrag.Boot)) return false;
-        if (!Lagerauftrag.IstGültigesDatumspaar(auftrag.Von, auftrag.Bis)) return false;
+        if (!Auftrag.IstGültigesDatumspaar(auftrag.Von, auftrag.Bis)) return false;
         if (!platz.IstFreiImZeitraum(auftrag.Von, auftrag.Bis)) return false;
         if (platz.Reihe is null) return false;
         
@@ -279,7 +285,7 @@ public class LagerApplicationService
     /// </summary>
     /// <param name="auftrag">Der Lagerauftrag, der zugewiesen werden soll.</param>
     /// <returns>Eine Liste von Lagerplätzen, denen der Auftrag zugewiesen werden darf.</returns>
-    public IEnumerable<Lagerplatz> FindeGültigePlätze(Lagerauftrag auftrag)
+    public IEnumerable<Lagerplatz> FindeGültigePlätze(Auftrag auftrag)
     {
         var lager = GetLager();
         var gültigePlätze = new List<Lagerplatz>();
@@ -294,5 +300,40 @@ public class LagerApplicationService
             }
         }
         return gültigePlätze;
+    }
+
+    /// <summary>
+    /// Die Aufträge und Lagerplatzverteilungen dieser Saison werden in die nächste Saison kopiert.
+    /// Bestehende Aufträge in der nächsten Saison bleiben unberührt.
+    /// </summary>
+    /// <param name="ausgewählteSaison">Die aktuelle Saison.</param>
+    public void DupliziereSaisonInNächsteSaison(Saison ausgewählteSaison)
+    {
+        var nächsteSaison = new Saison(ausgewählteSaison.Anfangsjahr + 1);
+        var aufträge = auftragRepository.GetBySaison(ausgewählteSaison).ToList();
+        foreach (var auftrag in aufträge)
+        {
+            var platz = auftrag.Platz;
+
+            var existiert = auftragRepository.GetBySaison(nächsteSaison)
+                .Any(a => a.Boot.Id == auftrag.Boot.Id &&
+                          a.Platz?.Id == platz?.Id &&
+                          a.Von == auftrag.Von.AddYears(1) &&
+                          a.Bis == auftrag.Bis.AddYears(1));
+
+            if (existiert) continue;
+
+            var neuerAuftrag = new Auftrag(
+                lager: auftrag.Lager,
+                boot: auftrag.Boot,
+                von: auftrag.Von.AddYears(1),
+                bis: auftrag.Bis.AddYears(1)
+            );
+
+            neuerAuftrag.Platz = platz;
+            platz?.ZuweisungHinzufügen(neuerAuftrag);
+            auftragRepository.Add(neuerAuftrag);
+        } 
+        saisons.Add(nächsteSaison);
     }
 }

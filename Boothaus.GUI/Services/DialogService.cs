@@ -13,14 +13,14 @@ public class DialogService : IDialogService
         this.appService = appService;
     }
 
-    public EingabemaskeResult<Lagerauftrag> AuftragErzeugen()
+    public EingabemaskeResult<Auftrag> AuftragErzeugen()
     {
         var auftragMaskeVm = new AuftragMaskeViewmodel(appService);
         var dialog = new AuftragMaske(auftragMaskeVm);
         var result = dialog.ShowDialog();
         if (result == true)
         {
-            return new EingabemaskeResult<Lagerauftrag>
+            return new EingabemaskeResult<Auftrag>
             {
                 Success = true,
                 Entity = auftragMaskeVm.Auftrag
@@ -28,7 +28,7 @@ public class DialogService : IDialogService
         }
         else
         {
-            return new EingabemaskeResult<Lagerauftrag>
+            return new EingabemaskeResult<Auftrag>
             {
                 Success = false,
                 Entity = null
@@ -36,14 +36,14 @@ public class DialogService : IDialogService
         }
     }
 
-    public EingabemaskeResult<Lagerauftrag> AuftragBearbeiten(Lagerauftrag auftrag)
+    public EingabemaskeResult<Auftrag> AuftragBearbeiten(Auftrag auftrag)
     {
         var viewmodel = new AuftragMaskeViewmodel(appService, auftrag);
         var dialog = new AuftragMaske(viewmodel);
         var result = dialog.ShowDialog();
         if (result == true)
         {
-            return new EingabemaskeResult<Lagerauftrag>
+            return new EingabemaskeResult<Auftrag>
             {
                 Success = true,
                 Entity = viewmodel.Auftrag
@@ -51,7 +51,7 @@ public class DialogService : IDialogService
         }
         else
         {
-            return new EingabemaskeResult<Lagerauftrag>
+            return new EingabemaskeResult<Auftrag>
             {
                 Success = false,
                 Entity = null

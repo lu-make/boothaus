@@ -9,6 +9,7 @@ namespace Boothaus.GUI.ViewModels;
 public class LagerreihenViewModel
 {
     public Lagerreihe Modell { get; }
+    public int Displaynummer => Modell.Nummer + 1;
     public ObservableCollection<LagerplatzViewModel> PlatzViewmodels { get; } = new(); 
 
     public ICommand LagerplatzHinzufügenCommand;

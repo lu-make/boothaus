@@ -4,8 +4,8 @@ public class Lagerplatz : ModelBase
 { 
     public Lagerreihe? Reihe { get; internal set; } 
 
-    private readonly List<Lagerauftrag> zuweisungen = new();
-    public IReadOnlyCollection<Lagerauftrag> Zuweisungen => zuweisungen;
+    private readonly List<Auftrag> zuweisungen = new();
+    public IReadOnlyCollection<Auftrag> Zuweisungen => zuweisungen;
 
 
     public Lagerplatz() : base(Guid.NewGuid())
@@ -13,7 +13,7 @@ public class Lagerplatz : ModelBase
 
     } 
 
-    public void ZuweisungHinzufügen(Lagerauftrag auftrag)
+    public void ZuweisungHinzufügen(Auftrag auftrag)
     { 
         if (!IstFreiImZeitraum(auftrag.Von, auftrag.Bis))
         {
@@ -24,7 +24,7 @@ public class Lagerplatz : ModelBase
         zuweisungen.Add(auftrag);
     }
 
-    public void ZuweisungEntfernen(Lagerauftrag auftrag)
+    public void ZuweisungEntfernen(Auftrag auftrag)
     {
         if (!zuweisungen.Contains(auftrag))
         {
@@ -49,7 +49,7 @@ public class Lagerplatz : ModelBase
         return !zuweisungen.Any(z => z.Von <= bis && z.Bis >= von);
     }
 
-    public Lagerauftrag? GetZuweisung(DateOnly datum)
+    public Auftrag? GetZuweisung(DateOnly datum)
     {
         return zuweisungen.FirstOrDefault(z => z.Von <= datum && z.Bis >= datum);
     }

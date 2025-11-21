@@ -6,16 +6,16 @@ namespace Boothaus.Services.Persistence;
 
 public class InMemoryAuftragRepository : IAuftragRepository
 {
-    private List<Lagerauftrag> aufträge = new();
+    private List<Auftrag> aufträge = new();
     private bool initialisiert;
-    public void InitialisiereMitDefaults(List<Lagerauftrag> defaultAufträge)
+    public void InitialisiereMitDefaults(List<Auftrag> defaultAufträge)
     {
         if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert."); 
         aufträge = defaultAufträge;
         initialisiert = true;
     }
 
-    public void Add(Lagerauftrag auftrag)
+    public void Add(Auftrag auftrag)
     {
         if (aufträge.Contains(auftrag))
         {
@@ -25,12 +25,12 @@ public class InMemoryAuftragRepository : IAuftragRepository
         aufträge.Add(auftrag);
     }
 
-    public IEnumerable<Lagerauftrag> GetAll()
+    public IEnumerable<Auftrag> GetAll()
     {
         return aufträge;
     }
 
-    public void Remove(Lagerauftrag auftrag)
+    public void Remove(Auftrag auftrag)
     {
         if (!aufträge.Contains(auftrag))
         {
@@ -39,7 +39,7 @@ public class InMemoryAuftragRepository : IAuftragRepository
         aufträge.Remove(auftrag);
     }
 
-    public void Update(Lagerauftrag auftrag)
+    public void Update(Auftrag auftrag)
     {
         var index = aufträge.IndexOf(auftrag);
         if (index != -1)
@@ -60,7 +60,7 @@ public class InMemoryAuftragRepository : IAuftragRepository
             .OrderBy(s => s.Anfangsjahr);
     }
 
-    public IEnumerable<Lagerauftrag> GetBySaison(Saison saison)
+    public IEnumerable<Auftrag> GetBySaison(Saison saison)
     {
         return aufträge
             .Where(a => a.Saison.Anfangsjahr == saison.Anfangsjahr);

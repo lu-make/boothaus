@@ -6,7 +6,7 @@ namespace Boothaus.GUI.ViewModels;
 
 public class LagerplatzViewModel : INotifyPropertyChanged
 {
-    private Lagerauftrag? nächsteZuweisung;
+    private Auftrag? nächsteZuweisung;
 
     public LagerplatzViewModel(Lagerplatz platz)
     {
@@ -66,7 +66,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
         var heute = DateOnly.FromDateTime(DateTime.Now);
 
         nächsteZuweisung = Modell.Zuweisungen
-            .Where(z => z.Bis >= heute)
+            .Where(z => z.Saison.Equals(AusgewählteSaison))
             .OrderBy(z => z.Von)
             .FirstOrDefault();
 
@@ -78,12 +78,12 @@ public class LagerplatzViewModel : INotifyPropertyChanged
     }
 
 
-    public bool KannAuftragZuweisen(Lagerauftrag auftrag)
+    public bool KannAuftragZuweisen(Auftrag auftrag)
     {
         return Modell.IstFreiImZeitraum(auftrag.Von, auftrag.Bis);
     }
 
-    public void AuftragZuweisen(Lagerauftrag auftrag)
+    public void AuftragZuweisen(Auftrag auftrag)
     {
         Modell.ZuweisungHinzufügen(auftrag);
     }

@@ -5,7 +5,7 @@ namespace Boothaus.GUI;
 
 internal static class DefaultData
 {
-    internal static List<Lagerauftrag> Aufträge(Lager lager, IEnumerable<Boot> boote)
+    internal static List<Auftrag> Aufträge(Lager lager, IEnumerable<Boot> boote)
     {
         Faker faker = new("de");
         var saisonStartJahr = 2025;
@@ -15,7 +15,7 @@ internal static class DefaultData
         var outVon = new DateTime(saisonStartJahr + 1, 1, 10);
         var outBis = new DateTime(saisonStartJahr + 1, 4, 15);
 
-        var result = new List<Lagerauftrag>();
+        var result = new List<Auftrag>();
          
         foreach (var boot in boote)
         {
@@ -24,7 +24,7 @@ internal static class DefaultData
 
             var von = DateOnly.FromDateTime(faker.Date.Between(inVon, inBis));
             var bis = DateOnly.FromDateTime(faker.Date.Between(outVon, outBis));
-            var auftrag = new Lagerauftrag( 
+            var auftrag = new Auftrag( 
                 lager: lager,
                 boot: boot,
                 von: von,

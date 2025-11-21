@@ -99,7 +99,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
         }
     }
 
-    public Lagerauftrag? Auftrag { get; set; }
+    public Auftrag? Auftrag { get; set; }
     private bool istNeuerAuftrag;
 
     public ObservableCollection<Boot> AlleBoote { get; set; }
@@ -115,7 +115,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
         istNeuerAuftrag = true;
     }
 
-    public AuftragMaskeViewmodel(LagerApplicationService service, Lagerauftrag? auftrag)
+    public AuftragMaskeViewmodel(LagerApplicationService service, Auftrag? auftrag)
     {
         this.service = service;
         lager = service.GetLager();
@@ -139,7 +139,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
             {  
                 if (istNeuerAuftrag)
                 {
-                    Auftrag = new Lagerauftrag(lager, Boot!, Von!.Value, Bis!.Value);
+                    Auftrag = new Auftrag(lager, Boot!, Von!.Value, Bis!.Value);
                 } 
                 else
                 {
@@ -188,7 +188,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
 
     private void DatenValidieren()
     {
-        if (!Von.HasValue || !Bis.HasValue || !Lagerauftrag.IstGültigesDatumspaar(Von!.Value, Bis!.Value))
+        if (!Von.HasValue || !Bis.HasValue || !Auftrag.IstGültigesDatumspaar(Von!.Value, Bis!.Value))
         {
             DatumspaarValidationMessage = "Sie müssen einen gültigen Zeitraum auswählen."; 
             DatumspaarValid = false;

@@ -2,7 +2,7 @@
 
 namespace Boothaus.Domain;
 
-public class Lagerauftrag : ModelBase
+public class Auftrag : ModelBase
 { 
     public Lager Lager { get; init; } 
     public Saison Saison { get; init; }
@@ -38,7 +38,7 @@ public class Lagerauftrag : ModelBase
 
     }
 
-    public Lagerauftrag(Lager lager, Boot boot, DateOnly von, DateOnly bis)
+    public Auftrag(Lager lager, Boot boot, DateOnly von, DateOnly bis)
         : base(Guid.NewGuid())
     {
         Lager = lager;
@@ -61,7 +61,7 @@ public class Lagerauftrag : ModelBase
     /// ohne dass die Termine kollidieren)
     /// 1: wenn dieser Auftrag echt vor dem anderen geordnet ist (d.h. der andere Auftrag umschließt diesen)
     /// </returns>  
-    public int VergleicheReihenordnung(Lagerauftrag anderer)
+    public int VergleicheReihenordnung(Auftrag anderer)
     {
         // dieser auftrag umschließt den anderen auftrag
         if (anderer.Von >= Von && anderer.Bis <= Bis)

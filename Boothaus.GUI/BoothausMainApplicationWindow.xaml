@@ -30,6 +30,7 @@
                     Margin="5" 
                     />
                 <Button Content="Lagerkalender erzeugen" Margin="5" Command="{Binding LagerkalenderErstellenCommand}"></Button>
+                <Button Content="Alles in nächste Saison übernehmen" Margin="5" Command="{Binding InNächsteSaisonDuplizierenCommand}"></Button>
             </StackPanel>
         </Grid>
         
@@ -60,8 +61,8 @@
                         x:Name="Auftragliste" 
                         Grid.Row="1" 
                         Margin="5" 
-                        ItemsSource="{Binding Aufträge}" 
-                        SelectedItem="{Binding AusgewählterAuftrag, Mode=TwoWay}"
+                        ItemsSource="{Binding AuftragListe}" 
+                        SelectedItem="{Binding AusgewählterAuftragListeneintrag, Mode=TwoWay}"
                         >
                         <dxg:GridControl.View>
                             <dxg:TableView
@@ -73,9 +74,9 @@
                             />
                         </dxg:GridControl.View>
                         <dxg:GridControl.Columns> 
-                            <dxg:GridColumn Header="Boot" Binding="{Binding Boot}" Width="Auto"/>
-                            <dxg:GridColumn Header="Von" Binding="{Binding Von, StringFormat=dd.MM.yyyy}" Width="Auto"/>
-                            <dxg:GridColumn Header="Bis" Binding="{Binding Bis, StringFormat=dd.MM.yyyy}" Width="Auto"/>
+                            <dxg:GridColumn Header="Boot" Binding="{Binding Modell.Boot}" Width="Auto"/>
+                            <dxg:GridColumn Header="Von" Binding="{Binding Modell.Von, StringFormat=dd.MM.yyyy}" Width="Auto"/>
+                            <dxg:GridColumn Header="Bis" Binding="{Binding Modell.Bis, StringFormat=dd.MM.yyyy}" Width="Auto"/>
                         </dxg:GridControl.Columns>
                     </dxg:GridControl>
                 </Grid>
@@ -103,7 +104,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Modell.Nummer}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{Binding Displaynummer}" VerticalAlignment="Center"/>
                                     <ItemsControl Grid.Column="1" ItemsSource="{Binding PlatzViewmodels}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>

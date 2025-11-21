@@ -4,8 +4,8 @@ namespace Boothaus.GUI.Services;
 
 public interface IDialogService
 {
-    EingabemaskeResult<Lagerauftrag> AuftragErzeugen();
-    EingabemaskeResult<Lagerauftrag> AuftragBearbeiten(Lagerauftrag auftrag);
+    EingabemaskeResult<Auftrag> AuftragErzeugen();
+    EingabemaskeResult<Auftrag> AuftragBearbeiten(Auftrag auftrag);
     bool BootErzeugen();
     bool BootBearbeiten(Boot boot);
     void AboutAnzeigen();
