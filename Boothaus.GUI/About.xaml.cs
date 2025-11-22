@@ -1,4 +1,5 @@
 ﻿using DevExpress.Xpf.Core;
+using System.Reflection;
 
 namespace Boothaus.GUI;
 
@@ -7,7 +8,7 @@ namespace Boothaus.GUI;
 /// </summary>
 public partial class About : ThemedWindow
 {
-    public string Version => Constants.Version;
+    public string Version => Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
 
     public About()
     {

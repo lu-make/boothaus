@@ -7,13 +7,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>Icons\boothaus.ico</ApplicationIcon>
-	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Remove="Icons\folder_page.png" />
-	</ItemGroup>
-
-	
+		<AssemblyVersion>1.0.1</AssemblyVersion>
+		<FileVersion>1.0.1</FileVersion>
+	</PropertyGroup> 
 	
 	<ItemGroup>
 		<Resource Include="Icons\accept.png" />
