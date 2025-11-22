@@ -40,20 +40,22 @@ public class ImportExportService
             throw new InvalidOperationException("Importierte Daten sind ungültig.");
         }
 
-        var lager = new Lager(importData.Lager.StandardMaxBreite, importData.Lager.StandardMaxLänge);
+        var neuesLager = new Lager(importData.Lager.StandardMaxBreite, importData.Lager.StandardMaxLänge);
+        var neueBoote = new List<Boot>();
+        var neueAufträge = new List<Auftrag>();
 
         foreach (var bootDto in importData.Boote.ToList())
         {
             var boot = new Boot(bootDto.Id, bootDto.Name, bootDto.Kontakt, bootDto.Rumpflänge, bootDto.Breite);
-            bootRepo.Upsert(boot);
+            neueBoote.Add(boot);
         }
 
         foreach (var auftragDto in importData.Aufträge.ToList())
         {
-            var boot = bootRepo.Get(auftragDto.Boot);
+            var boot = neueBoote.First(b => b.Id == auftragDto.Boot);
             if (boot is null) throw new InvalidOperationException($"Boot mit ID {auftragDto.Boot} nicht gefunden.");
-            var auftrag = new Auftrag(auftragDto.Id, lager, boot, auftragDto.Von, auftragDto.Bis);
-            auftragRepo.Upsert(auftrag);
+            var auftrag = new Auftrag(auftragDto.Id, neuesLager, boot, auftragDto.Von, auftragDto.Bis);
+            neueAufträge.Add(auftrag);
         }
 
 
@@ -72,10 +74,19 @@ public class ImportExportService
                 reihe.PlatzHinzufügen(platz);
 
             }
-            lager.ReiheUpsert(reihe);
+            neuesLager.ReiheUpsert(reihe);
         }
 
-        lagerRepo.Save(lager);
+        foreach (var auftrag in neueAufträge)
+        {
+            auftragRepo.Upsert(auftrag);
+        }
+        foreach (var boot in neueBoote)
+        {
+            bootRepo.Upsert(boot);
+        }
+
+        lagerRepo.Save(neuesLager);
 
     }
 

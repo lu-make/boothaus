@@ -127,6 +127,7 @@ public class LagerApplicationService
             }
              
         }
+
         return konsistent;
     } 
 
