@@ -16,7 +16,7 @@ Laden Sie die entsprechende .ZIP Datei aus "Releases" herunter und extrahieren S
 
 <img width="900" height="auto" alt="Anwendung" src="https://github.com/user-attachments/assets/0fb9f563-ae59-47c3-8cbe-1ac7a70e1904" />
 
-Links befindet sich eine Liste von Aufträgen. Oben können Sie im Menü die aktuelle Saison wählen. Es gibt grundsätzlich einen Auftrag für ein Boot pro Saison. 
+Links befindet sich eine Liste von Aufträgen. Oben können Sie im Menü die aktuelle Saison wählen. Es gibt grundsätzlich einen Auftrag für ein Boot pro Saison. Aufträge können automatisch Plätzen zugewiesen werden. Die Platzverteilung funktioniert immer so, dass Aufträge die in einer Reihe sind, zeitlich miteinander verschachtelt sind. Das heißt dass der hintere Auftrag (weiter weg vom Eingang) einen früheren Einwinterungstermin und einen späteren Auswinterungstermin hat, als der vordere Eintrag (näher am Eingang).
 
 Rechts sehen Sie eine zweidimensionale Übersicht der Lagerplätze. Es werden freie und belegte Plätze angezeigt. Sie können Lageraufträge ziehen und auf einen freien Lagerplatz ablegen. Es wird automatisch angezeigt, welche Lagerplätze verfügbar sind. Sie können Aufträge auch zwischen Plätzen hin und her ziehen, oder die Platzzuweisung löschen indem sie von einem Platz nach außerhalb ziehen. 
 
