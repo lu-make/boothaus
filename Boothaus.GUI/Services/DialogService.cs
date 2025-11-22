@@ -2,6 +2,7 @@
 using Boothaus.GUI.ViewModels;
 using Domain.Services;
 using Microsoft.Win32;
+using System.Windows;
 
 namespace Boothaus.GUI.Services;
 
@@ -18,6 +19,7 @@ public class DialogService : IDialogService
     {
         var auftragMaskeVm = new AuftragMaskeViewmodel(appService, this);
         var dialog = new AuftragMaske(auftragMaskeVm);
+        dialog.Owner = System.Windows.Application.Current.MainWindow;
         var result = dialog.ShowDialog();
         if (result == true)
         {
@@ -41,6 +43,7 @@ public class DialogService : IDialogService
     {
         var viewmodel = new AuftragMaskeViewmodel(appService, this, auftrag);
         var dialog = new AuftragMaske(viewmodel);
+        dialog.Owner = System.Windows.Application.Current.MainWindow;
         var result = dialog.ShowDialog();
         if (result == true)
         {
@@ -64,6 +67,7 @@ public class DialogService : IDialogService
     {
         var viewmodel = new BootverwaltungViewmodel(appService, this);
         var dialog = new Bootverwaltung(viewmodel);
+        dialog.Owner = System.Windows.Application.Current.MainWindow;
         dialog.ShowDialog();
     }
 
@@ -71,6 +75,7 @@ public class DialogService : IDialogService
     {
         var viewmodel = new BootMaskeViewmodel(appService);
         var dialog = new BootMaske(viewmodel);
+        dialog.Owner = System.Windows.Application.Current.MainWindow;
         var result = dialog.ShowDialog();
         if (result == true)
         {
@@ -94,6 +99,7 @@ public class DialogService : IDialogService
     {
         var viewmodel = new BootMaskeViewmodel(appService, boot);
         var dialog = new BootMaske(viewmodel);
+        dialog.Owner = System.Windows.Application.Current.MainWindow;
         var result = dialog.ShowDialog();
         if (result == true)
         {
@@ -116,6 +122,7 @@ public class DialogService : IDialogService
     public void AboutAnzeigen()
     {
         var about = new About();
+        about.Owner = System.Windows.Application.Current.MainWindow;
         about.ShowDialog();
     }
 
@@ -187,5 +194,13 @@ public class DialogService : IDialogService
     public void FehlermeldungAnzeigen(string nachricht)
     {
         System.Windows.MessageBox.Show(nachricht, "Fehler", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+    }
+
+    public void EinstellungenAnzeigen()
+    {
+        var einstellungenVm = new EinstellungenViewModel(appService);
+        var einstellungen = new Einstellungen(einstellungenVm);
+        einstellungen.Owner = System.Windows.Application.Current.MainWindow;
+        einstellungen.ShowDialog();
     }
 }

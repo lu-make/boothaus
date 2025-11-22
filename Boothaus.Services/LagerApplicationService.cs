@@ -57,6 +57,7 @@ public class LagerApplicationService
          * längeres intervall zuerst
         */
         var sortierteAufträge = aufträge
+            .Where(a => lager.Passt(a.Boot))
             .OrderBy(a => a.Von)
             .ThenByDescending(a => a.Bis)
             .ToList();

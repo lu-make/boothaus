@@ -15,8 +15,8 @@ internal class LagerDto
 
     public LagerDto(Lager lager)
     {
-        StandardMaxLänge = lager.StandardMaxLänge;
-        StandardMaxBreite = lager.StandardMaxBreite;
+        StandardMaxLänge = lager.MaxBootLänge;
+        StandardMaxBreite = lager.MaxBootBreite;
         Lagerreihen = new List<LagerreiheDto>();
         foreach(var reihe in lager.Reihen)
         {

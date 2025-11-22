@@ -20,6 +20,7 @@
 	  <None Remove="Icons\cancel.png" />
 	  <None Remove="Icons\cross.png" />
 	  <None Remove="Icons\delete.png" />
+	  <None Remove="Icons\disk.png" />
 	  <None Remove="Icons\error.png" />
 	  <None Remove="Icons\lightbulb.png" />
 	  <None Remove="Icons\page_white_add.png" />
@@ -44,6 +45,7 @@
 		<Resource Include="Icons\cancel.png" />
 		<Resource Include="Icons\cross.png" />
 		<Resource Include="Icons\delete.png" />
+		<Resource Include="Icons\disk.png" />
 		<Resource Include="Icons\error.png" />
 		<Resource Include="Icons\lightbulb.png" />
 		<Resource Include="Icons\page_white_add.png" />

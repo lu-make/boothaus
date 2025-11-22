@@ -18,6 +18,10 @@
                     <MenuItem Header="Daten importieren" Command="{Binding ImportCommand}"/>
                     <MenuItem Header="Daten exportieren" Command="{Binding ExportCommand}"/>
                     <MenuItem Header="Beenden" Command="{Binding BeendenCommand}"/>
+                </MenuItem> 
+
+                <MenuItem Header="Bearbeiten">
+                    <MenuItem Header="Einstellungen" Command="{Binding EinstellungenAnzeigenCommand}"/>
                 </MenuItem>
 
                 <MenuItem Header="Hilfe">

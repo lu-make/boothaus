@@ -16,4 +16,5 @@ public interface IDialogService
 
     EingabemaskeResult<string> ImportAusDateiDialog();
     EingabemaskeResult<string> ExportInDateiDialog();
+    void EinstellungenAnzeigen();
 }

@@ -61,7 +61,7 @@ public class MainViewModel : INotifyPropertyChanged
      
     public ICommand InNächsteSaisonDuplizierenCommand { get; private set; }
 
-    public ICommand LagereigenschaftenCommand { get; private set; }
+    public ICommand EinstellungenAnzeigenCommand { get; private set; }
     
     public ICommand LagerkalenderErstellenCommand { get; private set; }
     
@@ -111,7 +111,7 @@ public class MainViewModel : INotifyPropertyChanged
             }
             catch (Exception e)
             {
-                dialogService.FehlermeldungAnzeigen($"Fehler beim Erfassen des Auftrags: {e.Message}"); 
+                dialogService.FehlermeldungAnzeigen($"Fehler beim Erfassen des Auftrags: {e.Message}");
             }
         });
 
@@ -154,13 +154,22 @@ public class MainViewModel : INotifyPropertyChanged
             }
 
         }, canExecute: () => AusgewählteAuftragListeneinträge.Count >= 1);
-         
+
         LagerkalenderErstellenCommand = new RelayCommand(execute: () =>
         {
             try
             {
+                var alleBoote = appService.AlleAufträgeInSaison(AusgewählteSaison).Select(a => a.Boot);
+                var lager = appService.GetLager();
+                var passend = alleBoote.All(boot => lager.Passt(boot));
+
+                if (!passend)
+                {
+                    dialogService.OkWarnungDialogAnzeigen("Lagerkalender", "Es gibt Aufträge mit Booten, die nicht in dieses Lager passen. Diese können nicht zugewiesen werden.");
+                }
+
                 var ergebnis = appService.ErstelleLagerkalender(AusgewählteSaison);
-                LagerViewModel.Modell = appService.GetLager();
+                LagerViewModel.Modell = lager;
                 LagerViewModel.Update(AusgewählteSaison);
 
                 if (!ergebnis)
@@ -258,6 +267,9 @@ public class MainViewModel : INotifyPropertyChanged
         });
 
         AboutAnzeigenCommand = new RelayCommand(execute: dialogService.AboutAnzeigen);
+
+
+        EinstellungenAnzeigenCommand = new RelayCommand(execute: dialogService.EinstellungenAnzeigen);
     }
 
     private void UpdateAuftrag(Auftrag auftrag) 

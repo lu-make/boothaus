@@ -4,7 +4,7 @@ namespace Boothaus.Domain;
 
 public class Lager
 {  
-    public decimal StandardMaxBreite
+    public decimal MaxBootBreite
     {
         get;
         set
@@ -14,7 +14,7 @@ public class Lager
         }
     }
 
-    public decimal StandardMaxLänge 
+    public decimal MaxBootLänge 
     { 
         get; 
         set
@@ -38,8 +38,8 @@ public class Lager
         Assumes.True(standardMaxLänge > 0);
         
         Reihen = [];
-        StandardMaxBreite = standardMaxBreite;
-        StandardMaxLänge = standardMaxLänge;
+        MaxBootBreite = standardMaxBreite;
+        MaxBootLänge = standardMaxLänge;
     }
 
     public bool Passt(Boot boot)
@@ -49,6 +49,6 @@ public class Lager
 
     public bool Passt(decimal länge, decimal breite)
     {
-        return breite <= StandardMaxBreite && länge <= StandardMaxLänge;
+        return breite <= MaxBootBreite && länge <= MaxBootLänge;
     }
 }
