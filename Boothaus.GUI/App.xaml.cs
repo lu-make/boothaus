@@ -3,9 +3,11 @@ using Boothaus.GUI.Services;
 using Boothaus.GUI.ViewModels;
 using Boothaus.Services.Contracts;
 using Boothaus.Services.Persistence;
+using DevExpress.Xpf.Core;
 using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using DialogService = Boothaus.GUI.Services.DialogService;
 
 namespace Boothaus;
 
@@ -37,6 +39,7 @@ public partial class App : System.Windows.Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        ApplicationThemeHelper.ApplicationThemeName = Theme.Win10SystemName;
 
         var auftragRepo = Provider.GetRequiredService<IAuftragRepository>();
         var bootRepo = Provider.GetRequiredService<IBootRepository>();

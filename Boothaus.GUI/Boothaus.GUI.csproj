@@ -7,38 +7,14 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>Icons\boothaus.ico</ApplicationIcon>
-	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Remove="Icons\accept.png" />
-	  <None Remove="Icons\add.png" />
-	  <None Remove="Icons\anchor.png" />
-	  <None Remove="Icons\asterisk_yellow.png" />
-	  <None Remove="Icons\bin_closed.png" />
-	  <None Remove="Icons\book_go.png" />
-	  <None Remove="Icons\calendar.png" />
-	  <None Remove="Icons\cancel.png" />
-	  <None Remove="Icons\cross.png" />
-	  <None Remove="Icons\delete.png" />
-	  <None Remove="Icons\disk.png" />
-	  <None Remove="Icons\error.png" />
-	  <None Remove="Icons\lightbulb.png" />
-	  <None Remove="Icons\page_white_add.png" />
-	  <None Remove="Icons\page_white_delete.png" />
-	  <None Remove="Icons\page_white_edit.png" />
-	  <None Remove="Icons\wrench.png" />
-	  <None Remove="Image\boothaus_banner.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Resource Include="Icons\bin_closed.png" />
-	</ItemGroup>
-
+	</PropertyGroup> 
+	
 	<ItemGroup>
 		<Resource Include="Icons\accept.png" />
 		<Resource Include="Icons\add.png" />
 		<Resource Include="Icons\anchor.png" />
 		<Resource Include="Icons\asterisk_yellow.png" />
+		<Resource Include="Icons\bin_closed.png" />
 		<Resource Include="Icons\book_go.png" />
 		<Resource Include="Icons\boothaus.ico" />
 		<Resource Include="Icons\calendar.png" />
@@ -61,6 +37,7 @@
 
 	<PropertyGroup>
 		<LangVersion>preview</LangVersion>
+		<AssemblyName>Boothaus</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
