@@ -114,8 +114,9 @@ public class DialogService : IDialogService
     }
 
     public void AboutAnzeigen()
-    { 
-        throw new NotImplementedException();
+    {
+        var about = new About();
+        about.ShowDialog();
     }
 
     public bool JaNeinWarnungDialogAnzeigen(string titel, string frage)

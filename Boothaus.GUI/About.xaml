@@ -1,0 +1,34 @@
+﻿<dx:ThemedWindow  xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" x:Class="Boothaus.GUI.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Boothaus.GUI"
+        mc:Ignorable="d"
+        Title="Über Boothaus" Height="250" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+        
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/> 
+            <ColumnDefinition Width="Auto"/> 
+            <ColumnDefinition Width="*"/> 
+        </Grid.ColumnDefinitions>
+        <Image Source="Image/boothaus_banner.png" Grid.Row="0" Grid.ColumnSpan="3"/>
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" TextAlignment="Center">
+            Boothaus Version 1.0.0 entwickelt von Lukas Keeve
+            <LineBreak/>
+            Boothaus ist freie Software unter der GPLv3-Lizenz.
+            <LineBreak/> 
+            <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/lu-make/boothaus">GitHub</Hyperlink>
+            
+        </TextBlock>
+
+        <Button Content="OK" Width="85" IsDefault="True" Grid.Row="2" Grid.Column="1" Click="Button_Click"/>
+    </Grid>
+</dx:ThemedWindow>

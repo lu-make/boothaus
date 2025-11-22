@@ -21,7 +21,7 @@
                 </MenuItem>
 
                 <MenuItem Header="Hilfe">
-                    <MenuItem Header="Über Boothaus..." Command="{Binding ShowAboutDialogCommand}"/>
+                    <MenuItem Header="Über Boothaus..." Command="{Binding AboutAnzeigenCommand}"/>
                 </MenuItem>
             </Menu>
             <StackPanel Orientation="Horizontal" Grid.Row="1"  Margin="5">

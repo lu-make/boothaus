@@ -26,6 +26,7 @@
 	  <None Remove="Icons\page_white_delete.png" />
 	  <None Remove="Icons\page_white_edit.png" />
 	  <None Remove="Icons\wrench.png" />
+	  <None Remove="Image\boothaus_banner.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -49,10 +50,11 @@
 		<Resource Include="Icons\page_white_delete.png" />
 		<Resource Include="Icons\page_white_edit.png" />
 		<Resource Include="Icons\wrench.png" />
+		<Resource Include="Image\boothaus_banner.png" />
 	</ItemGroup>
 	
 	<ItemGroup>
-		<SplashScreen Include="boothaus_splash.png" />
+		<SplashScreen Include="Image\boothaus_splash.png" />
 	</ItemGroup>
 
 	<PropertyGroup>

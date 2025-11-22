@@ -59,7 +59,7 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
             platzVm.Aktualisieren();
 
         }
-
+         
         DragDropFertig();
     }
 
@@ -111,7 +111,8 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
 
             GültigePlätzeHervorheben(auftrag);
             DragDrop.DoDragDrop(rect, new RecordDragDropData( [ auftrag ]), System.Windows.DragDropEffects.Move);
-        } 
+        }
+        DragDropFertig();
     }
 
     private void GültigePlätzeHervorheben(Auftrag auftrag)

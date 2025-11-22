@@ -256,6 +256,8 @@ public class MainViewModel : INotifyPropertyChanged
         {
             Environment.Exit(0);
         });
+
+        AboutAnzeigenCommand = new RelayCommand(execute: dialogService.AboutAnzeigen);
     }
 
     private void UpdateAuftrag(Auftrag auftrag) 
