@@ -7,7 +7,13 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>Icons\boothaus.ico</ApplicationIcon>
-	</PropertyGroup> 
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Icons\folder_page.png" />
+	</ItemGroup>
+
+	
 	
 	<ItemGroup>
 		<Resource Include="Icons\accept.png" />
@@ -17,12 +23,15 @@
 		<Resource Include="Icons\bin_closed.png" />
 		<Resource Include="Icons\book_go.png" />
 		<Resource Include="Icons\boothaus.ico" />
+		<Resource Include="Icons\bullet_green.png" />
+		<Resource Include="Icons\bullet_white.png" />
 		<Resource Include="Icons\calendar.png" />
 		<Resource Include="Icons\cancel.png" />
 		<Resource Include="Icons\cross.png" />
 		<Resource Include="Icons\delete.png" />
 		<Resource Include="Icons\disk.png" />
 		<Resource Include="Icons\error.png" />
+		<Resource Include="Icons\folder_page.png" />
 		<Resource Include="Icons\lightbulb.png" />
 		<Resource Include="Icons\page_white_add.png" />
 		<Resource Include="Icons\page_white_delete.png" />

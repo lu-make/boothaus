@@ -6,8 +6,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:local="clr-namespace:Boothaus.GUI"
-        mc:Ignorable="d"
+        xmlns:local="clr-namespace:Boothaus.GUI" xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+                 mc:Ignorable="d"
         Title="Boote" Height="600" Width="600" WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
@@ -15,20 +15,20 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Name="AuftragActions" Grid.Row="0" Orientation="Horizontal" Margin="5">
-            <Button x:Name="AuftragErfassenButton" Margin="5" Command="{Binding BootErfassenCommand}">
+        <StackPanel Name="BootActions" Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Button x:Name="BootErfassenButton" Margin="5" Command="{Binding BootErfassenCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Icons/page_white_add.png"/>
                     <Label Content="Erfassen" Margin="5,0"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="AuftragBearbeitenButton" Margin="5" Command="{Binding BootBearbeitenCommand}">
+            <Button x:Name="BootBearbeitenButton" Margin="5" Command="{Binding BootBearbeitenCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Icons/page_white_edit.png"/>
                     <Label Content="Bearbeiten" Margin="5,0"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="AuftragLöschenButton" Margin="5" Command="{Binding BooteLöschenCommand}">
+            <Button x:Name="BootLöschenButton" Margin="5" Command="{Binding BooteLöschenCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Icons/page_white_delete.png"/>
                     <Label Content="Löschen" Margin="5,0"/>
@@ -36,23 +36,27 @@
             </Button>
         </StackPanel>
 
-        <dxg:GridControl 
-            Grid.Row="1" 
-            x:Name="Bootliste"
-            ItemsSource="{Binding Bootliste}"
-            SelectedItem="{Binding AusgewählterBootlisteneintrag, Mode=TwoWay}"
-            SelectedItems="{Binding AusgewählteBootlisteneinträge, Mode=TwoWay}"
-            SelectionMode="MultipleRow"
-            SelectionChanged="Bootliste_SelectionChanged"
-            Margin="5">
+        <dxg:GridControl Grid.Row="1" 
+                         x:Name="Bootliste"
+                         ItemsSource="{Binding Bootliste}"
+                         SelectedItem="{Binding AusgewählterBootlisteneintrag, Mode=TwoWay}"
+                         SelectedItems="{Binding AusgewählteBootlisteneinträge, Mode=TwoWay}"
+                         SelectionMode="MultipleRow"
+                         DeleteKeyBehavior="None"
+                         SelectionChanged="Bootliste_SelectionChanged"
+                         Margin="5">
             <dxg:GridControl.View>
-                <dxg:TableView
+                <dxg:TableView x:Name="BootTabelle"
                                AllowGrouping="False" 
                                ShowGroupPanel="False"
                                AllowMasterDetail="False" 
                                AutoWidth="True"
-                               AllowEditing="False"   
-                           />
+                               AllowEditing="False">
+                    <dxmvvm:Interaction.Behaviors>
+                        <dxmvvm:KeyToCommand KeyGesture="Delete" Command="{Binding DataContext.BooteLöschenCommand, ElementName=BootTabelle}" />
+                    </dxmvvm:Interaction.Behaviors>
+                </dxg:TableView>
+                           
             </dxg:GridControl.View>
             <dxg:GridControl.Columns>
                 <dxg:GridColumn Header="Kontakt" Binding="{Binding Kontakt}"/>

@@ -1,10 +1,12 @@
 ﻿using Boothaus.Domain;
+using DevExpress.Mvvm.DataAnnotations;
 using System.ComponentModel;
 
 namespace Boothaus.GUI.ViewModels;
 
 public class AuftragListViewModel : INotifyPropertyChanged
 {
+    public AuftragStatusZelle Status => Modell.Platz is null ? AuftragStatusZelle.Offen : AuftragStatusZelle.Zugewiesen;
     public Auftrag Modell 
     { 
         get; 
@@ -12,6 +14,7 @@ public class AuftragListViewModel : INotifyPropertyChanged
         {
             field = value;
             OnPropertyChanged(nameof(Modell));
+            OnPropertyChanged(nameof(Status));
         }
     }
      
@@ -26,4 +29,12 @@ public class AuftragListViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+}
+
+public enum AuftragStatusZelle
+{
+    [DXImage("Icons/bullet_green.png")]
+    Zugewiesen,
+    [DXImage("Icons/bullet_yellow.png")]
+    Offen,
 }

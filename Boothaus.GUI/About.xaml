@@ -21,12 +21,11 @@
         </Grid.ColumnDefinitions>
         <Image Source="Image/boothaus_banner.png" Grid.Row="0" Grid.ColumnSpan="3"/>
         <TextBlock Grid.Row="1" Grid.ColumnSpan="3" TextAlignment="Center">
-            Boothaus Version 1.0.0 entwickelt von Lukas Keeve
+            Boothaus Version <Run Text="{Binding Version, Mode=OneWay}"/> entwickelt von Lukas Keeve
             <LineBreak/>
             Boothaus ist freie Software unter der GPLv3-Lizenz.
             <LineBreak/> 
             <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/lu-make/boothaus">GitHub</Hyperlink>
-            
         </TextBlock>
 
         <Button Content="OK" Width="85" IsDefault="True" Grid.Row="2" Grid.Column="1" Click="Button_Click"/>

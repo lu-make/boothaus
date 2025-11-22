@@ -5,8 +5,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Boothaus" xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" xmlns:viewmodels="clr-namespace:Boothaus.GUI.ViewModels" 
-        Title="Boothaus" Height="900" MinHeight="900" Width="1600" MinWidth="1600" Icon="/Icons/boothaus.ico">
+        xmlns:local="clr-namespace:Boothaus" xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" xmlns:viewmodels="clr-namespace:Boothaus.GUI.ViewModels" xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+                 Title="Boothaus" Height="1000" MinHeight="1000" Width="1800" MinWidth="1800" Icon="/Icons/boothaus.ico">
     <DockPanel>
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
@@ -15,17 +15,37 @@
             </Grid.RowDefinitions>
             <Menu Grid.Row="0">
                 <MenuItem Header="Datei" >
-                    <MenuItem Header="Daten importieren" Command="{Binding ImportCommand}"/>
-                    <MenuItem Header="Daten exportieren" Command="{Binding ExportCommand}"/>
-                    <MenuItem Header="Beenden" Command="{Binding BeendenCommand}"/>
+                    <MenuItem Header="Daten importieren..." Command="{Binding ImportCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="/Icons/folder_page.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Daten exportieren..."  Command="{Binding ExportCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="/Icons/disk.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Beenden" Command="{Binding BeendenCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="/Icons/cross.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem> 
 
                 <MenuItem Header="Bearbeiten">
-                    <MenuItem Header="Einstellungen" Command="{Binding EinstellungenAnzeigenCommand}"/>
+                    <MenuItem Header="Einstellungen..." Command="{Binding EinstellungenAnzeigenCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="/Icons/wrench.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
 
                 <MenuItem Header="Hilfe">
-                    <MenuItem Header="Über Boothaus..." Command="{Binding AboutAnzeigenCommand}"/>
+                    <MenuItem Header="Über Boothaus..." Command="{Binding AboutAnzeigenCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="/Icons/boothaus.ico" Width="16" Height="16"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
             </Menu>
             <StackPanel Orientation="Horizontal" Grid.Row="1"  Margin="5">
@@ -109,12 +129,14 @@
                         Margin="5" 
                         ItemsSource="{Binding AuftragListe}" 
                         SelectedItem="{Binding AusgewählterAuftragListeneintrag, Mode=TwoWay}"
-                        SelectedItems="{Binding AusgewählteAuftragListeneinträge, Mode=TwoWay}"
+                        SelectedItems="{Binding AusgewählteAuftragListeneinträge, Mode=TwoWay}" 
+                        DeleteKeyBehavior="None"
                         SelectionMode="MultipleRow"
                         SelectionChanged="Auftragliste_SelectionChanged"
                         >
                         <dxg:GridControl.View>
                             <dxg:TableView
+                                x:Name="AuftragTabelle"
                                 AllowGrouping="False"
                                 AllowDragDrop="True"
                                 ShowGroupPanel="False"
@@ -122,11 +144,36 @@
                                 AllowMasterDetail="False" 
                                 AllowEditing="False"  
                                 CompleteRecordDragDrop="CompleteRecordDragDrop"
-                                StartRecordDrag="StartRecordDrag"
-                              
-                            />
+                                StartRecordDrag="StartRecordDrag">
+                                <dxmvvm:Interaction.Behaviors>
+                                    <dxmvvm:KeyToCommand KeyGesture="Delete" Command="{Binding DataContext.AufträgeLöschenCommand, ElementName=AuftragTabelle}" />
+                                </dxmvvm:Interaction.Behaviors>
+                            </dxg:TableView>
                         </dxg:GridControl.View>
-                        <dxg:GridControl.Columns> 
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn Header="" Binding="{Binding Status}" Width="4">
+                                <dxg:GridColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Stretch="None">
+                                            <Image.Style>
+                                                <Style TargetType="Image">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Value}" Value="Zugewiesen">
+                                                            <Setter Property="Source" Value="/Icons/bullet_green.png"/>
+                                                            <Setter Property="ToolTip" Value="Zugewiesen" />
+                                                        </DataTrigger>
+ 
+                                                        <DataTrigger Binding="{Binding Value}" Value="Offen">
+                                                            <Setter Property="Source" Value="/Icons/bullet_white.png"/>
+                                                            <Setter Property="ToolTip" Value="Nicht zugewiesen" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+                                    </DataTemplate>
+                                </dxg:GridColumn.CellTemplate>
+                            </dxg:GridColumn>
                             <dxg:GridColumn Header="Boot" Binding="{Binding Modell.Boot}" Width="Auto"/>
                             <dxg:GridColumn Header="Von" Binding="{Binding Modell.Von, StringFormat=dd.MM.yyyy}" Width="Auto"/>
                             <dxg:GridColumn Header="Bis" Binding="{Binding Modell.Bis, StringFormat=dd.MM.yyyy}" Width="Auto"/>

@@ -7,9 +7,12 @@ namespace Boothaus.GUI;
 /// </summary>
 public partial class About : ThemedWindow
 {
+    public string Version => Constants.Version;
+
     public About()
     {
         InitializeComponent();
+        DataContext = this;
     }
 
     private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

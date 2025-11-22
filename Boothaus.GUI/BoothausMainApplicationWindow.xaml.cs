@@ -58,25 +58,28 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
             platzVm.AuftragZuweisen(auftrag);
             platzVm.Aktualisieren();
 
-        }
-         
+
+            e.Effects = System.Windows.DragDropEffects.Move;
+        } 
+
         DragDropFertig();
     }
 
     private void CompleteRecordDragDrop(object sender, CompleteRecordDragDropEventArgs e)
-    {
-        e.Handled = true;
+    {  
+        e.Handled = true; 
         DragDropFertig();
     }
 
     private void DragDropFertig()
     {
+        mainViewModel.RefreshAuftragliste();
         var allePlätze = mainViewModel.LagerViewModel.AllePlätze;
 
         foreach (var platz in allePlätze)
         {
             platz.IstDragDropAktiv = false;
-            platz.IstGültigesDropZiel = false;
+            platz.IstHervorgehoben = false;
         }
     }
 
@@ -96,7 +99,7 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
         {
             var auftrag = platzVm.NächsteZuweisung;
             if (auftrag is null) return;
-
+             
             var reihe = mainViewModel.LagerViewModel.ReihenViewmodels.First(r => r.PlatzViewmodels.Contains(platzVm));
 
             var zuweisungenHinterDiesemPlatz = reihe.Modell.PlätzeHinter(platzVm.Modell)
@@ -110,7 +113,22 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
             }
 
             GültigePlätzeHervorheben(auftrag);
-            DragDrop.DoDragDrop(rect, new RecordDragDropData( [ auftrag ]), System.Windows.DragDropEffects.Move);
+            var dragdropResult = DragDrop.DoDragDrop(rect, new RecordDragDropData( [ auftrag ]), System.Windows.DragDropEffects.Move);
+             
+            if (dragdropResult == System.Windows.DragDropEffects.None)
+            { 
+                var vorherigerPlatz = auftrag.Platz;
+
+                if (vorherigerPlatz is not null)
+                {
+                    var vorherigerPlatzVm = mainViewModel.LagerViewModel.AllePlätze
+                        .First(p => p.Modell == vorherigerPlatz);
+                    vorherigerPlatz.ZuweisungEntfernen(auftrag);
+                    vorherigerPlatzVm.Aktualisieren();
+                } 
+            }
+
+
         }
         DragDropFertig();
     }
@@ -128,7 +146,7 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
 
         foreach (var platz in gültigePlätze)
         {
-            platz.IstGültigesDropZiel = true;
+            platz.IstHervorgehoben = true;
         }
 
     }
@@ -137,5 +155,20 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
     {
         (mainViewModel.AuftragBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         (mainViewModel.AufträgeLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+
+        var auserwählte = mainViewModel.AusgewählteAuftragListeneinträge.Select(a => a.Modell);
+
+        foreach (var platz in mainViewModel.LagerViewModel.AllePlätze)
+        {
+            if (auserwählte.Contains(platz.Modell.GetNächsteZuweisung(mainViewModel.AusgewählteSaison)))
+            {
+                platz.IstHervorgehoben = true;
+            }
+            else
+            {
+                platz.IstHervorgehoben = false;
+            }
+        }
+         
     }
 }

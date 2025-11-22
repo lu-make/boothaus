@@ -39,7 +39,7 @@ public class MainViewModel : INotifyPropertyChanged
         {
             field = value;
             OnPropertyChanged(nameof(AusgewählteSaison));
-            ApplyAuftragSaisonFilter();
+            RefreshAuftragliste();
             LagerViewModel.Update(AusgewählteSaison);
         } 
     }
@@ -58,13 +58,9 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand AuftragErfassenCommand { get; private set; }
     public ICommand AuftragBearbeitenCommand { get; private set; }
     public ICommand AufträgeLöschenCommand { get; private set; }
-     
     public ICommand InNächsteSaisonDuplizierenCommand { get; private set; }
-
     public ICommand EinstellungenAnzeigenCommand { get; private set; }
-    
     public ICommand LagerkalenderErstellenCommand { get; private set; }
-    
     public ICommand AboutAnzeigenCommand { get; private set; }
     public ICommand ResetZuweisungenCommand { get; private set; }
     public ICommand BooteVerwaltenCommand { get; private set; }
@@ -171,6 +167,7 @@ public class MainViewModel : INotifyPropertyChanged
                 var ergebnis = appService.ErstelleLagerkalender(AusgewählteSaison);
                 LagerViewModel.Modell = lager;
                 LagerViewModel.Update(AusgewählteSaison);
+                RefreshAuftragliste();
 
                 if (!ergebnis)
                 {
@@ -189,7 +186,7 @@ public class MainViewModel : INotifyPropertyChanged
             {
                 appService.DupliziereSaisonInNächsteSaison(AusgewählteSaison);
                 Saisons.Update(appService.AlleSaisons());
-                AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
+                RefreshAuftragliste();
                 AusgewählteSaison = Saisons.First(s => s.Anfangsjahr == AusgewählteSaison.Anfangsjahr + 1);
             }
             catch (Exception e)
@@ -220,7 +217,7 @@ public class MainViewModel : INotifyPropertyChanged
             try
             {
                 dialogService.BooteVerwalten();
-                AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
+                RefreshAuftragliste();
 
             }
             catch (Exception e)
@@ -236,7 +233,6 @@ public class MainViewModel : INotifyPropertyChanged
                 var pfadResult = dialogService.ImportAusDateiDialog();
                 if (!pfadResult.Success) return;
                 appService.DatenImportieren(pfadResult.Value!);
-                AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
                 Saisons.Update(appService.AlleSaisons());
                 LagerViewModel.Modell = appService.GetLager();
                 LagerViewModel.Update(AusgewählteSaison);
@@ -279,7 +275,7 @@ public class MainViewModel : INotifyPropertyChanged
         AuftragListe[index].Modell = auftrag;
     }
 
-    private void ApplyAuftragSaisonFilter()
+    public void RefreshAuftragliste()
     {
         AuftragListe.Update(appService.AlleAufträgeInSaison(AusgewählteSaison).Select(auftrag => new AuftragListViewModel(auftrag)));
     }

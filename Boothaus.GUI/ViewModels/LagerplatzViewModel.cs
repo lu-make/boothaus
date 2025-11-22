@@ -28,18 +28,6 @@ public class LagerplatzViewModel : INotifyPropertyChanged
             Aktualisieren();
         }
     } 
-    public bool IstGültigesDropZiel
-    {
-        get;
-        set
-        {
-            field = value;
-            OnPropertyChanged(nameof(IstGültigesDropZiel));
-            OnPropertyChanged(nameof(Hintergrundfarbe));
-            OnPropertyChanged(nameof(Border));
-            OnPropertyChanged(nameof(BorderThickness));
-        }
-    }
 
     public bool IstDragDropAktiv
     {
@@ -49,6 +37,18 @@ public class LagerplatzViewModel : INotifyPropertyChanged
             field = value;
             OnPropertyChanged(nameof(IstDragDropAktiv));
             OnPropertyChanged(nameof(Hintergrundfarbe));
+            OnPropertyChanged(nameof(Border));
+            OnPropertyChanged(nameof(BorderThickness));
+        }
+    }
+
+    public bool IstHervorgehoben
+    { 
+        get;  
+        set
+        {
+            field = value;
+            OnPropertyChanged(nameof(IstHervorgehoben)); 
             OnPropertyChanged(nameof(Border));
             OnPropertyChanged(nameof(BorderThickness));
         }
@@ -80,7 +80,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
                 return new SolidColorBrush(Colors.PeachPuff);
             }
 
-            if (IstDragDropAktiv && !IstGültigesDropZiel)
+            if (IstDragDropAktiv && !IstHervorgehoben)
             {
                 return new SolidColorBrush(Colors.LightGray);
             }
@@ -96,7 +96,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
             var brush = new SolidColorBrush();
             brush.Opacity = 1;
              
-            if (IstDragDropAktiv && IstGültigesDropZiel)
+            if (IstHervorgehoben)
             {
                 brush.Color = Colors.Blue;
                 return brush;    
@@ -112,7 +112,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
     {
         get
         {
-            if (IstDragDropAktiv && IstGültigesDropZiel)
+            if (IstHervorgehoben)
             {
                 return 5;
             }
