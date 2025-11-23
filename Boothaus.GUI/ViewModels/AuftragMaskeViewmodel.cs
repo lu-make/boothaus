@@ -208,11 +208,21 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
             DatumspaarValid = false;
             return;
         }
+
+        if (!IstNeuerAuftrag 
+            && Auftrag!.Platz is Lagerplatz platz 
+            && !platz.Reihe.IstZeitraumErlaubtAnIndex(Auftrag.Saison, Von!.Value, Bis!.Value, platz.Reihe.Index(platz)))
+        {
+            DatumspaarValidationMessage = "Der Auftrag hat schon eine Platzzuweisung. Für diesen Platz ist der angegebene Zeitraum ungültig.";
+            DatumspaarValid = false;
+            return;
+        }
+
         DatumspaarValid = true;
         DatumspaarValidationMessage = string.Empty;
     }
 
-
+     
     private void ValidiereAuftragKonfliktfrei()
     {
         if (!BootValid || !DatumspaarValid) return;

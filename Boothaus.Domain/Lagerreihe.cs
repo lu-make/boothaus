@@ -100,5 +100,41 @@ public class Lagerreihe
     {
          return Plätze.LastOrDefault(p => !p.IstFreiImZeitraum(von, bis));
     }
+
+    public bool IstZeitraumErlaubtAnIndex(Saison saison, DateOnly von, DateOnly bis, int index)
+    {
+        var erlaubt = true;
+
+        if (index < 0 || index >= Plätze.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), "Der Index liegt außerhalb des gültigen Bereichs.");
+        }
+
+        // 1. gibt es hinter diesem index eine belegung?
+        // -> 1.1 wenn ja, ist reihenordnung mit hinterem auftrag 1?
+
+        var hintererPlatz = Plätze.ElementAtOrDefault(index - 1);
+        var hintereBelegung = hintererPlatz?.GetNächsteZuweisung(saison);
+
+        if (hintereBelegung is not null && hintereBelegung.VergleicheReihenordnung(von, bis) != -1)
+        {
+            erlaubt = false;
+            return erlaubt;
+        }
+
+
+        // 2. gibt es vor diesem index eine belegung?
+        // -> 2.1 wenn ja, ist reihenordnung mit vorderem auftrag -1?
+
+        var vordererPlatz = Plätze.ElementAtOrDefault(index + 1);
+        var vordereBelegung = vordererPlatz?.GetNächsteZuweisung(saison);
+        if (vordereBelegung is not null && vordereBelegung.VergleicheReihenordnung(von, bis) != 1)
+        {
+            erlaubt = false;
+            return erlaubt;
+        }
+
+        return erlaubt;
+    }
      
 }

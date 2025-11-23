@@ -66,14 +66,33 @@ public class Auftrag : ModelBase
     /// </returns>  
     public int VergleicheReihenordnung(Auftrag anderer)
     {
+        return VergleicheReihenordnung(anderer.Von, anderer.Bis);
+    }
+
+    /// <summary>
+    /// Matrjoschka-Reihung der Lageraufträge.
+    /// Jeder Auftrag hat ein Zeitintervall (von Datum bis Datum)
+    /// Ein Auftrag a0 kann in die Reihung vor einen Auftrag a1, wenn: 
+    /// a0.von >= a1.von UND a0.bis <= a1.bis
+    /// </summary>
+    /// <param name="von">Anfangsdatum des anderen Auftrags</param>
+    /// <param name="bis">Enddatum des anderen Auftrags</param>
+    /// <returns>
+    /// -1: wenn dieser Auftrag echt nach dem anderen geordnet ist (d.h. dieser Auftrag umschließt den anderen)
+    /// 0: wenn es keine gültige Reihung gibt (die beiden Aufträge können nicht derselben Reihe zugewiesen werden, 
+    /// ohne dass die Termine kollidieren)
+    /// 1: wenn dieser Auftrag echt vor dem anderen geordnet ist (d.h. der andere Auftrag umschließt diesen)
+    /// </returns>
+    public int VergleicheReihenordnung(DateOnly von, DateOnly bis)
+    {
         // dieser auftrag umschließt den anderen auftrag
-        if (anderer.Von >= Von && anderer.Bis <= Bis)
+        if (von >= Von && bis <= Bis)
         {
             return -1;
         }
 
         // anderer auftrag umschließt diesen auftrag
-        if (Von >= anderer.Von && Bis <= anderer.Bis)
+        if (Von >= von && Bis <= bis)
         {
             return 1;
         }

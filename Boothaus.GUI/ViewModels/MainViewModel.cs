@@ -123,6 +123,7 @@ public class MainViewModel : INotifyPropertyChanged
                     UpdateAuftrag(auftrag);
                 }
                 Saisons.Update(appService.AlleSaisons());
+                LagerViewModel.Update(AusgewählteSaison);
             }
             catch (Exception e)
             {
