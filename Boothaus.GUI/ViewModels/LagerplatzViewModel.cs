@@ -49,6 +49,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
         {
             field = value;
             OnPropertyChanged(nameof(IstHervorgehoben)); 
+            OnPropertyChanged(nameof(Hintergrundfarbe));
             OnPropertyChanged(nameof(Border));
             OnPropertyChanged(nameof(BorderThickness));
         }

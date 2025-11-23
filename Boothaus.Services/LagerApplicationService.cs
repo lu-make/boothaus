@@ -248,11 +248,36 @@ public class LagerApplicationService
 
     /// <summary>
     /// Löscht einen bestehenden Auftrag.
+    /// Wenn der Auftrag eine Platzzuweisung hat, wird die Zuweisung vom Platz entfernt.
+    /// Alle "hinteren" Zuweisungen werden um einen Platz weitergerückt. 
     /// </summary>
     /// <param name="auftrag">Der zu löschende Auftrag</param>
     public void LöscheAuftrag(Auftrag? auftrag)
     {
         if (auftrag is null) return;
+
+        if (auftrag.Platz is not null) 
+        {
+            var meinPlatz = auftrag.Platz;
+            meinPlatz.ZuweisungEntfernen(auftrag);
+
+            var reihe = meinPlatz.Reihe!;
+            var plätzeHinter = reihe.PlätzeHinter(meinPlatz);
+
+            Lagerplatz letzterPlatz = meinPlatz;
+            foreach (var dieserPlatz in plätzeHinter)
+            {
+                var aktuellerAuftrag = dieserPlatz.GetNächsteZuweisung(auftrag.Saison);
+                if (aktuellerAuftrag is null) break;
+
+                dieserPlatz.ZuweisungEntfernen(aktuellerAuftrag!);
+                aktuellerAuftrag?.Platz = letzterPlatz;
+                letzterPlatz.ZuweisungHinzufügen(aktuellerAuftrag!);
+
+                letzterPlatz = dieserPlatz;
+            }
+        }
+
         auftragRepository.Remove(auftrag);
     }
 

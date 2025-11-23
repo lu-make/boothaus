@@ -144,6 +144,7 @@ public class MainViewModel : INotifyPropertyChanged
                     AuftragListe.Remove(auftrag);
                 }
 
+                LagerViewModel.Update(AusgewählteSaison);
             }
             catch (Exception e)
             {

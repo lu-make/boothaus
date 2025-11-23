@@ -44,7 +44,7 @@ public class LagerreihenViewModel : INotifyPropertyChanged
             (PlatzInReiheHinzufügenCommand as RelayCommand)?.NotifyCanExecuteChanged();
             (PlatzAusReiheEntfernenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         },
-        canExecute: () => PlatzViewmodels.Count < 10);
+        canExecute: () => PlatzViewmodels.Count < Constants.MaxPlätzeProReihe);
 
         PlatzAusReiheEntfernenCommand = new RelayCommand(execute: () =>
         {
@@ -55,7 +55,7 @@ public class LagerreihenViewModel : INotifyPropertyChanged
             (PlatzInReiheHinzufügenCommand as RelayCommand)?.NotifyCanExecuteChanged();
             (PlatzAusReiheEntfernenCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }, 
-        canExecute: () => PlatzViewmodels.Count > 1);
+        canExecute: () => PlatzViewmodels.Count > Constants.MinPlätzeProReihe);
 
     }
 

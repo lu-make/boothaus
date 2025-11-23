@@ -60,7 +60,7 @@ public class LagerViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(AnzahlLagerreihen));
             (LagerreiheEntfernenCommand as RelayCommand)?.NotifyCanExecuteChanged();
 
-        });
+        }, canExecute: () => Modell.Reihen.Count <= Constants.MaxReihen);
 
         LagerreiheEntfernenCommand = new RelayCommand(execute: () =>
         {
@@ -75,7 +75,7 @@ public class LagerViewModel : INotifyPropertyChanged
             ReihenViewmodels.Remove(letzteReihe);
             OnPropertyChanged(nameof(AnzahlLagerreihen));
             (LagerreiheEntfernenCommand as RelayCommand)?.NotifyCanExecuteChanged();
-        }, canExecute: () => Modell.Reihen.Count > 1);
+        }, canExecute: () => Modell.Reihen.Count > Constants.MinReihen);
     }
 
     public void Update(Saison ausgewählteSaison)
