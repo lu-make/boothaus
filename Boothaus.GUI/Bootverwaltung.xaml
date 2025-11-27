@@ -1,12 +1,9 @@
-﻿<dx:ThemedWindow xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"  
-        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"   
-        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
-        x:Class="Boothaus.GUI.Bootverwaltung"
+﻿<Window x:Class="Boothaus.GUI.Bootverwaltung"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:local="clr-namespace:Boothaus.GUI" xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:local="clr-namespace:Boothaus.GUI" 
                  mc:Ignorable="d"
         Title="Boote" Height="600" Width="600" WindowStartupLocation="CenterOwner">
     <Grid>
@@ -36,36 +33,38 @@
             </Button>
         </StackPanel>
 
-        <dxg:GridControl Grid.Row="1" 
-                         x:Name="Bootliste"
-                         ItemsSource="{Binding Bootliste}"
-                         SelectedItem="{Binding AusgewählterBootlisteneintrag, Mode=TwoWay}"
-                         SelectedItems="{Binding AusgewählteBootlisteneinträge, Mode=TwoWay}"
-                         SelectionMode="MultipleRow"
-                         DeleteKeyBehavior="None"
-                         SelectionChanged="Bootliste_SelectionChanged"
-                         Margin="5">
-            <dxg:GridControl.View>
-                <dxg:TableView x:Name="BootTabelle"
-                               AllowGrouping="False" 
-                               ShowGroupPanel="False"
-                               AllowMasterDetail="False" 
-                               AutoWidth="True"
-                               AllowEditing="False">
-                    <dxmvvm:Interaction.Behaviors>
-                        <dxmvvm:KeyToCommand KeyGesture="Delete" Command="{Binding DataContext.BooteLöschenCommand, ElementName=BootTabelle}" />
-                    </dxmvvm:Interaction.Behaviors>
-                </dxg:TableView>
-                           
-            </dxg:GridControl.View>
-            <dxg:GridControl.Columns>
-                <dxg:GridColumn Header="Kontakt" Binding="{Binding Kontakt}"/>
-                <dxg:GridColumn Header="Name" Binding="{Binding Name}"/>
-                <dxg:GridColumn Header="Rumpflänge" Binding="{Binding Rumpflänge}"/>
-                <dxg:GridColumn Header="Breite" Binding="{Binding Breite}"/> 
-            </dxg:GridControl.Columns> 
-        </dxg:GridControl>
+        <DataGrid
+    x:Name="Bootliste"
+    Grid.Row="1"
+    ItemsSource="{Binding Bootliste}"
+    SelectedItem="{Binding AusgewählterBootlisteneintrag, Mode=TwoWay}"
+    SelectionMode="Extended"
+    SelectionUnit="FullRow"
+    IsReadOnly="True"
+    AutoGenerateColumns="False"
+    Margin="5"
+    SelectionChanged="Bootliste_SelectionChanged"
+    PreviewKeyDown="Bootliste_PreviewKeyDown">
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="Kontakt"
+                            Binding="{Binding Kontakt}" />
+
+                <DataGridTextColumn Header="Name"
+                            Binding="{Binding Name}" />
+
+                <DataGridTextColumn Header="Rumpflänge"
+                            Binding="{Binding Rumpflänge}" />
+
+                <DataGridTextColumn Header="Breite"
+                            Binding="{Binding Breite}" />
+
+            </DataGrid.Columns>
+
+        </DataGrid>
+
     </Grid>
     
     
-</dx:ThemedWindow>
+</Window>

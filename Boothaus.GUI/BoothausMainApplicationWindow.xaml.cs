@@ -1,7 +1,6 @@
 ﻿using Boothaus.Domain;
 using Boothaus.GUI.ViewModels;
 using CommunityToolkit.Mvvm.Input;
-using DevExpress.Xpf.Core;
 using System.Windows;
 using System.Windows.Input;
 
@@ -10,38 +9,39 @@ namespace Boothaus;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class BoothausMainApplicationWindow : ThemedWindow
+public partial class BoothausMainApplicationWindow : Window
 {
     private MainViewModel mainViewModel => DataContext as MainViewModel;
 
     public BoothausMainApplicationWindow()
     {
         InitializeComponent();
+        this.SizeToContent = SizeToContent.WidthAndHeight;
     }
 
-    private void LagerplatzRect_Drop(object sender, System.Windows.DragEventArgs e)
+    private void LagerplatzRect_Drop(object sender, DragEventArgs e)
     {
         var rect = sender as FrameworkElement;
         if (rect?.DataContext is not LagerplatzViewModel platzVm) return;
         if (DataContext is not MainViewModel mainViewModel) return;
-        if (!e.Data.GetDataPresent(typeof(RecordDragDropData))) return;
-        
-        var data = e.Data.GetData(typeof(RecordDragDropData)) as RecordDragDropData;
-        var myRecord = data?.Records[0];
-        Auftrag? auftrag;
 
-        if (myRecord is AuftragListViewModel auftragVm)
+        Auftrag? auftrag = null;
+
+        // Case 1: dragged from DataGrid (Auftragliste)
+        if (e.Data.GetDataPresent(typeof(AuftragListViewModel)))
         {
-            auftrag = auftragVm.Modell;
-
+            var vm = (AuftragListViewModel)e.Data.GetData(typeof(AuftragListViewModel));
+            auftrag = vm.Modell;
         }
-        else if (myRecord is Auftrag)
+        // Case 2: dragged from LagerplatzRect itself
+        else if (e.Data.GetDataPresent(typeof(Auftrag)))
         {
-            auftrag = myRecord as Auftrag;
+            auftrag = (Auftrag)e.Data.GetData(typeof(Auftrag));
         }
-        else return;
 
-        if (auftrag is null) return;
+        if (auftrag is null)
+            return;
+
         var vorherigerPlatz = auftrag.Platz;
 
         if (mainViewModel.KannZuweisen(auftrag, platzVm.Modell))
@@ -58,16 +58,9 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
             platzVm.AuftragZuweisen(auftrag);
             platzVm.Aktualisieren();
 
+            e.Effects = DragDropEffects.Move;
+        }
 
-            e.Effects = System.Windows.DragDropEffects.Move;
-        } 
-
-        DragDropFertig();
-    }
-
-    private void CompleteRecordDragDrop(object sender, CompleteRecordDragDropEventArgs e)
-    {  
-        e.Handled = true; 
         DragDropFertig();
     }
 
@@ -81,12 +74,6 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
             platz.IstDragDropAktiv = false;
             platz.IstHervorgehoben = false;
         }
-    }
-
-    private void StartRecordDrag(object sender, StartRecordDragEventArgs e)
-    {
-        if (e.Records.FirstOrDefault() is not AuftragListViewModel auftragListVm) return; 
-        GültigePlätzeHervorheben(auftragListVm.Modell);
     }
 
     private void LagerplatzRect_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
@@ -113,9 +100,8 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
             }
 
             GültigePlätzeHervorheben(auftrag);
-            var dragdropResult = DragDrop.DoDragDrop(rect, new RecordDragDropData( [ auftrag ]), System.Windows.DragDropEffects.Move);
-             
-            if (dragdropResult == System.Windows.DragDropEffects.None)
+            var dragdropResult = DragDrop.DoDragDrop(rect, auftrag, DragDropEffects.Move);
+            if (dragdropResult == DragDropEffects.None)
             { 
                 var vorherigerPlatz = auftrag.Platz;
 
@@ -170,5 +156,31 @@ public partial class BoothausMainApplicationWindow : ThemedWindow
             }
         }
          
+    }
+
+    private void Auftragliste_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Delete)
+            return;
+
+        if (DataContext is MainViewModel vm)
+        {
+            if (vm.AufträgeLöschenCommand?.CanExecute(null) == true)
+            {
+                vm.AufträgeLöschenCommand.Execute(null);
+                e.Handled = true;
+            }
+        }
+    }
+
+    private void Auftragliste_PreviewMouseMove(object sender, MouseEventArgs e)
+    {
+        if (e.LeftButton != MouseButtonState.Pressed)
+            return;
+
+        if (Auftragliste.SelectedItem is not AuftragListViewModel selected)
+            return;
+
+        DragDrop.DoDragDrop(Auftragliste, selected, DragDropEffects.Move);
     }
 }
