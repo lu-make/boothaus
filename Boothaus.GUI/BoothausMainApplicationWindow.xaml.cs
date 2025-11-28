@@ -182,6 +182,8 @@ public partial class BoothausMainApplicationWindow : Window
         if (Auftragliste.SelectedItem is not AuftragListViewModel selected)
             return;
 
+        GültigePlätzeHervorheben(selected.Modell);
         DragDrop.DoDragDrop(Auftragliste, selected, DragDropEffects.Move);
+        DragDropFertig();
     }
 }

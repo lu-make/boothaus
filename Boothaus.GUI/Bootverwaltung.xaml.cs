@@ -38,7 +38,6 @@ public partial class Bootverwaltung : Window
         if (e.Key != Key.Delete)
             return;
 
-        // Adjust this type name to your actual VM class
         if (DataContext is BootverwaltungViewmodel vm)
         {
             if (vm.BooteLöschenCommand?.CanExecute(null) == true)

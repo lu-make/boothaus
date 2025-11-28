@@ -133,7 +133,9 @@
                         IsReadOnly="True"
                         PreviewKeyDown="Auftragliste_PreviewKeyDown"
                         SelectionChanged="Auftragliste_SelectionChanged"
-                        PreviewMouseMove="Auftragliste_PreviewMouseMove">
+                        PreviewMouseMove="Auftragliste_PreviewMouseMove"
+                        AutoGenerateColumns="False"
+                        >
                         <DataGrid.Resources>
                             <Style TargetType="Image" x:Key="StatusImageStyle">
                                 <Style.Triggers>
@@ -206,8 +208,7 @@
                                             <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding PlatzInReiheHinzufügenCommand}">
                                                 <Image Source="/Icons/add.png"/>
                                             </Button>
-                                            <TextBlock Text="{Binding Displaynummer}" VerticalAlignment="Center"    
-                        />
+                                            <TextBlock Text="{Binding Displaynummer}" VerticalAlignment="Center"/>
                                             <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding PlatzAusReiheEntfernenCommand}">
                                                 <Image Source="/Icons/delete.png"/>
                                             </Button>
@@ -221,23 +222,24 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:Name="LagerplatzTemplate">
                                                     <Border x:Name="LagerplatzRect" Margin="5"  
-                                            Width="90"
-                                            Height="80"
-                                            CornerRadius="5"
-                                            BorderBrush="{Binding Border}"
-                                            BorderThickness="{Binding BorderThickness}"
-                                            Background="{Binding Hintergrundfarbe}" 
-                                            AllowDrop="True" 
-                                            MouseMove="LagerplatzRect_MouseMove"
-                                            Drop="LagerplatzRect_Drop"
-                                            >
+                                                            MinWidth="60" 
+                                                            MinHeight="40"
+                                                            MaxWidth="150"
+                                                            CornerRadius="5"
+                                                            BorderBrush="{Binding Border}"
+                                                            BorderThickness="{Binding BorderThickness}"
+                                                            Background="{Binding Hintergrundfarbe}" 
+                                                            AllowDrop="True" 
+                                                            MouseMove="LagerplatzRect_MouseMove"
+                                                            Drop="LagerplatzRect_Drop"
+                                                            >
                                                         <TextBlock Text="{Binding Anzeigetext}" 
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    TextWrapping="Wrap"
-                                                    Margin="5"
-                                                    Foreground="Black"
-                                                    />
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"
+                                                                   TextWrapping="Wrap"
+                                                                   Margin="5"
+                                                                   Foreground="Black"
+                                                        />
                                                     </Border>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
