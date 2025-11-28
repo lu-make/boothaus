@@ -34,17 +34,17 @@
         </StackPanel>
 
         <DataGrid
-    x:Name="Bootliste"
-    Grid.Row="1"
-    ItemsSource="{Binding Bootliste}"
-    SelectedItem="{Binding AusgewählterBootlisteneintrag, Mode=TwoWay}"
-    SelectionMode="Extended"
-    SelectionUnit="FullRow"
-    IsReadOnly="True"
-    AutoGenerateColumns="False"
-    Margin="5"
-    SelectionChanged="Bootliste_SelectionChanged"
-    PreviewKeyDown="Bootliste_PreviewKeyDown">
+            x:Name="Bootliste"
+            Grid.Row="1"
+            ItemsSource="{Binding Bootliste}"
+            SelectedItem="{Binding AusgewählterBootlisteneintrag, Mode=TwoWay}"
+            SelectionMode="Extended"
+            SelectionUnit="FullRow"
+            IsReadOnly="True"
+            AutoGenerateColumns="False"
+            Margin="5"
+            SelectionChanged="Bootliste_SelectionChanged"
+            PreviewKeyDown="Bootliste_PreviewKeyDown">
 
             <DataGrid.Columns>
 

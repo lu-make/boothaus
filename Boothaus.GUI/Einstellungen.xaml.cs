@@ -1,5 +1,4 @@
 ﻿using Boothaus.GUI.ViewModels;
-using DevExpress.Xpf.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace Boothaus.GUI
     /// <summary>
     /// Interaction logic for Einstellungen.xaml
     /// </summary>
-    public partial class Einstellungen : ThemedWindow
+    public partial class Einstellungen : Window
     {
         public Einstellungen(EinstellungenViewModel viewmodel)
         {

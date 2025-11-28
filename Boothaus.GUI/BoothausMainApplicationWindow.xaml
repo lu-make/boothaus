@@ -123,24 +123,18 @@
                     </StackPanel>
 
                     <DataGrid
-    x:Name="Auftragliste"
-    Grid.Row="1"
-    Margin="5"
-    ItemsSource="{Binding AuftragListe}"
-    SelectedItem="{Binding AusgewählterAuftragListeneintrag, Mode=TwoWay}"
-    SelectionMode="Extended"
-    SelectionUnit="FullRow"
-    IsReadOnly="True"
-    PreviewKeyDown="Auftragliste_PreviewKeyDown"
-    SelectionChanged="Auftragliste_SelectionChanged"
-                        
-    PreviewMouseMove="Auftragliste_PreviewMouseMove">
-
-                        
-
-
+                        x:Name="Auftragliste"
+                        Grid.Row="1"
+                        Margin="5"
+                        ItemsSource="{Binding AuftragListe}"
+                        SelectedItem="{Binding AusgewählterAuftragListeneintrag, Mode=TwoWay}"
+                        SelectionMode="Extended"
+                        SelectionUnit="FullRow"
+                        IsReadOnly="True"
+                        PreviewKeyDown="Auftragliste_PreviewKeyDown"
+                        SelectionChanged="Auftragliste_SelectionChanged"
+                        PreviewMouseMove="Auftragliste_PreviewMouseMove">
                         <DataGrid.Resources>
-                            <!-- Status image converter if needed -->
                             <Style TargetType="Image" x:Key="StatusImageStyle">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Status}" Value="Zugewiesen">
@@ -156,8 +150,6 @@
                         </DataGrid.Resources>
 
                         <DataGrid.Columns>
-
-                            <!-- Status icon -->
                             <DataGridTemplateColumn Width="20">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -166,25 +158,20 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <!-- Equivalent to Boot column -->
                             <DataGridTextColumn
-            Header="Boot"
-            Binding="{Binding Modell.Boot}" />
+                                Header="Boot"
+                                Binding="{Binding Modell.Boot}" />
 
-                            <!-- Von column -->
                             <DataGridTextColumn
-            Header="Von"
-            Binding="{Binding Modell.Von, StringFormat=dd.MM.yyyy}" />
+                                Header="Von"
+                                Binding="{Binding Modell.Von, StringFormat=dd.MM.yyyy}" />
 
-                            <!-- Bis column -->
                             <DataGridTextColumn
-            Header="Bis"
-            Binding="{Binding Modell.Bis, StringFormat=dd.MM.yyyy}" />
+                                Header="Bis"
+                                Binding="{Binding Modell.Bis, StringFormat=dd.MM.yyyy}" />
 
                         </DataGrid.Columns>
-
                     </DataGrid>
-
                 </Grid>
             </GroupBox>
 

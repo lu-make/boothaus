@@ -42,10 +42,10 @@
             <TextBox
         Text="{Binding Rumpflänge,
                        UpdateSourceTrigger=PropertyChanged,
-                       StringFormat=F1}"
+                       StringFormat=F1,
+                       ValidatesOnDataErrors=True}"
         BorderBrush="{Binding DimensionenEditRahmenfarbe}"
         Margin="5"
-        PreviewTextInput="NumericOnly"
         />
         </StackPanel>
 
@@ -54,10 +54,10 @@
             <TextBox
         Text="{Binding Breite,
                        UpdateSourceTrigger=PropertyChanged,
-                       StringFormat=F1}"
-        BorderBrush="{Binding DimensionenEditRahmenfarbe}"
-        Margin="5"
-        PreviewTextInput="NumericOnly"
+                       StringFormat=F1,
+                       ValidatesOnDataErrors=True}"
+                BorderBrush="{Binding DimensionenEditRahmenfarbe}"
+                Margin="5"
         />
         </StackPanel>
         

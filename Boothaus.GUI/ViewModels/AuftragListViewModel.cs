@@ -1,5 +1,4 @@
 ﻿using Boothaus.Domain;
-using DevExpress.Mvvm.DataAnnotations;
 using System.ComponentModel;
 
 namespace Boothaus.GUI.ViewModels;
@@ -33,8 +32,6 @@ public class AuftragListViewModel : INotifyPropertyChanged
 
 public enum AuftragStatusZelle
 {
-    [DXImage("Icons/bullet_green.png")]
     Zugewiesen,
-    [DXImage("Icons/bullet_yellow.png")]
     Offen,
 }

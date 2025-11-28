@@ -1,5 +1,4 @@
 ﻿using Boothaus.GUI.ViewModels;
-using DevExpress.Xpf.Core;
 using System.Windows;
 
 namespace Boothaus.GUI;
@@ -7,7 +6,7 @@ namespace Boothaus.GUI;
 /// <summary>
 /// Interaction logic for BootMaske.xaml
 /// </summary>
-public partial class BootMaske : ThemedWindow
+public partial class BootMaske : Window
 { 
     public BootMaske(BootMaskeViewmodel viewmodel)
     {

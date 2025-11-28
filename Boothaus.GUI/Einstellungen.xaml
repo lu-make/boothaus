@@ -1,9 +1,9 @@
-﻿<dxg:ThemedWindow  xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/core" x:Class="Boothaus.GUI.Einstellungen"
+﻿<Window x:Class="Boothaus.GUI.Einstellungen"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Boothaus.GUI" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:local="clr-namespace:Boothaus.GUI" 
                    mc:Ignorable="d"
         Title="Einstellungen" Height="250" Width="500" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <Grid Margin="5">
@@ -15,16 +15,12 @@
         <GroupBox Grid.Row="0" Header="Lager">
             <StackPanel>
                 <Label Content="Maximale Rumpflänge (m)"  Margin="5,0" />
-                <dxe:SpinEdit 
-                     EditValue="{Binding MeineMaxLänge}" 
-                     MinValue="0"
-                     Increment="0.1" 
+                <TextBox 
+                     Text="{Binding MeineMaxLänge, UpdateSourceTrigger=PropertyChanged, StringFormat=F1, ValidatesOnDataErrors=True}"  
                      Margin="5"/>
                 <Label Content="Maximale Breite (m)"  Margin="5,0" />
-                <dxe:SpinEdit 
-                     EditValue="{Binding MeineMaxBreite}" 
-                     MinValue="0"
-                     Increment="0.1" 
+                <TextBox 
+                     Text="{Binding MeineMaxBreite, UpdateSourceTrigger=PropertyChanged, StringFormat=F1, ValidatesOnDataErrors=True}" 
                      Margin="5"/>
             </StackPanel>
             
@@ -54,4 +50,4 @@
         
 
     </Grid>
-</dxg:ThemedWindow>
+</Window>

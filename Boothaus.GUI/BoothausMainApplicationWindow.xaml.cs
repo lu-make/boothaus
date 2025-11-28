@@ -2,6 +2,7 @@
 using Boothaus.GUI.ViewModels;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Boothaus;
@@ -137,25 +138,25 @@ public partial class BoothausMainApplicationWindow : Window
 
     }
 
-    private void Auftragliste_SelectionChanged(object sender, DevExpress.Xpf.Grid.GridSelectionChangedEventArgs e)
+    private void Auftragliste_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        (mainViewModel.AuftragBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
-        (mainViewModel.AufträgeLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+        var grid = (DataGrid)sender;
+        mainViewModel.AusgewählteAuftragListeneinträge.Clear();
+
+        foreach (var item in grid.SelectedItems)
+            mainViewModel.AusgewählteAuftragListeneinträge.Add((AuftragListViewModel)item);
 
         var auserwählte = mainViewModel.AusgewählteAuftragListeneinträge.Select(a => a.Modell);
 
         foreach (var platz in mainViewModel.LagerViewModel.AllePlätze)
-        {
-            if (auserwählte.Contains(platz.Modell.GetNächsteZuweisung(mainViewModel.AusgewählteSaison)))
-            {
+            if (auserwählte.Contains(platz.Modell.GetNächsteZuweisung(mainViewModel.AusgewählteSaison))) 
                 platz.IstHervorgehoben = true;
-            }
             else
-            {
                 platz.IstHervorgehoben = false;
-            }
-        }
-         
+        
+
+        (mainViewModel.AuftragBearbeitenCommand as RelayCommand)?.NotifyCanExecuteChanged();
+        (mainViewModel.AufträgeLöschenCommand as RelayCommand)?.NotifyCanExecuteChanged();
     }
 
     private void Auftragliste_PreviewKeyDown(object sender, KeyEventArgs e)
