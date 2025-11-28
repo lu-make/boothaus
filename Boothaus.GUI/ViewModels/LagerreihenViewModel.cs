@@ -20,6 +20,20 @@ public class LagerreihenViewModel : INotifyPropertyChanged
     public int Displaynummer => Modell.Nummer + 1;
     public ObservableCollection<LagerplatzViewModel> PlatzViewmodels { get; } = new(); 
 
+    public Saison AusgewählteSaison
+    {
+        get;
+        set
+        {
+            field = value;
+            foreach (var platzVm in PlatzViewmodels)
+            {
+                platzVm.AusgewählteSaison = value;
+            }
+            OnPropertyChanged(nameof(AusgewählteSaison));
+        }
+    }
+
     public ICommand PlatzInReiheHinzufügenCommand { get; private set; }
     public ICommand PlatzAusReiheEntfernenCommand { get; private set; }
 
@@ -38,7 +52,7 @@ public class LagerreihenViewModel : INotifyPropertyChanged
     {
         PlatzInReiheHinzufügenCommand = new RelayCommand(execute: () =>
         {
-            var neuerPlatz = new Lagerplatz();
+            var neuerPlatz = new Lagerplatz(Modell);
             Modell.PlatzHinzufügen(neuerPlatz);
             PlatzViewmodels.Add(new LagerplatzViewModel(neuerPlatz));
             (PlatzInReiheHinzufügenCommand as RelayCommand)?.NotifyCanExecuteChanged();
@@ -57,6 +71,14 @@ public class LagerreihenViewModel : INotifyPropertyChanged
         }, 
         canExecute: () => PlatzViewmodels.Count > Constants.MinPlätzeProReihe);
 
+    }
+
+    public void Aktualisieren()
+    {
+        foreach (var platzVm in PlatzViewmodels)
+        {
+            platzVm.Aktualisieren();
+        }
     }
 
 

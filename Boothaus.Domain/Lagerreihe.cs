@@ -20,25 +20,24 @@ public class Lagerreihe
 
     public void PlatzHinzufügen(Lagerplatz platz)
     {
-        if (platz.Reihe is not null)
+        if (platz.Reihe != this)
         {
-            throw new ArgumentException("Der Lagerplatz gehört bereits zu einer Reihe.");
+            throw new ArgumentException("Der Lagerplatz gehört nicht zu dieser Reihe.");
         }
 
-        platz.Reihe = this;
         plätze.Add(platz);
     }
 
     public void PlatzEntfernen(Lagerplatz platz)
     {
         bool entfernt = plätze.Remove(platz);
-        
+
         if (!entfernt)
         {
-            throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");
+            throw new ArgumentException("Der Lagerplatz gehört nicht zu dieser Reihe.");
         }
 
-        platz.Reihe = null;
+        platz.ZuweisungenLeeren(); 
     }
 
     public int Index(Lagerplatz platz)
@@ -46,7 +45,7 @@ public class Lagerreihe
         var index = plätze.IndexOf(platz);
         if (index == -1)
         {
-            throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");
+            throw new ArgumentException("Der Lagerplatz gehört nicht zu dieser Reihe.");
         }
         return index;
     }
@@ -63,7 +62,7 @@ public class Lagerreihe
         var index = plätze.IndexOf(platz);
         if (index == -1)
         {
-            throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");
+            throw new ArgumentException("Der Lagerplatz gehört nicht zu dieser Reihe.");
         }
 
         return Plätze.Take(index);
@@ -81,7 +80,7 @@ public class Lagerreihe
         var index = plätze.IndexOf(platz);
         if (index == -1)
         {
-            throw new ArgumentException("Der angegebene Lagerplatz gehört nicht zu dieser Reihe.");
+            throw new ArgumentException("Der Lagerplatz gehört nicht zu dieser Reihe.");
         }
         return Plätze.Skip(index + 1);
     }

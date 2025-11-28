@@ -1,12 +1,12 @@
-﻿using DevExpress.Xpf.Core;
-using System.Reflection;
+﻿using System.Reflection;
+using System.Windows;
 
 namespace Boothaus.GUI;
 
 /// <summary>
 /// Interaction logic for About.xaml
 /// </summary>
-public partial class About : ThemedWindow
+public partial class About : Window
 {
     public string Version => Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
 

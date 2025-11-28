@@ -63,7 +63,7 @@ public class LagerplatzViewModel : INotifyPropertyChanged
         {
             if (HatNächsteZuweisungInSaison)
             {
-                return $"{NächsteZuweisung!.Boot}\n{NächsteZuweisung.Von:dd.MM.yyyy} - {NächsteZuweisung.Bis:dd.MM.yyyy}";
+                return $"{NächsteZuweisung!.Boot}\n{NächsteZuweisung.Von:dd.MM} - {NächsteZuweisung.Bis:dd.MM}";
             }
 
             return "Frei";

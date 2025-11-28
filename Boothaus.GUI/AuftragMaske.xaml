@@ -1,6 +1,4 @@
-﻿<dx:ThemedWindow xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"  
-        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"   
-        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+﻿<Window 
         x:Class="Boothaus.GUI.AuftragMaske"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -30,32 +28,16 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <dxg:LookUpEdit x:Name="Bootliste" 
-                                ItemsSource="{Binding AlleBoote, Mode=TwoWay}"
-                                SelectedItem="{Binding Boot, Mode=TwoWay}"
-                                BorderBrush="{Binding BootauswahlRahmenfarbe}"
-                                AutoPopulateColumns="False" 
-                                DisplayMember="Name" 
-                                ValueMember="Id"
-                                IsCaseSensitiveFilter="False"
-                                SubstituteDisplayFilter="Bootliste_SubstituteDisplayFilter"
-                                Grid.Column="0"
-                                Margin="5"
-                >
-                    <dxg:LookUpEdit.PopupContentTemplate>
-                        <ControlTemplate TargetType="ContentControl">
-                            <dxg:GridControl x:Name="PART_GridControl">
-                                <dxg:GridControl.Columns>
-                                    <dxg:GridColumn Header="Kontakt" FieldName="Kontakt" />
-                                    <dxg:GridColumn Header="Name" FieldName="Name" />
-                                    <dxg:GridColumn Header="Rumpflänge" FieldName="Rumpflänge" />
-                                    <dxg:GridColumn Header="Breite" FieldName="Breite" />
-                                </dxg:GridControl.Columns>
-                            </dxg:GridControl>
-                        </ControlTemplate>
-                    </dxg:LookUpEdit.PopupContentTemplate>
-                </dxg:LookUpEdit>
-
+                <ComboBox
+                    ItemsSource="{Binding AlleBoote}"
+                    SelectedItem="{Binding Boot, Mode=TwoWay}"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Id"
+                    BorderBrush="{Binding BootauswahlRahmenfarbe}"
+                    Margin="5"
+                    Grid.Column="0"
+                    />
+                
                 <Button Grid.Column="1"  Margin="5" Command="{Binding NeuesBootCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Icons/asterisk_yellow.png"/>
@@ -69,24 +51,20 @@
 
         <StackPanel Orientation="Vertical" Grid.Row="1">
             <Label Content="Startdatum"  Margin="5,0"  />
-            <dxe:DateEdit x:Name="VonDatumEditor" 
-                          Margin="5" 
-                          Grid.Column="0" 
-                          MaskType="DateOnly" 
-                          EditValue="{Binding Von}"  
-                          BorderBrush="{Binding DatumauswahlRahmenfarbe}"
-                          />
+            <DatePicker
+                SelectedDate="{Binding Von, Mode=TwoWay}"
+                BorderBrush="{Binding DatumauswahlRahmenfarbe}"
+                Margin="5"
+                />
         </StackPanel>
 
 
         <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1">
             <Label Content="Enddatum"  Margin="5,0" />
-            <dxe:DateEdit x:Name="BisDatumEditor" 
-                          Margin="5" 
-                          Grid.Column="0" 
-                          MaskType="DateOnly" 
-                          EditValue="{Binding Bis}"  
-                          BorderBrush="{Binding DatumauswahlRahmenfarbe}"
+            <DatePicker
+                SelectedDate="{Binding Bis, Mode=TwoWay}"
+                BorderBrush="{Binding DatumauswahlRahmenfarbe}"
+                Margin="5"
                 />
         </StackPanel>
 
@@ -113,4 +91,4 @@
         </StackPanel>
 
     </Grid>
-</dx:ThemedWindow>
+</Window>

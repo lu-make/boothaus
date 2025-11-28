@@ -64,7 +64,7 @@ public class ImportExportService
             var reihe = new Lagerreihe(reiheDto.Nummer);
             foreach (var platzDto in reiheDto.Plätze)
             {
-                var platz = new Lagerplatz(platzDto.Id);
+                var platz = new Lagerplatz(platzDto.Id, reihe);
                 foreach (var zuweisung in platzDto.Zuweisungen)
                 {
                     var auftrag = auftragRepo.Get(zuweisung);

@@ -1,7 +1,6 @@
 ﻿using Boothaus.Domain;
 using Boothaus.GUI.Services;
 using CommunityToolkit.Mvvm.Input;
-using DevExpress.Data.Extensions;
 using Domain.Services; 
 using System.Collections.ObjectModel;
 using System.ComponentModel; 
@@ -71,7 +70,6 @@ public class MainViewModel : INotifyPropertyChanged
     // events
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    // sub viewmodels 
     public MainViewModel(IDialogService dialogService, LagerApplicationService appService)
     {
         this.dialogService = dialogService;
@@ -273,8 +271,11 @@ public class MainViewModel : INotifyPropertyChanged
     private void UpdateAuftrag(Auftrag auftrag) 
     {
         appService.AktualisiereAuftrag(auftrag);
-        var index = AuftragListe.FindIndex(avm => avm.Modell == auftrag);
-        AuftragListe[index].Modell = auftrag;
+
+        var avm = AuftragListe.FirstOrDefault(x => x.Modell == auftrag);
+        if (avm is null) return;
+
+        avm.Modell = auftrag;
     }
 
     public void RefreshAuftragliste()
