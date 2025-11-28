@@ -61,7 +61,12 @@ public partial class BoothausMainApplicationWindow : Window
 
             e.Effects = DragDropEffects.Move;
         }
+        else
+        {
+            e.Effects = DragDropEffects.None;
+        }
 
+        e.Handled = true;
         DragDropFertig();
     }
 
@@ -101,22 +106,13 @@ public partial class BoothausMainApplicationWindow : Window
             }
 
             GültigePlätzeHervorheben(auftrag);
-            var dragdropResult = DragDrop.DoDragDrop(rect, auftrag, DragDropEffects.Move);
-            if (dragdropResult == DragDropEffects.None)
-            { 
-                var vorherigerPlatz = auftrag.Platz;
-
-                if (vorherigerPlatz is not null)
-                {
-                    var vorherigerPlatzVm = mainViewModel.LagerViewModel.AllePlätze
-                        .First(p => p.Modell == vorherigerPlatz);
-                    vorherigerPlatz.ZuweisungEntfernen(auftrag);
-                    vorherigerPlatzVm.Aktualisieren();
-                } 
-            }
+            SetPapierkorbSichtbar(true);
+            DragDrop.DoDragDrop(rect, auftrag, DragDropEffects.Move);
+            SetPapierkorbSichtbar(false);
 
 
         }
+        e.Handled = true;
         DragDropFertig();
     }
 
@@ -185,5 +181,52 @@ public partial class BoothausMainApplicationWindow : Window
         GültigePlätzeHervorheben(selected.Modell);
         DragDrop.DoDragDrop(Auftragliste, selected, DragDropEffects.Move);
         DragDropFertig();
+    }
+
+    private void Papierkorb_DragEnter(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(typeof(Auftrag)))
+            e.Effects = DragDropEffects.Move;
+        else
+            e.Effects = DragDropEffects.None;
+
+        e.Handled = true;
+    }
+
+    private void Papierkorb_Drop(object sender, DragEventArgs e)
+    {
+        if (DataContext is not MainViewModel mainViewModel) return;
+
+        if (!e.Data.GetDataPresent(typeof(Auftrag)))
+        {
+            e.Effects = DragDropEffects.None;
+            return;
+        }
+
+        var auftrag = (Auftrag)e.Data.GetData(typeof(Auftrag));
+
+        var platz = auftrag.Platz;
+        if (platz is not null)
+        {
+            platz.ZuweisungEntfernen(auftrag);
+
+            var platzVm = mainViewModel.LagerViewModel.AllePlätze
+                .FirstOrDefault(p => p.Modell.Id == platz.Id);
+            platzVm?.Aktualisieren();
+
+            auftrag.Platz = null;
+        }
+
+        e.Effects = DragDropEffects.Move;
+        e.Handled = true;
+
+        DragDropFertig();
+    }
+
+    private void SetPapierkorbSichtbar(bool sichtbar)
+    {
+        PapierkorbArea.Visibility = sichtbar
+            ? Visibility.Visible
+            : Visibility.Hidden;
     }
 }

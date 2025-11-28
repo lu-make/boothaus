@@ -6,7 +6,14 @@
         xmlns:local="clr-namespace:Boothaus" 
         xmlns:viewmodels="clr-namespace:Boothaus.GUI.ViewModels" 
         Title="Boothaus"
-        Icon="/Icons/boothaus.ico">
+        Icon="/Icons/boothaus.ico" 
+        WindowStartupLocation="CenterScreen"
+        SizeToContent="Manual"
+        Width="1200"
+        Height="800"
+        MinWidth="800"
+        MinHeight="600"
+        >
     <DockPanel>
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
@@ -263,6 +270,26 @@
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
                                     Foreground="White"/>
+                    </Border>
+
+
+                    <Border x:Name="PapierkorbArea"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Margin="16"
+                        Padding="8"
+                        Background="#22000000"
+                        CornerRadius="4"
+                        Visibility="Hidden"
+                        AllowDrop="True"
+                        Drop="Papierkorb_Drop"
+                        DragEnter="Papierkorb_DragEnter"
+                        DragOver="Papierkorb_DragEnter">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🗑" FontSize="16"/>
+                        </StackPanel>
                     </Border>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0">
