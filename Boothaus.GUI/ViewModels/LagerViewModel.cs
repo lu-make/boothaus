@@ -54,7 +54,7 @@ public class LagerViewModel : INotifyPropertyChanged
             neueReihe.Lager = Modell;
             for (int i = 0; i < 10; i++)
             {
-                var platz = new Lagerplatz();
+                var platz = new Lagerplatz(neueReihe);
                 neueReihe.PlatzHinzufügen(platz);
             }
             Modell.Reihen.Add(neueReihe);

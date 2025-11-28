@@ -58,7 +58,7 @@ internal static class DefaultData
 
             for (int platzIndex = 0; platzIndex < plätzeProReihe; platzIndex++)
             {
-                var platz = new Lagerplatz();
+                var platz = new Lagerplatz(reihe);
 
                 reihe.PlatzHinzufügen(platz);
             }
@@ -149,12 +149,15 @@ public sealed class LagerplatzFaker
 {  
     public IEnumerable<Lagerplatz> Generate(int totalCount = 70)
     {
-        // alle Plätze erzeugen
-        var plaetze = Enumerable.Range(0, totalCount)
-            .Select(_ => new Lagerplatz
-            {
-                Id = Guid.NewGuid()
-            });
+        List<Lagerplatz> plaetze = new(totalCount);
+        int rowcount = totalCount / 10;
+
+        for (int row = 0; row < rowcount; row++)
+        {
+            var reihe = new Lagerreihe(row);
+            plaetze.AddRange(Enumerable.Range(0, 10)
+                .Select(_ => new Lagerplatz(reihe)));
+        } 
 
         return plaetze;
     }

@@ -2,17 +2,17 @@
 
 public class Lagerplatz : ModelBase
 { 
-    public Lagerreihe? Reihe { get; internal set; } 
+    public Lagerreihe Reihe { get; internal set; } 
 
     private readonly List<Auftrag> zuweisungen = new();
     public IReadOnlyCollection<Auftrag> Zuweisungen => zuweisungen;
 
-    public Lagerplatz(Guid id) : base(id)
+    public Lagerplatz(Guid id, Lagerreihe reihe) : base(id)
     {
-
+        Reihe = reihe;
     }
 
-    public Lagerplatz() : base(Guid.NewGuid())
+    public Lagerplatz(Lagerreihe reihe) : this(Guid.NewGuid(), reihe)
     {
 
     } 

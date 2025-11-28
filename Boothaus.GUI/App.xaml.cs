@@ -47,7 +47,9 @@ public partial class App : System.Windows.Application
         lagerRepo.InitialisiereMitDefaults(DefaultData.Lager());
         auftragRepo.InitialisiereMitDefaults(DefaultData.Aufträge(lagerRepo.GetLager(), bootRepo.GetAll()));
 
-        var mainWindow = new BoothausMainApplicationWindow
+        var service = Provider.GetRequiredService<LagerApplicationService>();
+
+        var mainWindow = new BoothausMainApplicationWindow(service)
         {
             DataContext = Provider.GetRequiredService<MainViewModel>()
         };

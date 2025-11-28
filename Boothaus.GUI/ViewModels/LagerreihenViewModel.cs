@@ -52,7 +52,7 @@ public class LagerreihenViewModel : INotifyPropertyChanged
     {
         PlatzInReiheHinzufügenCommand = new RelayCommand(execute: () =>
         {
-            var neuerPlatz = new Lagerplatz();
+            var neuerPlatz = new Lagerplatz(Modell);
             Modell.PlatzHinzufügen(neuerPlatz);
             PlatzViewmodels.Add(new LagerplatzViewModel(neuerPlatz));
             (PlatzInReiheHinzufügenCommand as RelayCommand)?.NotifyCanExecuteChanged();
@@ -71,6 +71,14 @@ public class LagerreihenViewModel : INotifyPropertyChanged
         }, 
         canExecute: () => PlatzViewmodels.Count > Constants.MinPlätzeProReihe);
 
+    }
+
+    public void Aktualisieren()
+    {
+        foreach (var platzVm in PlatzViewmodels)
+        {
+            platzVm.Aktualisieren();
+        }
     }
 
 

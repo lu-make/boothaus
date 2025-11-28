@@ -1,6 +1,7 @@
 ﻿using Boothaus.Domain;
 using Boothaus.GUI.ViewModels;
 using CommunityToolkit.Mvvm.Input;
+using Domain.Services;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,11 +13,14 @@ namespace Boothaus;
 /// </summary>
 public partial class BoothausMainApplicationWindow : Window
 {
+    private readonly LagerApplicationService service;
+
     private MainViewModel mainViewModel => DataContext as MainViewModel;
 
-    public BoothausMainApplicationWindow()
+    public BoothausMainApplicationWindow(global::Domain.Services.LagerApplicationService service)
     {
-        InitializeComponent(); 
+        InitializeComponent();
+        this.service = service;
     }
 
     private void LagerplatzRect_Drop(object sender, DragEventArgs e)
@@ -27,13 +31,12 @@ public partial class BoothausMainApplicationWindow : Window
 
         Auftrag? auftrag = null;
 
-        // Case 1: dragged from DataGrid (Auftragliste)
+
         if (e.Data.GetDataPresent(typeof(AuftragListViewModel)))
         {
             var vm = (AuftragListViewModel)e.Data.GetData(typeof(AuftragListViewModel));
             auftrag = vm.Modell;
         }
-        // Case 2: dragged from LagerplatzRect itself
         else if (e.Data.GetDataPresent(typeof(Auftrag)))
         {
             auftrag = (Auftrag)e.Data.GetData(typeof(Auftrag));
@@ -45,18 +48,25 @@ public partial class BoothausMainApplicationWindow : Window
         var vorherigerPlatz = auftrag.Platz;
 
         if (mainViewModel.KannZuweisen(auftrag, platzVm.Modell))
-        {
+        { 
             if (vorherigerPlatz is not null)
             {
-                vorherigerPlatz.ZuweisungEntfernen(auftrag);
-                var vorherigerPlatzVm = mainViewModel.LagerViewModel.AllePlätze
-                    .FirstOrDefault(p => p.Modell.Id == vorherigerPlatz.Id);
-                vorherigerPlatzVm?.Aktualisieren();
+                service.LöscheZuweisung(auftrag);
+
+                var vorherigeReiheVm = mainViewModel.LagerViewModel.ReihenViewmodels
+                    .Single(r => vorherigerPlatz.Reihe!.Nummer == r.Modell.Nummer);
+                vorherigeReiheVm?.Aktualisieren();
             }
 
-            auftrag.Platz = platzVm.Modell;
+            var neuerPlatz = platzVm.Modell;
+            auftrag.Platz = neuerPlatz;
             platzVm.AuftragZuweisen(auftrag);
-            platzVm.Aktualisieren();
+
+            var neueReihe = neuerPlatz.Reihe;
+            var neueReiheVm = mainViewModel.LagerViewModel.ReihenViewmodels
+                .Single(r => r.Modell.Nummer == neueReihe.Nummer);
+
+            neueReiheVm.Aktualisieren();
 
             e.Effects = DragDropEffects.Move;
         }
@@ -85,24 +95,13 @@ public partial class BoothausMainApplicationWindow : Window
     {
         var rect = sender as FrameworkElement;
         if (rect?.DataContext is not LagerplatzViewModel platzVm) return;
-
-
+         
         if (e.LeftButton == MouseButtonState.Pressed)
         {
             var auftrag = platzVm.NächsteZuweisung;
             if (auftrag is null) return;
              
             var reihe = mainViewModel.LagerViewModel.ReihenViewmodels.First(r => r.PlatzViewmodels.Contains(platzVm));
-
-            var zuweisungenHinterDiesemPlatz = reihe.Modell.PlätzeHinter(platzVm.Modell)
-                .Where(platz => platz.GetNächsteZuweisung(auftrag.Saison) != null)
-                .ToList();
-
-            if (zuweisungenHinterDiesemPlatz.Any())
-            {
-                // es sind Plätze vor diesem Platz belegt, daher darf nicht gezogen werden
-                return;
-            }
 
             GültigePlätzeHervorheben(auftrag);
             SetPapierkorbSichtbar(true);
@@ -205,13 +204,17 @@ public partial class BoothausMainApplicationWindow : Window
         var auftrag = (Auftrag)e.Data.GetData(typeof(Auftrag));
 
         var platz = auftrag.Platz;
+
         if (platz is not null)
         {
-            platz.ZuweisungEntfernen(auftrag);
+            service.LöscheZuweisung(auftrag);
 
-            var platzVm = mainViewModel.LagerViewModel.AllePlätze
-                .FirstOrDefault(p => p.Modell.Id == platz.Id);
-            platzVm?.Aktualisieren();
+            var reihe = platz.Reihe!;
+            var reiheVm = mainViewModel.LagerViewModel.ReihenViewmodels
+                .FirstOrDefault(r => r.Modell.Nummer == reihe.Nummer);
+
+            foreach (var vm in reiheVm!.PlatzViewmodels) 
+                vm.Aktualisieren();
 
             auftrag.Platz = null;
         }

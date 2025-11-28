@@ -299,8 +299,7 @@ public class LagerApplicationService
         if (auftrag is null || platz is null) return false;
         if (!auftrag.IstGültigesBoot(auftrag.Boot)) return false;
         if (!Auftrag.IstGültigesDatumspaar(auftrag.Von, auftrag.Bis)) return false;
-        if (!platz.IstFreiImZeitraum(auftrag.Von, auftrag.Bis)) return false;
-        if (platz.Reihe is null) return false;
+        if (!platz.IstFreiImZeitraum(auftrag.Von, auftrag.Bis)) return false; 
 
         // ist diese reihe komplett frei? dann darf der hinterste platz belegt werden
         if (platz.Reihe.IstFreiImZeitraum(auftrag.Von, auftrag.Bis))
