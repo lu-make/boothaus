@@ -8,6 +8,8 @@ namespace Boothaus.GUI.ViewModels;
 
 public class LagerViewModel : INotifyPropertyChanged
 {
+    private Saison saison;
+
     public Lager Modell 
     { 
         get; 
@@ -52,10 +54,12 @@ public class LagerViewModel : INotifyPropertyChanged
             neueReihe.Lager = Modell;
             for (int i = 0; i < 10; i++)
             {
-                neueReihe.PlatzHinzufügen(new Lagerplatz());
+                var platz = new Lagerplatz();
+                neueReihe.PlatzHinzufügen(platz);
             }
             Modell.Reihen.Add(neueReihe);
             var reihenViewmodel = new LagerreihenViewModel(neueReihe);
+            reihenViewmodel.AusgewählteSaison = saison;
             ReihenViewmodels.Add(reihenViewmodel);
             OnPropertyChanged(nameof(AnzahlLagerreihen));
             (LagerreiheEntfernenCommand as RelayCommand)?.NotifyCanExecuteChanged();
@@ -79,11 +83,14 @@ public class LagerViewModel : INotifyPropertyChanged
     }
 
     public void Update(Saison ausgewählteSaison)
-    { 
+    {
+        saison = ausgewählteSaison;
         ReihenViewmodels.Clear();
         foreach (var reihe in Modell.Reihen)
         {
             var reihenViewmodel = new LagerreihenViewModel(reihe);
+
+            reihenViewmodel.AusgewählteSaison = ausgewählteSaison;
 
             foreach (var platzVm in reihenViewmodel.PlatzViewmodels)
             {

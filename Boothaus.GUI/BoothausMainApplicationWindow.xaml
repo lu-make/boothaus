@@ -229,9 +229,8 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:Name="LagerplatzTemplate">
                                                     <Border x:Name="LagerplatzRect" Margin="5"  
-                                                            MinWidth="60" 
-                                                            MinHeight="40"
-                                                            MaxWidth="150"
+                                                            Width="80" 
+                                                            Height="60"
                                                             CornerRadius="5"
                                                             BorderBrush="{Binding Border}"
                                                             BorderThickness="{Binding BorderThickness}"
@@ -243,7 +242,8 @@
                                                         <TextBlock Text="{Binding Anzeigetext}" 
                                                                    HorizontalAlignment="Center"
                                                                    VerticalAlignment="Center"
-                                                                   TextWrapping="Wrap"
+                                                                   TextWrapping="Wrap"               
+                                                                   TextTrimming="CharacterEllipsis"
                                                                    Margin="5"
                                                                    Foreground="Black"
                                                         />
@@ -280,16 +280,14 @@
                         Grid.Row="1"
                         Margin="16"
                         Padding="8"
-                        Background="#22000000"
+                        Background="#88FF0000"
                         CornerRadius="4"
                         Visibility="Hidden"
                         AllowDrop="True"
                         Drop="Papierkorb_Drop"
                         DragEnter="Papierkorb_DragEnter"
                         DragOver="Papierkorb_DragEnter">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🗑" FontSize="16"/>
-                        </StackPanel>
+                        <Image Source="/Icons/bin_closed.png"/>
                     </Border>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0">

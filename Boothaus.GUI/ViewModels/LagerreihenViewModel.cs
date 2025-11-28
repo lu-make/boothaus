@@ -20,6 +20,20 @@ public class LagerreihenViewModel : INotifyPropertyChanged
     public int Displaynummer => Modell.Nummer + 1;
     public ObservableCollection<LagerplatzViewModel> PlatzViewmodels { get; } = new(); 
 
+    public Saison AusgewählteSaison
+    {
+        get;
+        set
+        {
+            field = value;
+            foreach (var platzVm in PlatzViewmodels)
+            {
+                platzVm.AusgewählteSaison = value;
+            }
+            OnPropertyChanged(nameof(AusgewählteSaison));
+        }
+    }
+
     public ICommand PlatzInReiheHinzufügenCommand { get; private set; }
     public ICommand PlatzAusReiheEntfernenCommand { get; private set; }
 

@@ -16,8 +16,7 @@ public partial class BoothausMainApplicationWindow : Window
 
     public BoothausMainApplicationWindow()
     {
-        InitializeComponent();
-        this.SizeToContent = SizeToContent.WidthAndHeight;
+        InitializeComponent(); 
     }
 
     private void LagerplatzRect_Drop(object sender, DragEventArgs e)
