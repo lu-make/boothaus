@@ -59,10 +59,11 @@ public class Auftrag : ModelBase
     /// </summary>
     /// <param name="anderer">Der andere Lagerauftrag</param>
     /// <returns>
+    /// 0: wenn diese aufträge den gleichen zeitraum haben
     /// -1: wenn dieser Auftrag echt nach dem anderen geordnet ist (d.h. dieser Auftrag umschließt den anderen)
-    /// 0: wenn es keine gültige Reihung gibt (die beiden Aufträge können nicht derselben Reihe zugewiesen werden, 
-    /// ohne dass die Termine kollidieren)
     /// 1: wenn dieser Auftrag echt vor dem anderen geordnet ist (d.h. der andere Auftrag umschließt diesen)
+    /// 2: wenn es keine gültige Reihung gibt (die beiden Aufträge können nicht derselben Reihe zugewiesen werden, 
+    /// ohne dass die Termine kollidieren)
     /// </returns>  
     public int VergleicheReihenordnung(Auftrag anderer)
     {
@@ -75,30 +76,38 @@ public class Auftrag : ModelBase
     /// Ein Auftrag a0 kann in die Reihung vor einen Auftrag a1, wenn: 
     /// a0.von >= a1.von UND a0.bis <= a1.bis
     /// </summary>
-    /// <param name="von">Anfangsdatum des anderen Auftrags</param>
-    /// <param name="bis">Enddatum des anderen Auftrags</param>
+    /// <param name="andererVon">Anfangsdatum des anderen Auftrags</param>
+    /// <param name="andererBis">Enddatum des anderen Auftrags</param>
     /// <returns>
+    /// 0: wenn diese aufträge den gleichen zeitraum haben
     /// -1: wenn dieser Auftrag echt nach dem anderen geordnet ist (d.h. dieser Auftrag umschließt den anderen)
-    /// 0: wenn es keine gültige Reihung gibt (die beiden Aufträge können nicht derselben Reihe zugewiesen werden, 
-    /// ohne dass die Termine kollidieren)
     /// 1: wenn dieser Auftrag echt vor dem anderen geordnet ist (d.h. der andere Auftrag umschließt diesen)
+    /// 2: wenn es keine gültige Reihung gibt (die beiden Aufträge können nicht derselben Reihe zugewiesen werden, 
+    /// ohne dass die Termine kollidieren)
     /// </returns>
-    public int VergleicheReihenordnung(DateOnly von, DateOnly bis)
+    public int VergleicheReihenordnung(DateOnly andererVon, DateOnly andererBis)
     {
-        // dieser auftrag umschließt den anderen auftrag
-        if (von >= Von && bis <= Bis)
+        // diese aufträge haben den gleichen zeitraum
+        if (andererVon == Von && andererBis == Bis)
         {
-            return -1;
+            return 0;
         }
 
         // anderer auftrag umschließt diesen auftrag
-        if (Von >= von && Bis <= bis)
+        if (andererVon <= Von && andererBis >= Bis)
         {
             return 1;
         }
 
+        // dieser auftrag umschließt den anderen auftrag
+        if (andererVon >= Von && andererBis <= Bis)
+        {
+            return -1;
+        }
+
+
         // diese aufträge können nicht in derselben reihe gelagert werden
-        return 0;
+        return 2;
     }
 
     public override string ToString() => $"{Boot.Name} ({Von} - {Bis})";

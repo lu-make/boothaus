@@ -81,25 +81,29 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
 
     public Brush DatumauswahlRahmenfarbe => DatumspaarValid? Brushes.Gray : Brushes.Red;
 
-    public DateOnly? Von
+    public DateTime VonEditValue
     {
         get;
         set
         {
             field = value;
-            OnPropertyChanged(nameof(Von));
+            OnPropertyChanged(nameof(VonEditValue));
         }
     }
 
-    public DateOnly? Bis
+    private DateOnly vonDatum => DateOnly.FromDateTime(VonEditValue);
+
+    public DateTime BisEditValue
     {
         get;
         set
         {
             field = value;
-            OnPropertyChanged(nameof(Bis));
+            OnPropertyChanged(nameof(BisEditValue));
         }
     }
+
+    private DateOnly bisDatum => DateOnly.FromDateTime(BisEditValue);
 
     public Auftrag? Auftrag { get; set; }
     public bool IstNeuerAuftrag { get; private set; }
@@ -128,8 +132,8 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
         {
             Auftrag = auftrag;
             Boot = auftrag.Boot; 
-            Von = auftrag.Von;
-            Bis = auftrag.Bis;
+            VonEditValue = auftrag.Von.ToDateTime(new TimeOnly());
+            BisEditValue = auftrag.Bis.ToDateTime(new TimeOnly());
         }
         InitCommands();
     }
@@ -155,13 +159,17 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
             {  
                 if (IstNeuerAuftrag)
                 {
-                    Auftrag = new Auftrag(lager, Boot!, Von!.Value, Bis!.Value);
+                    Auftrag = new Auftrag(
+                        lager, Boot!, 
+                        vonDatum, 
+                        bisDatum
+                        );
                 } 
                 else
                 {
                     Auftrag!.Boot = Boot!;
-                    Auftrag.Von = Von!.Value;
-                    Auftrag.Bis = Bis!.Value;
+                    Auftrag.Von = vonDatum;
+                    Auftrag.Bis = bisDatum;
                 }
                 Ergebnis = true;
             }
@@ -202,7 +210,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
 
     private void DatenValidieren()
     {
-        if (!Von.HasValue || !Bis.HasValue || !Auftrag.IstGültigesDatumspaar(Von!.Value, Bis!.Value))
+        if (!Auftrag.IstGültigesDatumspaar(vonDatum, bisDatum))
         {
             DatumspaarValidationMessage = "Sie müssen einen gültigen Zeitraum auswählen."; 
             DatumspaarValid = false;
@@ -211,7 +219,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
 
         if (!IstNeuerAuftrag 
             && Auftrag!.Platz is Lagerplatz platz 
-            && !platz.Reihe.IstZeitraumErlaubtAnIndex(Auftrag.Saison, Von!.Value, Bis!.Value, platz.Reihe.Index(platz)))
+            && !platz.Reihe.IstZeitraumErlaubtAnIndex(Auftrag.Saison, vonDatum, bisDatum, platz.Reihe.Index(platz)))
         {
             DatumspaarValidationMessage = "Der Auftrag hat schon eine Platzzuweisung. Für diesen Platz ist der angegebene Zeitraum ungültig.";
             DatumspaarValid = false;
@@ -228,7 +236,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
         if (!BootValid || !DatumspaarValid) return;
 
 
-        if (IstNeuerAuftrag && appService.BootAuftragExistiertBereits(Boot!, Von!.Value, Bis!.Value))
+        if (IstNeuerAuftrag && appService.BootAuftragExistiertBereits(Boot!, vonDatum, bisDatum))
         {
             BootValid = false;
             DatumspaarValid = false;

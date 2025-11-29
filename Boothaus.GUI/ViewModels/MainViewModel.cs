@@ -287,7 +287,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         var gültigePlätze = appService.FindeGültigePlätze(auftrag).ToList();
         return LagerViewModel.ReihenViewmodels
-            .SelectMany(r => r.PlatzViewmodels)
+            .SelectMany(r => r.PlatzViewmodels) 
             .Where(pvm => gültigePlätze.Contains(pvm.Modell)); 
     }
 

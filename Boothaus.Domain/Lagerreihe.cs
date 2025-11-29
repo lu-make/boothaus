@@ -114,8 +114,9 @@ public class Lagerreihe
 
         var hintererPlatz = Plätze.ElementAtOrDefault(index - 1);
         var hintereBelegung = hintererPlatz?.GetNächsteZuweisung(saison);
+        var hintereReihenordnung = hintereBelegung?.VergleicheReihenordnung(von, bis);
 
-        if (hintereBelegung is not null && hintereBelegung.VergleicheReihenordnung(von, bis) != -1)
+        if (hintereBelegung is not null && hintereReihenordnung is not 0 and not -1)
         {
             erlaubt = false;
             return erlaubt;
@@ -127,7 +128,8 @@ public class Lagerreihe
 
         var vordererPlatz = Plätze.ElementAtOrDefault(index + 1);
         var vordereBelegung = vordererPlatz?.GetNächsteZuweisung(saison);
-        if (vordereBelegung is not null && vordereBelegung.VergleicheReihenordnung(von, bis) != 1)
+        var vordereReihenordnung = vordereBelegung?.VergleicheReihenordnung(von, bis);
+        if (vordereBelegung is not null && vordereReihenordnung is not 0 and not 1)
         {
             erlaubt = false;
             return erlaubt;

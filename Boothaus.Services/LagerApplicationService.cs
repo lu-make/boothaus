@@ -104,9 +104,9 @@ public class LagerApplicationService
                     .VordersterBelegterPlatz(auftrag.Von, auftrag.Bis)!
                     .GetNächsteZuweisung(auftrag.Saison)!;
                     
-                var ordnung = auftrag.VergleicheReihenordnung(letzteZuweisungAusReihe);
+                int ordnung = auftrag.VergleicheReihenordnung(letzteZuweisungAusReihe);
 
-                if (ordnung == 1)
+                if (ordnung is (0 or 1))
                 {
                     // dieser auftrag kann vor den letzten auftrag in der reihe platziert werden
                     // (der größere index ist weiter vorne) 
@@ -311,7 +311,7 @@ public class LagerApplicationService
         var zuweisungDavor = vordersterBelegterPlatz?.GetNächsteZuweisung(auftrag.Saison);
         if (zuweisungDavor is null) return false;
         var ordnung = auftrag.VergleicheReihenordnung(zuweisungDavor);
-        if (ordnung != 1) return false;
+        if (ordnung is not (0 or 1)) return false;
         if (platz.Reihe.Index(platz) != platz.Reihe.Index(vordersterBelegterPlatz) + 1) return false;
         return true;
     }
@@ -327,6 +327,8 @@ public class LagerApplicationService
         var gültigePlätze = new List<Lagerplatz>();
         foreach (var reihe in lager.Reihen)
         {
+            if (reihe == auftrag?.Platz?.Reihe) continue;
+
             foreach (var platz in reihe.Plätze)
             {
                 if (KannZuweisen(auftrag, platz))

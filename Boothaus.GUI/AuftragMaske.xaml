@@ -52,7 +52,7 @@
         <StackPanel Orientation="Vertical" Grid.Row="1">
             <Label Content="Startdatum"  Margin="5,0"  />
             <DatePicker
-                SelectedDate="{Binding Von, Mode=TwoWay}"
+                SelectedDate="{Binding VonEditValue, Mode=TwoWay}"
                 BorderBrush="{Binding DatumauswahlRahmenfarbe}"
                 Margin="5"
                 />
@@ -62,7 +62,7 @@
         <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1">
             <Label Content="Enddatum"  Margin="5,0" />
             <DatePicker
-                SelectedDate="{Binding Bis, Mode=TwoWay}"
+                SelectedDate="{Binding BisEditValue, Mode=TwoWay}"
                 BorderBrush="{Binding DatumauswahlRahmenfarbe}"
                 Margin="5"
                 />
