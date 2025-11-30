@@ -69,6 +69,7 @@ public class ImportExportService
                 {
                     var auftrag = auftragRepo.Get(zuweisung);
                     if (auftrag is null) throw new InvalidOperationException($"Auftrag mit ID {zuweisung} nicht gefunden.");
+                    auftrag.Platz = platz;
                     platz.ZuweisungHinzufügen(auftrag); 
                 }
                 reihe.PlatzHinzufügen(platz);
@@ -81,6 +82,7 @@ public class ImportExportService
         {
             auftragRepo.Upsert(auftrag);
         }
+
         foreach (var boot in neueBoote)
         {
             bootRepo.Upsert(boot);

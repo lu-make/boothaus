@@ -1,10 +1,9 @@
 ﻿using Boothaus.Domain;
-using Boothaus.Services.Contracts;
-using System;
+using Boothaus.Services.Contracts; 
 
 namespace Boothaus.Services.Persistence;
 
-public class InMemoryAuftragRepository : IAuftragRepository
+public class AuftragRepository : IAuftragRepository
 {
     private List<Auftrag> aufträge = new();
     private bool initialisiert;

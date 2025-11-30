@@ -20,27 +20,17 @@ public class LagerApplicationServiceTests
     [SetUp]
     public void SetUp()
     {
-        bootRepo = Substitute.For<IBootRepository>();
-        auftragRepo = Substitute.For<IAuftragRepository>();
-        lagerRepo = Substitute.For<ILagerRepository>();
+        bootRepo = new BootRepository();
+        auftragRepo = new AuftragRepository();
+        lagerRepo = new LagerRepository();
+        importExport = Substitute.For<ImportExportService>();
+        sut = new LagerApplicationService(bootRepo, auftragRepo, lagerRepo, importExport);
     }
 
     [Test]
     public void ErstelleLagerkalender_KeineKonflikte_AlleAufträgeZugewiesen()
     {
         // Arrange
-        bootRepo.GetAll().Returns(new List<Boot>()
-        {
-            new Boot("", "", 7, 5),
-            new Boot("", "", 8, 4)
-        });
-
-        auftragRepo.GetAll().Returns(new List<Auftrag>
-        {
-            new Auftrag(),
-            new Auftrag()
-        });
-
         // Act
         // Assert
     }

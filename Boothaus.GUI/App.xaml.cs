@@ -26,9 +26,9 @@ public partial class App : System.Windows.Application
 
     private void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<IAuftragRepository, InMemoryAuftragRepository>();
-        services.AddSingleton<IBootRepository, InMemoryBootRepository>();
-        services.AddSingleton<ILagerRepository, InMemoryLagerRepository>();
+        services.AddSingleton<IAuftragRepository, AuftragRepository>();
+        services.AddSingleton<IBootRepository, BootRepository>();
+        services.AddSingleton<ILagerRepository, LagerRepository>();
         services.AddSingleton<ImportExportService>();
         services.AddSingleton<LagerApplicationService>();
         services.AddSingleton<IDialogService, DialogService>();

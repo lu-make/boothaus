@@ -2,6 +2,18 @@
 
 namespace Boothaus.Services.Persistence.SerializableDTOs;
 
+internal class ImportExportDto
+{
+    public LagerDto Lager { get; set; }
+    public List<BootDto> Boote { get; set; }
+    public List<AuftragDto> Aufträge { get; set; }
+    public ImportExportDto()
+    {
+        Boote = new List<BootDto>();
+        Aufträge = new List<AuftragDto>();
+    }
+}
+
 internal class LagerDto
 {
     public decimal StandardMaxLänge { get; set; }
@@ -69,7 +81,7 @@ internal class LagerplatzDto
 internal class AuftragDto
 {
     public Guid Id { get; set; }
-    public Guid Boot { get; set; }
+    public Guid Boot { get; set; } 
     public DateOnly Von { get; set; }
     public DateOnly Bis { get; set; }
 
@@ -77,7 +89,7 @@ internal class AuftragDto
     public AuftragDto(Auftrag auftrag)
     {
         Id = auftrag.Id;
-        Boot = auftrag.Boot.Id;
+        Boot = auftrag.Boot.Id; 
         Von = auftrag.Von;
         Bis = auftrag.Bis;
 
@@ -100,17 +112,5 @@ internal class BootDto
         Name = boot.Name;
         Rumpflänge = boot.Rumpflänge;
         Breite = boot.Breite;
-    }
-}
-
-internal class ImportExportDto
-{
-    public LagerDto Lager { get; set; }
-    public List<BootDto> Boote { get; set; }
-    public List<AuftragDto> Aufträge { get; set; }
-    public ImportExportDto() 
-    { 
-        Boote = new List<BootDto>();
-        Aufträge = new List<AuftragDto>(); 
     }
 }

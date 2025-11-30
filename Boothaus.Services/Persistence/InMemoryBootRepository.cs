@@ -3,7 +3,7 @@ using Boothaus.Services.Contracts;
 
 namespace Boothaus.Services.Persistence;
 
-public class InMemoryBootRepository : IBootRepository
+public class BootRepository : IBootRepository
 {
     private List<Boot> boote = new();
     private bool initialisiert;

@@ -15,7 +15,7 @@ public partial class BoothausMainApplicationWindow : Window
 {
     private readonly LagerApplicationService service;
 
-    private MainViewModel mainViewModel => DataContext as MainViewModel;
+    private MainViewModel mainViewModel => (MainViewModel)DataContext;
 
     public BoothausMainApplicationWindow(global::Domain.Services.LagerApplicationService service)
     {

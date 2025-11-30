@@ -1,7 +1,5 @@
 ﻿using Boothaus.Services.Contracts;
 using Boothaus.Domain;
-using System.Runtime.CompilerServices;
-using System.ComponentModel.Design;
 using Boothaus.Services.Persistence;
 
 namespace Domain.Services;
@@ -308,7 +306,7 @@ public class LagerApplicationService
         // Es darf nur auf den hintersten freien platz der reihe zugewiesen werden
         var vordersterBelegterPlatz = platz.Reihe.VordersterBelegterPlatz(auftrag.Von, auftrag.Bis);
         if (vordersterBelegterPlatz is null) return false;
-        var zuweisungDavor = vordersterBelegterPlatz?.GetNächsteZuweisung(auftrag.Saison);
+        var zuweisungDavor = vordersterBelegterPlatz!.GetNächsteZuweisung(auftrag.Saison);
         if (zuweisungDavor is null) return false;
         var ordnung = auftrag.VergleicheReihenordnung(zuweisungDavor);
         if (ordnung is not (0 or 1)) return false;

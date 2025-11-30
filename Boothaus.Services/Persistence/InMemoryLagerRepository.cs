@@ -3,7 +3,7 @@ using Boothaus.Services.Contracts;
 
 namespace Boothaus.Services.Persistence;
 
-public class InMemoryLagerRepository : ILagerRepository
+public class LagerRepository : ILagerRepository
 {
     private Lager? lager;
 
