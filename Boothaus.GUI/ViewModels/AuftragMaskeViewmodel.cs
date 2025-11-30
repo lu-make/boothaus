@@ -134,6 +134,11 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
             Boot = auftrag.Boot; 
             VonEditValue = auftrag.Von.ToDateTime(new TimeOnly());
             BisEditValue = auftrag.Bis.ToDateTime(new TimeOnly());
+        } 
+        else
+        {
+            VonEditValue = DateTime.Today;
+            BisEditValue = DateTime.Today.AddMonths(1); 
         }
         InitCommands();
     }
