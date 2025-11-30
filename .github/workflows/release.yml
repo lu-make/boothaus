@@ -1,13 +1,11 @@
 name: Build & Draft Release
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 env:
-  VERSION: ${{ github.ref_name }}
   PROJECT_PATH: Boothaus.GUI/Boothaus.GUI.csproj
   APP_NAME: Boothaus
 
