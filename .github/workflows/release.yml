@@ -47,9 +47,8 @@ jobs:
           $env:PROJECT_PATH
           -c Release
           -r ${{ matrix.rid }}
-          --self-contained true
+          --self-contained false
           -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtract=true
           -p:Version=$env:VERSION
           -p:AssemblyVersion=$env:VERSION
           -p:FileVersion=$env:VERSION
