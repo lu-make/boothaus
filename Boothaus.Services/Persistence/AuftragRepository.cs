@@ -14,6 +14,13 @@ public class AuftragRepository : IAuftragRepository
         initialisiert = true;
     }
 
+    public void InitialisiereLeer()
+    {
+        if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert.");
+        aufträge = new List<Auftrag>();
+        initialisiert = true;
+    }
+
     public Auftrag? Get(Guid id)
     {
         return aufträge.FirstOrDefault(a => a.Id == id);
@@ -81,5 +88,11 @@ public class AuftragRepository : IAuftragRepository
         {
             aufträge.Add(auftrag);
         }
+    }
+
+    public void Clear()
+    {
+        aufträge.Clear();
+        initialisiert = false;
     }
 }

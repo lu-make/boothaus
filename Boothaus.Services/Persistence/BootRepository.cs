@@ -14,6 +14,13 @@ public class BootRepository : IBootRepository
         initialisiert = true;
     }
 
+    public void InitialisiereLeer()
+    {
+        if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert.");
+        boote = new List<Boot>();
+        initialisiert = true;
+    }
+
     public Boot? Get(Guid id)
     {
         return boote.FirstOrDefault(b => b.Id == id);
@@ -66,5 +73,11 @@ public class BootRepository : IBootRepository
         {
             Update(boot);
         }
+    }
+
+    public void Clear()
+    {
+        boote.Clear();
+        initialisiert = false;
     }
 }

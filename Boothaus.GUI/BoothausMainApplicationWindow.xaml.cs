@@ -1,4 +1,5 @@
 ﻿using Boothaus.Domain;
+using Boothaus.GUI.Services;
 using Boothaus.GUI.ViewModels;
 using CommunityToolkit.Mvvm.Input;
 using Domain.Services;
@@ -13,14 +14,16 @@ namespace Boothaus;
 /// </summary>
 public partial class BoothausMainApplicationWindow : Window
 {
-    private readonly LagerApplicationService service;
+    private readonly LagerApplicationService appService;
+    private readonly IDialogService dialogService;
 
     private MainViewModel mainViewModel => (MainViewModel)DataContext;
 
-    public BoothausMainApplicationWindow(global::Domain.Services.LagerApplicationService service)
+    public BoothausMainApplicationWindow(LagerApplicationService appService, IDialogService dialogService)
     {
         InitializeComponent();
-        this.service = service;
+        this.appService = appService;
+        this.dialogService = dialogService;
     }
 
     private void LagerplatzRect_Drop(object sender, DragEventArgs e)
@@ -51,7 +54,7 @@ public partial class BoothausMainApplicationWindow : Window
         { 
             if (vorherigerPlatz is not null)
             {
-                service.LöscheZuweisung(auftrag);
+                appService.LöscheZuweisung(auftrag);
 
                 var vorherigeReiheVm = mainViewModel.LagerViewModel.ReihenViewmodels
                     .Single(r => vorherigerPlatz.Reihe!.Nummer == r.Modell.Nummer);
@@ -207,7 +210,7 @@ public partial class BoothausMainApplicationWindow : Window
 
         if (platz is not null)
         {
-            service.LöscheZuweisung(auftrag);
+            appService.LöscheZuweisung(auftrag);
 
             var reihe = platz.Reihe!;
             var reiheVm = mainViewModel.LagerViewModel.ReihenViewmodels
@@ -230,5 +233,33 @@ public partial class BoothausMainApplicationWindow : Window
         PapierkorbArea.Visibility = sichtbar
             ? Visibility.Visible
             : Visibility.Hidden;
+    }
+
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {  
+        if (appService.HatUngespeicherteÄnderungen())
+        {
+            var speichern = dialogService.JaNeinAbbrechenWarnungDialogAnzeigen(titel: "Beenden", frage: "Möchten Sie Ihre Änderungen speichern?");
+            switch (speichern)
+            {
+                case 0:
+                    break;
+                case 1:
+                    try
+                    {
+                        appService.ZustandSpeichern();
+                        break;
+                    }
+                    catch
+                    {
+                        dialogService.FehlermeldungAnzeigen("Fehler beim Speichern der Änderungen. Der Beenden-Vorgang wird abgebrochen.");
+                        e.Cancel = true;
+                        return;
+                    }
+                default:
+                    e.Cancel = true;
+                    return;
+            }
+        }
     }
 }

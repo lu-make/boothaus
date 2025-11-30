@@ -16,6 +16,13 @@ public class LagerRepository : ILagerRepository
         initialisiert = true;
     }
 
+    public void InitialisiereLeer()
+    {
+        if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert.");
+        lager = null;
+        initialisiert = true;
+    }
+
     public Lager GetLager()
     {
         if (lager is not null) return lager;
@@ -25,5 +32,11 @@ public class LagerRepository : ILagerRepository
     public void Save(Lager lager)
     {
         this.lager = lager;
+    }  
+
+    public void Clear()
+    {
+        lager = null;
+        initialisiert = false;
     }
 }

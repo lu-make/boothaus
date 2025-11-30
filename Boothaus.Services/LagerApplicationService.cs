@@ -16,19 +16,19 @@ public class LagerApplicationService
     private IAuftragRepository auftragRepository;
     private ILagerRepository lagerRepository;
     private HashSet<Saison> saisons;
-    private ImportExportService importExport;
+    private PersistenceService persistence;
 
     public LagerApplicationService(
         IBootRepository bootRepository,
         IAuftragRepository auftragRepository,
         ILagerRepository lagerRepository,
-        ImportExportService importExport)
+        PersistenceService persistence)
     {
         this.bootRepository = bootRepository;
         this.auftragRepository = auftragRepository;
         this.lagerRepository = lagerRepository;
         saisons = [new Saison(2025)];
-        this.importExport = importExport;
+        this.persistence = persistence;
     }
 
     /// <summary>
@@ -447,7 +447,7 @@ public class LagerApplicationService
     /// <param name="zielpfad">Der Pfad der Datei</param>
     public void DatenExportieren(string zielpfad)
     {
-        importExport.DatenExportieren(zielpfad);
+        persistence.DatenExportieren(zielpfad);
     }
 
     /// <summary>
@@ -456,6 +456,31 @@ public class LagerApplicationService
     /// <param name="quellpfad">Der Pfad der Datei</param>
     public void DatenImportieren(string quellpfad)
     {
-        importExport.DatenImportieren(quellpfad);
+        persistence.DatenImportieren(quellpfad);
+    }
+
+    /// <summary>
+    /// Speichert den aktuellen Zustand in die Datenbank.
+    /// </summary>
+    public void ZustandSpeichern()
+    {
+        persistence.ZustandSpeichern();
+    }
+
+    /// <summary>
+    /// Lädt den letzten gespeicherten Zustand aus der Datenbank.
+    /// </summary>
+    public void ZustandLaden()
+    {
+        persistence.ZustandLaden();
+    }
+
+    /// <summary>
+    /// Prüft ob ungespeicherte Änderungen vorliegen.
+    /// </summary>
+    /// <returns>Wahr, wenn es ungespeicherte Änderungen am Modell gibt, sonst falsch.</returns>
+    public bool HatUngespeicherteÄnderungen()
+    {
+        return persistence.HatUngespeicherteÄnderungen();
     }
 }

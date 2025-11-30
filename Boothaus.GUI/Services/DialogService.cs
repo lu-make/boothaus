@@ -132,6 +132,18 @@ public class DialogService : IDialogService
         return result == System.Windows.MessageBoxResult.Yes;
     }
 
+    public int JaNeinAbbrechenWarnungDialogAnzeigen(string titel, string frage)
+    {
+        var result = System.Windows.MessageBox.Show(frage, titel, System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+        return result switch         {
+            System.Windows.MessageBoxResult.Yes => 1,
+            System.Windows.MessageBoxResult.No => 0,
+            System.Windows.MessageBoxResult.Cancel => -1,
+            _ => -1
+        };
+    }
+
+
     public void OkWarnungDialogAnzeigen(string titel, string nachricht)
     {
         System.Windows.MessageBox.Show(nachricht, titel, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
