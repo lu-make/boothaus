@@ -10,11 +10,7 @@
 		<AssemblyVersion>1.0.3</AssemblyVersion>
 		<FileVersion>1.0.3</FileVersion>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Remove="Icons\database_go.png" />
-	</ItemGroup> 
-	
+ 
 	<ItemGroup>
 		<Resource Include="Icons\accept.png" />
 		<Resource Include="Icons\add.png" />
