@@ -105,7 +105,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
         run: |
-          for file in dist/*.zip; do
+          for file in dist/**/*.zip; do
             echo "Uploading $file"
             name=$(basename "$file")
             curl \
