@@ -5,6 +5,7 @@ namespace Boothaus.Services.Contracts;
 public interface IAuftragRepository
 {
     void InitialisiereMitDefaults(List<Auftrag> defaultAufträge);
+    void InitialisiereLeer();
     IEnumerable<Auftrag> GetAll();
     IEnumerable<Saison> GetSaisons();
     IEnumerable<Auftrag> GetBySaison(Saison saison);
@@ -13,4 +14,5 @@ public interface IAuftragRepository
     void Remove(Auftrag auftrag);
     void Update(Auftrag auftrag);
     void Upsert(Auftrag auftrag);
+    void Clear();
 }

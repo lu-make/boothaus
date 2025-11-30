@@ -112,9 +112,9 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ICommand NeuesBootCommand { get; private set; }
-    public ICommand OkCommand { get; private set; }
-    public ICommand CancelCommand { get; private set; }
+    public ICommand NeuesBootCommand { get; private set; } = null!;
+    public ICommand OkCommand { get; private set; } = null!;
+    public ICommand CancelCommand { get; private set; } = null!;
 
     public AuftragMaskeViewmodel(LagerApplicationService appService, IDialogService dialogService)
         : this(appService, dialogService, null)
@@ -140,6 +140,7 @@ public partial class AuftragMaskeViewmodel : INotifyPropertyChanged
             VonEditValue = DateTime.Today;
             BisEditValue = DateTime.Today.AddMonths(1); 
         }
+
         InitCommands();
     }
 

@@ -3,7 +3,7 @@ using Boothaus.Services.Contracts;
 
 namespace Boothaus.Services.Persistence;
 
-public class InMemoryLagerRepository : ILagerRepository
+public class LagerRepository : ILagerRepository
 {
     private Lager? lager;
 
@@ -16,6 +16,13 @@ public class InMemoryLagerRepository : ILagerRepository
         initialisiert = true;
     }
 
+    public void InitialisiereLeer()
+    {
+        if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert.");
+        lager = null;
+        initialisiert = true;
+    }
+
     public Lager GetLager()
     {
         if (lager is not null) return lager;
@@ -25,5 +32,11 @@ public class InMemoryLagerRepository : ILagerRepository
     public void Save(Lager lager)
     {
         this.lager = lager;
+    }  
+
+    public void Clear()
+    {
+        lager = null;
+        initialisiert = false;
     }
 }

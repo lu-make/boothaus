@@ -9,8 +9,8 @@
 		<ApplicationIcon>Icons\boothaus.ico</ApplicationIcon>
 		<AssemblyVersion>1.0.3</AssemblyVersion>
 		<FileVersion>1.0.3</FileVersion>
-	</PropertyGroup> 
-	
+	</PropertyGroup>
+ 
 	<ItemGroup>
 		<Resource Include="Icons\accept.png" />
 		<Resource Include="Icons\add.png" />
@@ -24,6 +24,7 @@
 		<Resource Include="Icons\calendar.png" />
 		<Resource Include="Icons\cancel.png" />
 		<Resource Include="Icons\cross.png" />
+		<Resource Include="Icons\database_go.png" />
 		<Resource Include="Icons\delete.png" />
 		<Resource Include="Icons\disk.png" />
 		<Resource Include="Icons\error.png" />

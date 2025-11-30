@@ -28,7 +28,7 @@
         </StackPanel>
 
 
-        <StackPanel Name="Name" Orientation="Vertical" Grid.Row="1" Grid.ColumnSpan="2">
+        <StackPanel Name="NameEdit" Orientation="Vertical" Grid.Row="1" Grid.ColumnSpan="2">
             <Label Content="Name"  Margin="5,0" />
             <TextBox Text="{Binding Name}" 
                      BorderBrush="{Binding NameEditRahmenfarbe}" 

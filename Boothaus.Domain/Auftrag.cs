@@ -93,16 +93,16 @@ public class Auftrag : ModelBase
             return 0;
         }
 
-        // anderer auftrag umschließt diesen auftrag
-        if (andererVon <= Von && andererBis >= Bis)
-        {
-            return 1;
-        }
-
         // dieser auftrag umschließt den anderen auftrag
         if (andererVon >= Von && andererBis <= Bis)
         {
             return -1;
+        }
+
+        // anderer auftrag umschließt diesen auftrag
+        if (andererVon <= Von && andererBis >= Bis)
+        {
+            return 1;
         }
 
 

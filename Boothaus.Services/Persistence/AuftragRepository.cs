@@ -1,10 +1,9 @@
 ﻿using Boothaus.Domain;
-using Boothaus.Services.Contracts;
-using System;
+using Boothaus.Services.Contracts; 
 
 namespace Boothaus.Services.Persistence;
 
-public class InMemoryAuftragRepository : IAuftragRepository
+public class AuftragRepository : IAuftragRepository
 {
     private List<Auftrag> aufträge = new();
     private bool initialisiert;
@@ -12,6 +11,13 @@ public class InMemoryAuftragRepository : IAuftragRepository
     {
         if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert."); 
         aufträge = defaultAufträge;
+        initialisiert = true;
+    }
+
+    public void InitialisiereLeer()
+    {
+        if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert.");
+        aufträge = new List<Auftrag>();
         initialisiert = true;
     }
 
@@ -82,5 +88,11 @@ public class InMemoryAuftragRepository : IAuftragRepository
         {
             aufträge.Add(auftrag);
         }
+    }
+
+    public void Clear()
+    {
+        aufträge.Clear();
+        initialisiert = false;
     }
 }

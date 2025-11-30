@@ -3,7 +3,7 @@ using Boothaus.Services.Contracts;
 
 namespace Boothaus.Services.Persistence;
 
-public class InMemoryBootRepository : IBootRepository
+public class BootRepository : IBootRepository
 {
     private List<Boot> boote = new();
     private bool initialisiert;
@@ -11,6 +11,13 @@ public class InMemoryBootRepository : IBootRepository
     {
         if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert.");
         boote = defaultBoote;
+        initialisiert = true;
+    }
+
+    public void InitialisiereLeer()
+    {
+        if (initialisiert) throw new InvalidOperationException("Das Repository wurde bereits initialisiert.");
+        boote = new List<Boot>();
         initialisiert = true;
     }
 
@@ -66,5 +73,11 @@ public class InMemoryBootRepository : IBootRepository
         {
             Update(boot);
         }
+    }
+
+    public void Clear()
+    {
+        boote.Clear();
+        initialisiert = false;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Boothaus.Domain;
 using Bogus; 
 
-namespace Boothaus.GUI;
+namespace Boothaus.Services.Persistence;
 
 internal static class DefaultData
 {
