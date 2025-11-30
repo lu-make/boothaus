@@ -24,8 +24,8 @@ jobs:
       - name: Extract version from tag
         shell: pwsh
         run: |
-          $refName = "${{ github.ref_name }}"
-          $version = $refName.TrimStart('v')
+          $refName = "${{ github.ref_name }}"   # z.B. v1.0.4
+          $version = $refName.TrimStart('v')    # 1.0.4
           "VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Debug VERSION
@@ -38,6 +38,7 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Publish ${{ matrix.rid }}
+        shell: pwsh
         run: >
           dotnet publish
           $env:PROJECT_PATH
@@ -85,7 +86,6 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: zips
           path: dist
 
       - name: Create draft release
@@ -94,8 +94,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.VERSION }}
-          release_name: v${{ env.VERSION }}
+          tag_name: ${{ github.ref_name }}       # z.B. v1.0.4
+          release_name: ${{ github.ref_name }}   # oder: Boothaus ${{ github.ref_name }}
           draft: true
           prerelease: false
           body: ""
@@ -116,4 +116,3 @@ jobs:
               --data-binary @"$file" \
               "${UPLOAD_URL%%\{*}?name=$name"
           done
-
