@@ -10,6 +10,8 @@ Die Software erlaubt die Verwaltung von Booten sowie die Verteilung von Lagerauf
 
 Das Programm läuft unter Windows in x86, x64 und ARM64. Es muss eine .NET Runtime installiert sein.
 
+Die Anwendung braucht unbedingt Lese- und Schreibrechte im Verzeichnis wo die EXE liegt, ansonsten kann die Datenbank nicht angelegt werden.
+
 ## Gebrauch
 
 Laden Sie die entsprechende .ZIP Datei aus "Releases" herunter und extrahieren Sie sie, darin finden Sie eine ausführbare Datei namens "Boothaus.exe".
