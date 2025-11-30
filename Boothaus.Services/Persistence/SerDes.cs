@@ -53,7 +53,7 @@ public class SerDes
 
     public string SerializeToJson(Lager lager, IEnumerable<Auftrag> aufträge, IEnumerable<Boot> boote)
     {
-        var exportJson = JsonSerializer.Serialize(SerializeToDtos(lager, aufträge, boote));
+        var exportJson = JsonSerializer.Serialize(SerializeToDtos(lager, aufträge, boote), options);
 
         return exportJson; 
     }
