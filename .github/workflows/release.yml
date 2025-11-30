@@ -8,7 +8,7 @@ on:
 
 env:
   VERSION: ${{ github.ref_name }}
-  PROJECT_PATH: src/Boothaus.GUI/Boothaus.GUI.csproj
+  PROJECT_PATH: Boothaus.GUI/Boothaus.GUI.csproj
   APP_NAME: Boothaus
 
 jobs:
