@@ -3,16 +3,12 @@ name: Build & Draft Release
 on:
   push:
     tags:
-      # z.B. v1.0.3, v2.1.0 usw.
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 env:
-  # Tag-Name ist gleichzeitig die Versionsnummer, z.B. "1.0.4"
   VERSION: ${{ github.ref_name }}
-  # Dein Projektpfad
-  PROJECT_PATH: src/Anwendung/Anwendung.csproj
-  # Dein Anzeigename für das Programm (für die ZIP-Dateien)
-  APP_NAME: Anwendung
+  PROJECT_PATH: src/Boothaus.GUI/Boothaus.GUI.csproj
+  APP_NAME: Boothaus
 
 jobs:
   build:
@@ -32,7 +28,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Publish ${{ matrix.rid }}
         run: >
@@ -53,8 +49,7 @@ jobs:
           $rid = "${{ matrix.rid }}"        # z.B. win-x64
           $arch = $rid.Replace("win-","")   # x86 / x64 / arm64
 
-          # Passe den TargetFramework ggf. an (z.B. net7.0-windows)
-          $publishDir = "src/Anwendung/bin/Release/net8.0-windows/$rid/publish"
+          $publishDir = "Boothaus.GUI/bin/Release/net9.0-windows/$rid/publish"
 
           # Nimm die erste EXE aus dem Publish-Ordner
           $exe = Get-ChildItem $publishDir -Filter *.exe | Select-Object -First 1
@@ -96,7 +91,7 @@ jobs:
           release_name: v${{ env.VERSION }}
           draft: true
           prerelease: false
-          body: ""   # Release Notes bleiben leer, bearbeitest du später
+          body: ""
 
       - name: Upload assets to release
         env:
