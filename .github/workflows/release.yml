@@ -5,6 +5,9 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
+permissions:
+  contents: write
+
 env:
   PROJECT_PATH: Boothaus.GUI/Boothaus.GUI.csproj
   APP_NAME: Boothaus
