@@ -74,7 +74,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zips
+          name: zips-${{ matrix.rid }}
           path: '*.zip'
 
   release:
