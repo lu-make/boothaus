@@ -26,10 +26,21 @@ public partial class App : System.Windows.Application
 
     private void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<IAuftragRepository, InMemoryAuftragRepository>();
-        services.AddSingleton<IBootRepository, InMemoryBootRepository>();
-        services.AddSingleton<ILagerRepository, InMemoryLagerRepository>();
-        services.AddSingleton<ImportExportService>();
+        services.AddSingleton<IAuftragRepository, AuftragRepository>();
+        services.AddSingleton<IBootRepository, BootRepository>();
+        services.AddSingleton<ILagerRepository, LagerRepository>();
+        services.AddSingleton<SerDes>();
+        services.AddSingleton(sp =>
+        {
+            return new PersistenceService(
+                sp.GetRequiredService<SerDes>(),
+                Constants.Datenbankpfad,
+                sp.GetRequiredService<IAuftragRepository>(),
+                sp.GetRequiredService<ILagerRepository>(),
+                sp.GetRequiredService<IBootRepository>()
+                );
+        });
+
         services.AddSingleton<LagerApplicationService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddTransient<MainViewModel>();
@@ -42,14 +53,15 @@ public partial class App : System.Windows.Application
         var auftragRepo = Provider.GetRequiredService<IAuftragRepository>();
         var bootRepo = Provider.GetRequiredService<IBootRepository>();
         var lagerRepo = Provider.GetRequiredService<ILagerRepository>();
+
+        var persistence = Provider.GetRequiredService<PersistenceService>();
         
-        bootRepo.InitialisiereMitDefaults(DefaultData.Boote());
-        lagerRepo.InitialisiereMitDefaults(DefaultData.Lager());
-        auftragRepo.InitialisiereMitDefaults(DefaultData.Aufträge(lagerRepo.GetLager(), bootRepo.GetAll()));
+        persistence.ZustandLaden();
 
-        var service = Provider.GetRequiredService<LagerApplicationService>();
+        var appService = Provider.GetRequiredService<LagerApplicationService>();
+        var dialogService = Provider.GetRequiredService<IDialogService>();
 
-        var mainWindow = new BoothausMainApplicationWindow(service)
+        var mainWindow = new BoothausMainApplicationWindow(appService, dialogService)
         {
             DataContext = Provider.GetRequiredService<MainViewModel>()
         };
@@ -58,7 +70,7 @@ public partial class App : System.Windows.Application
 
     void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
     {
-        System.Windows.MessageBox.Show($"Es ist ein unerwarteter Fehler aufgetreten:\n{e.Exception.Message}\nBitte öffnen Sie ein Issue unter github.com/lu-make/boothaus/issues", "AAAA", MessageBoxButton.OK, MessageBoxImage.Error);
+        MessageBox.Show($"Es ist ein unerwarteter Fehler aufgetreten:\n{e.Exception.Message}\nBitte öffnen Sie ein Issue unter github.com/lu-make/boothaus/issues", "Unerwarteter Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }
 }

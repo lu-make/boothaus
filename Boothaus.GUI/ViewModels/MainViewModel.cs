@@ -66,6 +66,7 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand ImportCommand { get; private set; }
     public ICommand ExportCommand { get; private set; }
     public ICommand BeendenCommand { get; private set; }
+    public ICommand SaveCommand { get; private set; }
 
     // events
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -259,11 +260,33 @@ public class MainViewModel : INotifyPropertyChanged
 
         BeendenCommand = new RelayCommand(execute: () =>
         {
+            if (appService.HatUngespeicherteÄnderungen())
+            {
+                var speichern = dialogService.JaNeinAbbrechenWarnungDialogAnzeigen(titel: "Beenden", frage: "Möchten Sie Ihre Änderungen speichern?");
+                switch (speichern)
+                { 
+                    case 0: break;
+                    case 1:
+                        try
+                        {
+                            appService.ZustandSpeichern();
+                            break;
+                        }
+                        catch
+                        {
+                            dialogService.FehlermeldungAnzeigen("Fehler beim Speichern der Änderungen. Der Beenden-Vorgang wird abgebrochen.");
+                            return;
+                        }
+                    default: return;
+                }
+            }
+            
             Environment.Exit(0);
         });
 
-        AboutAnzeigenCommand = new RelayCommand(execute: dialogService.AboutAnzeigen);
+        SaveCommand = new RelayCommand(execute: appService.ZustandSpeichern);
 
+        AboutAnzeigenCommand = new RelayCommand(execute: dialogService.AboutAnzeigen);
 
         EinstellungenAnzeigenCommand = new RelayCommand(execute: dialogService.EinstellungenAnzeigen);
     }

@@ -2,7 +2,19 @@
 
 namespace Boothaus.Services.Persistence.SerializableDTOs;
 
-internal class LagerDto
+public class RootDto
+{
+    public LagerDto Lager { get; set; }
+    public List<BootDto> Boote { get; set; }
+    public List<AuftragDto> Aufträge { get; set; }
+    public RootDto()
+    {
+        Boote = new List<BootDto>();
+        Aufträge = new List<AuftragDto>();
+    }
+}
+
+public class LagerDto
 {
     public decimal StandardMaxLänge { get; set; }
     public decimal StandardMaxBreite { get; set; }
@@ -25,7 +37,7 @@ internal class LagerDto
     }
 }
 
-internal class LagerreiheDto
+public class LagerreiheDto
 {
     public int Nummer { get; set; }
     public List<LagerplatzDto> Plätze { get; set; }
@@ -46,7 +58,7 @@ internal class LagerreiheDto
     
 }
 
-internal class LagerplatzDto
+public class LagerplatzDto
 {
     public Guid Id { get; set; }
     public List<Guid> Zuweisungen { get; set; }
@@ -66,10 +78,10 @@ internal class LagerplatzDto
     }
 }
 
-internal class AuftragDto
+public class AuftragDto
 {
     public Guid Id { get; set; }
-    public Guid Boot { get; set; }
+    public Guid Boot { get; set; } 
     public DateOnly Von { get; set; }
     public DateOnly Bis { get; set; }
 
@@ -77,14 +89,14 @@ internal class AuftragDto
     public AuftragDto(Auftrag auftrag)
     {
         Id = auftrag.Id;
-        Boot = auftrag.Boot.Id;
+        Boot = auftrag.Boot.Id; 
         Von = auftrag.Von;
         Bis = auftrag.Bis;
 
     }
 }
 
-internal class BootDto
+public class BootDto
 {
     public Guid Id { get; set; }
     public string Kontakt { get; set; }
@@ -100,17 +112,5 @@ internal class BootDto
         Name = boot.Name;
         Rumpflänge = boot.Rumpflänge;
         Breite = boot.Breite;
-    }
-}
-
-internal class ImportExportDto
-{
-    public LagerDto Lager { get; set; }
-    public List<BootDto> Boote { get; set; }
-    public List<AuftragDto> Aufträge { get; set; }
-    public ImportExportDto() 
-    { 
-        Boote = new List<BootDto>();
-        Aufträge = new List<AuftragDto>(); 
     }
 }

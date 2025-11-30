@@ -1,7 +1,5 @@
 ﻿using Boothaus.Services.Contracts;
 using Boothaus.Domain;
-using System.Runtime.CompilerServices;
-using System.ComponentModel.Design;
 using Boothaus.Services.Persistence;
 
 namespace Domain.Services;
@@ -18,19 +16,19 @@ public class LagerApplicationService
     private IAuftragRepository auftragRepository;
     private ILagerRepository lagerRepository;
     private HashSet<Saison> saisons;
-    private ImportExportService importExport;
+    private PersistenceService persistence;
 
     public LagerApplicationService(
         IBootRepository bootRepository,
         IAuftragRepository auftragRepository,
         ILagerRepository lagerRepository,
-        ImportExportService importExport)
+        PersistenceService persistence)
     {
         this.bootRepository = bootRepository;
         this.auftragRepository = auftragRepository;
         this.lagerRepository = lagerRepository;
         saisons = [new Saison(2025)];
-        this.importExport = importExport;
+        this.persistence = persistence;
     }
 
     /// <summary>
@@ -308,7 +306,7 @@ public class LagerApplicationService
         // Es darf nur auf den hintersten freien platz der reihe zugewiesen werden
         var vordersterBelegterPlatz = platz.Reihe.VordersterBelegterPlatz(auftrag.Von, auftrag.Bis);
         if (vordersterBelegterPlatz is null) return false;
-        var zuweisungDavor = vordersterBelegterPlatz?.GetNächsteZuweisung(auftrag.Saison);
+        var zuweisungDavor = vordersterBelegterPlatz!.GetNächsteZuweisung(auftrag.Saison);
         if (zuweisungDavor is null) return false;
         var ordnung = auftrag.VergleicheReihenordnung(zuweisungDavor);
         if (ordnung is not (0 or 1)) return false;
@@ -449,7 +447,7 @@ public class LagerApplicationService
     /// <param name="zielpfad">Der Pfad der Datei</param>
     public void DatenExportieren(string zielpfad)
     {
-        importExport.DatenExportieren(zielpfad);
+        persistence.DatenExportieren(zielpfad);
     }
 
     /// <summary>
@@ -458,6 +456,31 @@ public class LagerApplicationService
     /// <param name="quellpfad">Der Pfad der Datei</param>
     public void DatenImportieren(string quellpfad)
     {
-        importExport.DatenImportieren(quellpfad);
+        persistence.DatenImportieren(quellpfad);
+    }
+
+    /// <summary>
+    /// Speichert den aktuellen Zustand in die Datenbank.
+    /// </summary>
+    public void ZustandSpeichern()
+    {
+        persistence.ZustandSpeichern();
+    }
+
+    /// <summary>
+    /// Lädt den letzten gespeicherten Zustand aus der Datenbank.
+    /// </summary>
+    public void ZustandLaden()
+    {
+        persistence.ZustandLaden();
+    }
+
+    /// <summary>
+    /// Prüft ob ungespeicherte Änderungen vorliegen.
+    /// </summary>
+    /// <returns>Wahr, wenn es ungespeicherte Änderungen am Modell gibt, sonst falsch.</returns>
+    public bool HatUngespeicherteÄnderungen()
+    {
+        return persistence.HatUngespeicherteÄnderungen();
     }
 }
